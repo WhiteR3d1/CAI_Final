@@ -1,0 +1,145 @@
+.manual {
+  display: grid;
+  gap: 20px;
+}
+
+.manual-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px 24px;
+}
+
+.manual-head p {
+  max-width: 760px;
+  margin: 0;
+}
+
+.manual-body {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.manual-nav {
+  position: sticky;
+  top: 76px;
+  display: grid;
+  gap: 4px;
+}
+
+.manual-nav button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  text-align: left;
+  line-height: 1.35;
+}
+
+.manual-nav button:hover {
+  background: var(--sage-50);
+}
+
+.manual-nav button[aria-current='true'] {
+  border-color: var(--line-2);
+  background: var(--paper);
+  box-shadow: var(--shadow-sm);
+  font-weight: 600;
+}
+
+.manual-no {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: var(--sage-100);
+  color: var(--green-700);
+  font-family: var(--font-display);
+}
+
+.manual-no-extra {
+  background: var(--extra-bg);
+  color: var(--extra);
+}
+
+.manual-article {
+  padding: clamp(18px, 3vw, 30px);
+}
+
+.manual-article-head {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.manual-lead {
+  margin-bottom: 20px;
+  color: var(--ink-2);
+  font-size: 1.05rem;
+}
+
+.manual-foot {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px dashed var(--line-2);
+}
+
+.manual-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.manual-caution {
+  margin-top: 16px;
+}
+
+/* compact version lives inside the workbench drawer */
+.manual-compact .manual-body {
+  grid-template-columns: 1fr;
+}
+
+.manual-compact .manual-nav {
+  position: static;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.manual-compact .manual-nav button {
+  padding: 6px 10px;
+}
+
+.manual-compact .manual-article {
+  border: 0;
+  box-shadow: none;
+  padding: 4px 0 0;
+  background: transparent;
+}
+
+@media (max-width: 820px) {
+  .manual-body {
+    grid-template-columns: 1fr;
+  }
+
+  .manual-nav {
+    position: static;
+    display: flex;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .manual-nav button {
+    flex-shrink: 0;
+  }
+}

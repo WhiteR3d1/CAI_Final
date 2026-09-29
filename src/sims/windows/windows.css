@@ -1,0 +1,931 @@
+/* Shared screens for the Windows-installation jobs: Rufus, boot screens, Windows Setup and OOBE. */
+
+@keyframes fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* ---------- shop pc + rufus ---------- */
+.shop-pc {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  padding: 12px;
+  overflow: auto;
+  background: linear-gradient(135deg, #2c4a43, #5b8a74);
+}
+
+.rufus-overlay {
+  position: absolute;
+  inset: 0 0 40px;
+  z-index: 60;
+  display: flex;
+  padding: 12px;
+  overflow: auto;
+  background: rgb(10 20 30 / 18%);
+}
+
+.rufus {
+  position: relative;
+  width: min(440px, 100%);
+  margin: auto;
+  border: 1px solid #7a7a7a;
+  background: #f0f0f0;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 40%);
+  font-family: var(--font-os);
+  font-size: 13px;
+}
+
+.rufus-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+.rufus-title .rufus-x {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 22px;
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+}
+
+.rufus-title .rufus-x:hover {
+  background: #e81123;
+  color: #fff;
+}
+
+.rufus-body {
+  display: grid;
+  gap: 5px;
+  padding: 6px 14px 12px;
+}
+
+.rufus-body h3 {
+  margin: 2px 0 0;
+  padding-bottom: 2px;
+  border-bottom: 1px solid #c7c7c7;
+  color: #1c3e72;
+  font-family: var(--font-os);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.rufus-field {
+  display: grid;
+  gap: 2px;
+}
+
+.rufus-field > span {
+  color: #333;
+  font-size: 12px;
+}
+
+.rufus-field select,
+.rufus-out {
+  display: block;
+  width: 100%;
+  min-height: 26px;
+  padding: 3px 6px;
+  border: 1px solid #adadad;
+  background: #fff;
+  font-size: 13px;
+}
+
+.rufus-out {
+  overflow: hidden;
+  color: #333;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rufus-row {
+  display: flex;
+  gap: 6px;
+}
+
+.rufus-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.rufus-status {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 26px;
+  overflow: hidden;
+  border: 1px solid #adadad;
+  background: #e6e6e6;
+  font-size: 12.5px;
+}
+
+.rufus-fill {
+  position: absolute;
+  inset: 0;
+  background: #06b025;
+  transform-origin: left;
+  transform: scaleX(0);
+}
+
+.rufus-status em {
+  position: relative;
+  font-style: normal;
+}
+
+.rufus-busy .rufus-fill {
+  animation: fill 3.4s linear forwards;
+  transform: scaleX(1);
+}
+
+.rufus-done .rufus-fill {
+  transform: scaleX(1);
+}
+
+.rufus-error {
+  background: #fde7e9;
+  color: #a4262c;
+}
+
+.rufus-done {
+  color: #fff;
+}
+
+.rufus-dialog {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 5;
+  display: grid;
+  gap: 8px;
+  width: min(420px, 94%);
+  padding: 0 0 12px;
+  transform: translate(-50%, -50%);
+  border: 1px solid #7a7a7a;
+  background: #fff;
+  box-shadow: 0 12px 30px rgb(0 0 0 / 40%);
+}
+
+.rufus-dialog header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-bottom: 1px solid #ddd;
+  background: #f3f3f3;
+}
+
+.rufus-dialog ul {
+  margin: 0;
+  padding: 0 8px;
+  list-style: none;
+}
+
+.rufus-dialog li button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 8px;
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  text-align: left;
+}
+
+.rufus-dialog li button:hover {
+  background: #e5f3ff;
+}
+
+.rufus-dialog li small {
+  margin-left: auto;
+  color: #666;
+}
+
+.rufus-dialog p {
+  margin: 0;
+  padding: 0 12px;
+}
+
+.rufus-dialog .w-buttons {
+  padding: 0 12px;
+}
+
+.rufus-warn header {
+  color: #a4262c;
+}
+
+.rufus-thai {
+  font-family: var(--font);
+  color: #a4262c;
+}
+
+/* a second toast (e.g. "USB detected") sits above the desktop's own toast */
+.dt-toast.dt-toast-device {
+  bottom: 100px;
+  background: rgb(16 70 52 / 92%);
+}
+
+/* ---------- power off / no boot device ---------- */
+.poweroff {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  background: #050605;
+  color: #9fb0a8;
+  font-family: var(--font);
+  text-align: center;
+}
+
+.poweroff p {
+  margin: 0;
+}
+
+.noboot {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  padding: 6%;
+  background: #000;
+  color: #d8dcd8;
+  font-family: var(--font-mono);
+  font-size: clamp(0.78rem, 1.8cqi, 1rem);
+}
+
+.noboot p {
+  margin: 0;
+}
+
+.noboot .btn {
+  justify-self: start;
+  font-family: var(--font);
+}
+
+/* ---------- boot manager ---------- */
+.bootmgr-wrap,
+.presskey,
+.ws-black {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  color: #c9c9c9;
+  font-family: var(--font-mono);
+}
+
+.bootmgr {
+  position: absolute;
+  inset: 0 0 52px;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 0 6% 20px;
+  font-size: clamp(0.72rem, 1.7cqi, 0.95rem);
+  outline: none;
+}
+
+.bootmgr-head {
+  margin: 0 -8% 10px;
+  padding: 4px;
+  background: #c9c9c9;
+  color: #000;
+  text-align: center;
+}
+
+.bootmgr p {
+  margin: 0;
+}
+
+.bootmgr-dim {
+  color: #8a8a8a;
+}
+
+.bootmgr button {
+  width: 100%;
+  margin-left: 6%;
+  padding: 2px 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.bootmgr button.on {
+  background: #c9c9c9;
+  color: #000;
+}
+
+.bootmgr-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 4px 6%;
+  background: #c9c9c9;
+  color: #000;
+}
+
+.boot-success {
+  position: absolute;
+  left: 50%;
+  bottom: 96px;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: min(460px, 90%);
+  padding: 10px 14px;
+  transform: translateX(-50%);
+  border-radius: 12px;
+  background: #eaf7ee;
+  color: #1f4f33;
+  font-family: var(--font);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 40%);
+}
+
+.boot-success p {
+  margin: 0;
+}
+
+/* inside a flex column (e.g. the OOBE screen) the box stays in the normal flow */
+.boot-success.is-inline {
+  position: static;
+  transform: none;
+  text-align: left;
+}
+
+.boot-success.is-inline p {
+  color: #1f4f33;
+}
+
+.presskey {
+  display: grid;
+  align-content: start;
+  padding: 6%;
+  outline: none;
+}
+
+.presskey p {
+  margin: 0;
+}
+
+.presskey-dots {
+  display: inline-block;
+  width: 0;
+  overflow: hidden;
+  vertical-align: bottom;
+  animation: dots 6s steps(5) forwards;
+}
+
+@keyframes dots {
+  to {
+    width: 5ch;
+  }
+}
+
+.ws-black {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  font-family: var(--font-os);
+  color: #fff;
+}
+
+/* ---------- windows setup ---------- */
+.ws {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  padding: 16px;
+  overflow: auto;
+  background: linear-gradient(160deg, #0b3f86, #1463c4 55%, #2a7ad8);
+  font-family: var(--font-os);
+  font-size: 13.5px;
+}
+
+.ws-dialog {
+  width: min(640px, 100%);
+  margin: auto;
+  border: 1px solid #2c5aa0;
+  background: #fff;
+  box-shadow: 0 16px 40px rgb(0 0 0 / 40%);
+}
+
+.ws-dialog-title {
+  padding: 6px 12px;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 12.5px;
+}
+
+.ws-dialog-body {
+  display: grid;
+  gap: 10px;
+  padding: 16px 20px 18px;
+}
+
+.ws-dialog-body p {
+  margin: 0;
+}
+
+.ws-brand {
+  margin: 4px 0 8px;
+  color: #0a5bc4;
+  font-family: var(--font-os);
+  font-size: 30px;
+  font-weight: 300;
+  text-align: center;
+}
+
+.ws-h {
+  margin: 0;
+  color: #1e3c8a;
+  font-family: var(--font-os);
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.ws-small {
+  color: #555;
+  font-size: 12.5px;
+}
+
+.ws-field {
+  display: grid;
+  grid-template-columns: minmax(150px, 40%) minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+}
+
+.ws-field span {
+  text-align: right;
+}
+
+.ws-field select,
+.ws-field input {
+  padding: 4px 6px;
+  border: 1px solid #7a7a7a;
+  font-size: 13px;
+}
+
+.ws-field input {
+  font-family: var(--font-mono);
+  letter-spacing: 0.04em;
+}
+
+.ws-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ws-sticker {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px dashed #c9a74a;
+  border-radius: 6px;
+  background: #fff8e1;
+  font-family: var(--font);
+  font-size: 12.5px;
+}
+
+.ws-install {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 20px 0;
+}
+
+.ws-install-btn {
+  padding: 10px 28px;
+  border: 1px solid #fff;
+  outline: 2px solid #0a5bc4;
+  background: #0a5bc4;
+  color: #fff;
+  font-size: 16px;
+}
+
+.ws-install-btn:hover {
+  background: #0b4ea6;
+}
+
+.ws-repair {
+  justify-self: start;
+}
+
+.ws-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.ws-table th {
+  padding: 4px 8px;
+  border-bottom: 1px solid #ddd;
+  font-weight: 400;
+  text-align: left;
+  color: #555;
+}
+
+.ws-table td {
+  padding: 0 8px;
+}
+
+.ws-table tr.on {
+  background: #cce8ff;
+}
+
+.ws-table button {
+  width: 100%;
+  padding: 5px 0;
+  border: 0;
+  background: transparent;
+  font-size: 13px;
+  text-align: left;
+}
+
+.ws-license {
+  max-height: 150px;
+  overflow: auto;
+  padding: 10px 12px;
+  border: 1px solid #adadad;
+  font-family: var(--font);
+  font-size: 13px;
+}
+
+.ws-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ws-parts {
+  display: grid;
+  border: 1px solid #adadad;
+  font-size: 12.5px;
+}
+
+.ws-parts-head,
+.ws-part {
+  display: grid;
+  grid-template-columns: minmax(0, 2.2fr) 1fr 1fr 1fr;
+  gap: 6px;
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.ws-parts-head {
+  border-bottom: 1px solid #ddd;
+  color: #555;
+}
+
+.ws-part {
+  border: 0;
+  background: transparent;
+  font-size: 12.5px;
+}
+
+.ws-part:hover {
+  background: #e5f3ff;
+}
+
+.ws-part.on {
+  background: #cce8ff;
+}
+
+.ws-part span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.ws-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+}
+
+.ws-tools .link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #0a5bc4;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.ws-tools .link-btn:disabled {
+  color: #9a9a9a;
+}
+
+.ws-newpart {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid #d6e4f5;
+  background: #f4f9ff;
+}
+
+.ws-newpart input {
+  width: 110px;
+  padding: 3px 6px;
+  border: 1px solid #7a7a7a;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.ws-newpart small {
+  color: #555;
+  font-family: var(--font);
+}
+
+.ws-phases {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ws-phases li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #777;
+}
+
+.ws-phases li.done {
+  color: #107c10;
+}
+
+.ws-phases li.now {
+  color: #111;
+  font-weight: 600;
+}
+
+.ws-dot {
+  width: 14px;
+  height: 14px;
+}
+
+@container screen (max-width: 560px) {
+  .ws-field {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .ws-field span {
+    text-align: left;
+  }
+
+  .ws-parts-head {
+    display: none;
+  }
+
+  .ws-part {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .ws-part span:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- oobe ---------- */
+.oobe {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 20px 56px;
+  overflow: auto;
+  background: #0a4f8f;
+  color: #fff;
+  font-family: var(--font-os);
+  text-align: center;
+}
+
+.oobe h2 {
+  margin: 0;
+  font-family: var(--font-os);
+  font-size: clamp(20px, 3cqi, 28px);
+  font-weight: 300;
+}
+
+.oobe p {
+  margin: 0;
+  color: #cfe0f5;
+  font-family: var(--font);
+}
+
+.oobe-list {
+  display: grid;
+  width: min(360px, 100%);
+  max-height: 190px;
+  overflow: auto;
+  border: 1px solid rgb(255 255 255 / 25%);
+}
+
+.oobe-list button {
+  padding: 6px 12px;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  text-align: left;
+}
+
+.oobe-list button.on {
+  background: #1f7ae0;
+}
+
+.oobe-btn {
+  min-width: 120px;
+  padding: 8px 20px;
+  border: 0;
+  background: #1f7ae0;
+  color: #fff;
+  font-size: 14px;
+}
+
+.oobe-btn:disabled {
+  opacity: 0.5;
+}
+
+.oobe-ghost {
+  background: transparent;
+  border: 1px solid rgb(255 255 255 / 60%);
+}
+
+.oobe-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.oobe-field {
+  display: grid;
+  gap: 4px;
+  width: min(300px, 100%);
+  text-align: left;
+}
+
+.oobe-field input {
+  padding: 6px 10px;
+  border: 0;
+  font-size: 14px;
+}
+
+.oobe-error {
+  color: #ffd6d6 !important;
+}
+
+.oobe-corner {
+  position: absolute;
+  left: 14px;
+  bottom: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.oobe-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #9fd0ff;
+  font-size: 13px;
+  text-decoration: underline;
+}
+
+.oobe-avatar {
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #1f7ae0;
+}
+
+.oobe-toggles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 18px;
+  width: min(620px, 100%);
+  text-align: left;
+}
+
+.oobe-toggle {
+  display: grid;
+  gap: 4px;
+  padding: 8px 10px;
+  border: 1px solid rgb(255 255 255 / 18%);
+  background: rgb(255 255 255 / 6%);
+}
+
+.oobe-toggle strong {
+  font-family: var(--font-os);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.oobe-toggle small {
+  color: #cfe0f5;
+  font-family: var(--font);
+  font-size: 12px;
+}
+
+.oobe-toggle button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  font-size: 13px;
+}
+
+.oobe-toggle button::before {
+  content: '';
+  width: 34px;
+  height: 18px;
+  border: 2px solid #fff;
+  border-radius: 10px;
+  background: radial-gradient(circle at 8px 50%, #fff 0 4px, transparent 5px);
+}
+
+.oobe-toggle button[aria-pressed='true']::before {
+  border-color: #1f7ae0;
+  background: radial-gradient(circle at 24px 50%, #fff 0 4px, transparent 5px), #1f7ae0;
+}
+
+.oobe-finish {
+  gap: 10px;
+}
+
+.oobe > :first-child {
+  margin-top: auto;
+}
+
+.oobe > :last-child {
+  margin-bottom: auto;
+}
+
+@container screen (max-width: 560px) {
+  .oobe-toggles {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- old windows (boots from the hard disk instead of USB) ---------- */
+.oldwin {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 16px;
+  padding: 16px;
+  background:
+    radial-gradient(ellipse at 60% 40%, rgb(190 225 255 / 45%), transparent 55%),
+    linear-gradient(135deg, #062a66, #0b3d91);
+  text-align: center;
+}
+
+.oldwin-popup {
+  max-width: 340px;
+  padding: 12px 16px;
+  border: 2px solid #c42b1c;
+  background: #fff4f4;
+  color: #8b1a1a;
+}
+
+.oldwin-popup p {
+  margin: 4px 0 0;
+  color: #333;
+}

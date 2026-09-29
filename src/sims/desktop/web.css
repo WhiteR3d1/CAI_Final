@@ -1,0 +1,126 @@
+/* simulated web pages shown inside Browser */
+.web-home {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 30px 0;
+}
+
+.web-logo {
+  color: #2f5e4b;
+  font-family: var(--font-display);
+  font-size: 30px;
+}
+
+.web-results {
+  display: grid;
+  gap: 14px;
+}
+
+.web-result {
+  display: grid;
+  gap: 2px;
+}
+
+.web-result p {
+  margin: 0;
+  color: #4d5156;
+  font-size: 13px;
+}
+
+.web-result cite {
+  color: #188038;
+  font-size: 12px;
+  font-style: normal;
+}
+
+.web-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #1a0dab;
+  font-size: 16px;
+  text-align: left;
+}
+
+.web-link:hover {
+  text-decoration: underline;
+}
+
+.web-site {
+  display: grid;
+  gap: 10px;
+}
+
+.web-site h2 {
+  margin: 0;
+}
+
+.web-site-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 8px 10px;
+  background: #2b2b2b;
+  color: #fff;
+  font-size: 13px;
+}
+
+.web-table-scroll {
+  overflow-x: auto;
+}
+
+.web-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.web-table th,
+.web-table td {
+  padding: 6px 8px;
+  border-bottom: 1px solid #e3e3e3;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.web-table th {
+  color: #555;
+  font-weight: 500;
+}
+
+/* download bar at the bottom of the browser (like Edge/Chrome) */
+.w-browser-with-footer {
+  grid-template-rows: auto 1fr auto;
+}
+
+.dl-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-top: 1px solid #d8d8d8;
+  background: #f3f3f3;
+  font-size: 13px;
+}
+
+.dl-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid #c8c8c8;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.dl-file:hover {
+  background: #e5f3ff;
+}
+
+.dl-file small {
+  color: #666;
+}

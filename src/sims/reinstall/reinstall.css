@@ -1,0 +1,47 @@
+/* Only what the capstone job needs; shared installer screens live in ../windows/windows.css */
+.sim-reinstall {
+  display: grid;
+}
+
+/* backup */
+.adware {
+  justify-items: start;
+  background: #fff4f4;
+  color: #8b1a1a;
+}
+
+.adware p {
+  margin: 0;
+}
+
+.copy-dialog {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  z-index: 90;
+  display: grid;
+  gap: 6px;
+  width: min(360px, 86%);
+  padding: 14px 16px;
+  transform: translate(-50%, -50%);
+  border: 1px solid #9aa4ad;
+  background: #fff;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 35%);
+  font-family: var(--font);
+}
+
+.copy-bar {
+  height: 14px;
+  overflow: hidden;
+  border: 1px solid #bcbcbc;
+  background: #e6e6e6;
+}
+
+.copy-bar span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: #06b025;
+  transform-origin: left;
+  animation: fill 3.2s linear forwards;
+}

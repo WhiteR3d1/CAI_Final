@@ -1,0 +1,367 @@
+.shop {
+  display: grid;
+  gap: 36px;
+}
+
+.shop-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(300px, 1fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.shop-scene-wrap {
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+}
+
+/* scene */
+.scene {
+  position: relative;
+  aspect-ratio: 1000 / 460;
+  width: 100%;
+  background: #dfe8d5;
+}
+
+.scene-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.scene-person {
+  position: absolute;
+  pointer-events: none;
+}
+
+.scene-person svg {
+  width: 100%;
+  height: auto;
+}
+
+.scene-customer {
+  left: 45%;
+  bottom: 37.5%;
+  width: 12.5%;
+  animation: customer-in 0.6s ease-out both;
+}
+
+.scene-mentor {
+  left: 63.2%;
+  bottom: 30.5%;
+  width: 11%;
+}
+
+@keyframes customer-in {
+  from {
+    opacity: 0;
+    transform: translateX(-30%);
+  }
+}
+
+.hotspot {
+  position: absolute;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 0;
+  border: 2px dashed transparent;
+  border-radius: 14px;
+  background: transparent;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.hotspot > span:last-child {
+  transform: translateY(-60%);
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: rgb(25 61 53 / 88%);
+  color: #fffdf3;
+  font-size: clamp(0.7rem, 1.2vw, 0.85rem);
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+}
+
+.hotspot:hover,
+.hotspot:focus-visible {
+  border-color: rgb(232 189 106 / 90%);
+  background: rgb(255 255 255 / 14%);
+}
+
+.hotspot-board {
+  left: 27.6%;
+  top: 22.6%;
+  width: 17.8%;
+  height: 28.7%;
+}
+
+.hotspot-manual {
+  left: 70%;
+  top: 19%;
+  width: 11.5%;
+  height: 16.5%;
+}
+
+.hotspot-customer {
+  left: 43.5%;
+  top: 33%;
+  width: 15.5%;
+  height: 26%;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hotspot-customer > span:last-child {
+  background: var(--gold);
+  color: var(--green-900);
+  font-weight: 600;
+}
+
+.hotspot-alert {
+  position: absolute;
+  right: 6%;
+  top: 4%;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #d9534f;
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 600;
+  animation: bounce 1.4s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* side card */
+.shop-side {
+  display: grid;
+  gap: 18px;
+  padding: 20px;
+}
+
+.shop-next h2 {
+  margin-bottom: 4px;
+}
+
+.shop-next .btn {
+  margin-top: 8px;
+}
+
+.shop-level {
+  display: grid;
+  gap: 6px;
+  padding-top: 14px;
+  border-top: 1px dashed var(--line-2);
+}
+
+.shop-level-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.shop-level-row .muted {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* board */
+.section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 14px;
+}
+
+.section-head h2 {
+  margin: 0;
+}
+
+.section-head p {
+  margin: 0;
+}
+
+.job-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.job-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 18px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.job-card:not(.is-locked):hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.job-card-top {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.job-card-top h3 {
+  margin: 0;
+}
+
+.job-card-avatar {
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--sage-100);
+}
+
+.job-code {
+  color: var(--green-500);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+}
+
+.job-tagline {
+  flex: 1;
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.job-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.job-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.job-best {
+  display: grid;
+  line-height: 1.3;
+}
+
+.job-locked {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-3);
+  font-size: 0.9rem;
+}
+
+.job-card.is-locked {
+  background: var(--sage-50);
+}
+
+.job-card.is-locked .job-card-avatar {
+  filter: grayscale(0.8);
+  opacity: 0.6;
+}
+
+.job-card.is-done {
+  border-color: var(--sage-200);
+}
+
+/* decor */
+.decor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.decor-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+}
+
+.decor-item strong,
+.decor-item small {
+  display: block;
+  line-height: 1.35;
+}
+
+.decor-item.is-owned {
+  background: var(--sage-50);
+}
+
+@media (max-width: 980px) {
+  .shop-top {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .hotspot > span:last-child {
+    font-size: 0.62rem;
+    padding: 2px 6px;
+  }
+
+  .hotspot-alert {
+    width: 20px;
+    height: 20px;
+    font-size: 0.75rem;
+  }
+}
+
+/* Spacious learning navigation: separate board and decoration screens. */
+.shop-page-heading h1 { margin: 24px 0 10px; font-size: clamp(28px, 3vw, 38px); }
+.shop-page-heading p { font-size: 18px; margin: 0; }
+.shop-shortcuts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.shortcut { display: flex; align-items: center; gap: 20px; padding: 28px; text-align: left; color: var(--ink); }
+.shortcut:hover { border-color: var(--green-500); background: var(--sage-50); }
+.shortcut strong { display: block; font-size: 24px; }
+.shortcut small { display: block; font-size: 16px; margin-top: 6px; }
+.shop-view-board, .shop-view-decor { max-width: 1180px; margin-inline: auto; }
+.shop .section-head h2 { font-size: 26px; }
+.shop .section-head p { font-size: 16px; }
+.shop .job-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.shop .job-card { padding: 28px; gap: 20px; }
+.shop .job-card-top { gap: 18px; }
+.shop .job-card-top h3 { font-size: 23px; line-height: 1.55; }
+.shop .job-card-top small { font-size: 15px; }
+.shop .job-code { font-size: 14px; }
+.shop .job-tagline { font-size: 18px; line-height: 1.8; }
+.shop .job-meta { gap: 10px; }
+.shop .chip { font-size: 14px; padding: 6px 12px; }
+.shop .btn { min-height: 48px; font-size: 17px; padding: 11px 20px; }
+.shop .job-locked { font-size: 16px; color: var(--ink-2); }
+.shop .decor-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.shop .decor-item { padding: 26px; gap: 20px; grid-template-columns: 76px minmax(0, 1fr); }
+.shop .decor-item > svg { width: 76px; height: 76px; }
+.shop .decor-item strong { font-size: 22px; line-height: 1.5; }
+.shop .decor-item small { font-size: 16px; line-height: 1.7; margin-top: 7px; }
+.shop .decor-item > .btn, .shop .decor-item > .chip { grid-column: 1 / -1; justify-self: stretch; justify-content: center; }
+@media (max-width: 700px) {
+ .shop .job-grid, .shop .decor-grid, .shop-shortcuts { grid-template-columns: minmax(0, 1fr); }
+ .shop .job-card, .shop .decor-item, .shortcut { padding: 22px; }
+ .shop .job-card-top h3 { font-size: 21px; }
+ .shop .job-card-top { align-items: flex-start; }
+ .shop .job-card-foot { flex-wrap: wrap; }
+ .shop .section-head h2 { font-size: 23px; }
+ .shop-page-heading p { font-size: 17px; }
+}

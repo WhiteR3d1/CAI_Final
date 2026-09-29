@@ -1,0 +1,476 @@
+/* ---------- monitor frame ---------- */
+.monitor {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 12px 0;
+  border-radius: 18px;
+  background: #27302d;
+  box-shadow: 0 18px 40px rgb(19 47 40 / 25%), inset 0 1px 0 rgb(255 255 255 / 8%);
+}
+
+.monitor-light {
+  background: #dfe3dc;
+}
+
+.monitor-screen {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  min-height: 460px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #000;
+  container-type: inline-size;
+  container-name: screen;
+}
+
+.monitor-chin {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 6px 8px;
+  color: #9fb0a8;
+  font-size: 0.78rem;
+}
+
+.monitor-light .monitor-chin {
+  color: #58655f;
+}
+
+.monitor-led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #7ce39b;
+  box-shadow: 0 0 8px #7ce39b;
+}
+
+@media (max-width: 700px) {
+  .monitor {
+    padding: 6px 6px 0;
+    border-radius: 12px;
+  }
+
+  .monitor-screen {
+    aspect-ratio: auto;
+    min-height: 540px;
+  }
+}
+
+/* ---------- on-screen keypad ---------- */
+.keypad {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 4px;
+  max-width: calc(100% - 20px);
+}
+
+.keypad-key {
+  min-width: 38px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid rgb(255 255 255 / 35%);
+  border-bottom-width: 3px;
+  border-radius: 7px;
+  background: rgb(20 24 22 / 80%);
+  color: #f3f5f0;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+}
+
+.keypad-key:active {
+  transform: translateY(1px);
+  border-bottom-width: 2px;
+}
+
+/* ---------- bench bar (below a monitor) ---------- */
+.bench-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--paper);
+}
+
+.bench-bar p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 0.92rem;
+}
+
+/* ---------- POST ---------- */
+.post {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding: 7% 7% 60px;
+  background: #050605;
+  color: #d8dcd8;
+  font-family: var(--font-mono);
+  outline: none;
+}
+
+.post:focus-visible {
+  box-shadow: inset 0 0 0 3px var(--gold-600);
+}
+
+.post-logo {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.post-mark {
+  color: #e8bd6a;
+  font-size: 3.2rem;
+  line-height: 1;
+}
+
+.post-logo strong {
+  font-size: 1.6rem;
+  letter-spacing: 0.2em;
+}
+
+.post-logo small {
+  color: #8d968f;
+}
+
+.post-lines p {
+  margin: 0 0 10px;
+}
+
+.post-lines b {
+  padding: 0 4px;
+  background: #d8dcd8;
+  color: #050605;
+}
+
+.post-continue {
+  padding: 4px 10px;
+  border: 1px solid #4b544e;
+  border-radius: 6px;
+  background: #151a17;
+  color: #aeb8b1;
+  font-family: var(--font);
+  font-size: 0.85rem;
+}
+
+.post-continue:hover {
+  border-color: #e8bd6a;
+  color: #fff;
+}
+
+.post-bar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #1d231f;
+}
+
+.post-bar span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: #e8bd6a;
+  transform-origin: left;
+  animation: post-count linear forwards;
+}
+
+@keyframes post-count {
+  from {
+    transform: scaleX(1);
+  }
+
+  to {
+    transform: scaleX(0);
+  }
+}
+
+/* ---------- BIOS ---------- */
+.bios-wrap {
+  position: absolute;
+  inset: 0;
+  background: #0b1c6b;
+}
+
+.bios {
+  position: absolute;
+  inset: 0 0 52px;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+  background: #0b1c6b;
+  color: #0b1c6b;
+  font-family: var(--font-mono);
+  font-size: clamp(0.72rem, 1.6cqi, 0.95rem);
+  outline: none;
+}
+
+.bios:focus-visible {
+  box-shadow: inset 0 0 0 3px var(--gold);
+}
+
+.bios-title {
+  padding: 4px;
+  background: #0b1c6b;
+  color: #e9ecf6;
+  text-align: center;
+  letter-spacing: 0.1em;
+}
+
+.bios-tabs {
+  display: flex;
+  gap: 2px;
+  padding: 0 10px;
+  background: #0b1c6b;
+}
+
+.bios-tabs button {
+  padding: 2px 12px;
+  border: 0;
+  background: transparent;
+  color: #b9c3e6;
+  font: inherit;
+}
+
+.bios-tabs button.on {
+  background: #c9c9c9;
+  color: #0b1c6b;
+}
+
+.bios-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 34%);
+  gap: 0;
+  margin: 0 10px;
+  border: 2px solid #9aa0b0;
+  background: #c9c9c9;
+  min-height: 0;
+}
+
+.bios-main {
+  min-width: 0;
+  overflow: auto;
+  padding: 10px 12px;
+}
+
+.bios-sub {
+  margin-bottom: 8px;
+  color: #0b1c6b;
+  font-weight: 600;
+}
+
+.bios-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bios-rows li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 2px 6px;
+  color: #0b1c6b;
+  cursor: pointer;
+}
+
+.bios-rows li.on {
+  background: #0b1c6b;
+  color: #fff;
+}
+
+.bios-value {
+  color: #0f5132;
+  white-space: nowrap;
+}
+
+.bios-rows li.on .bios-value {
+  color: #fff;
+}
+
+.bios .fact {
+  padding: 0 0 0 2px;
+}
+
+.bios .fact.is-pinned {
+  background: #f5e6b8;
+  color: #0b1c6b;
+}
+
+.bios .fact-pin {
+  width: 20px;
+  height: 20px;
+}
+
+.bios-help {
+  padding: 10px 12px;
+  border-left: 2px solid #9aa0b0;
+  color: #0b1c6b;
+  font-size: 0.9em;
+}
+
+.bios-help p {
+  min-height: 3.2em;
+  font-family: var(--font);
+}
+
+.bios-help dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 2px 8px;
+  margin: 0;
+}
+
+.bios-help dt {
+  font-weight: 600;
+}
+
+.bios-help dd {
+  margin: 0;
+}
+
+.bios-foot {
+  padding: 4px;
+  color: #b9c3e6;
+  text-align: center;
+  font-size: 0.85em;
+}
+
+.bios-popup,
+.bios-dialog {
+  position: absolute;
+  left: 50%;
+  top: 45%;
+  transform: translate(-50%, -50%);
+  min-width: min(360px, 80%);
+  padding: 10px;
+  border: 2px solid #e9ecf6;
+  background: #0b1c6b;
+  color: #e9ecf6;
+  box-shadow: 8px 8px 0 rgb(0 0 0 / 45%);
+}
+
+.bios-popup-title {
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.bios-popup button {
+  display: block;
+  width: 100%;
+  padding: 2px 8px;
+  border: 0;
+  background: transparent;
+  color: #e9ecf6;
+  font: inherit;
+  text-align: left;
+}
+
+.bios-popup button.on {
+  background: #e9ecf6;
+  color: #0b1c6b;
+}
+
+.bios-dialog {
+  background: #c9c9c9;
+  color: #0b1c6b;
+  text-align: center;
+}
+
+.bios-dialog p {
+  margin: 8px 0 12px;
+}
+
+.bios-dialog div {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+}
+
+.bios-dialog button {
+  padding: 2px 8px;
+  border: 0;
+  background: transparent;
+  color: #0b1c6b;
+  font: inherit;
+}
+
+.bios-dialog button.on {
+  background: #0b1c6b;
+  color: #fff;
+}
+
+/* ---------- boot menu ---------- */
+.bootmenu-wrap {
+  position: absolute;
+  inset: 0;
+  background: #0d0f10;
+}
+
+.bootmenu {
+  position: absolute;
+  inset: 0 0 52px;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  font-family: var(--font-mono);
+  outline: none;
+}
+
+.bootmenu-box {
+  width: min(560px, 100%);
+  padding: 12px;
+  border: 2px solid #3aa7a3;
+  background: #146c69;
+  color: #e7f3f2;
+  font-size: clamp(0.72rem, 1.7cqi, 0.95rem);
+}
+
+.bootmenu-title {
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.bootmenu-box button {
+  display: block;
+  width: 100%;
+  padding: 2px 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+.bootmenu-box button.on {
+  background: #e7f3f2;
+  color: #146c69;
+}
+
+.bootmenu-help {
+  margin-top: 10px;
+  text-align: center;
+  opacity: 0.85;
+}
+
+@container screen (max-width: 560px) {
+  .bios-body {
+    grid-template-columns: 1fr;
+  }
+
+  .bios-help {
+    display: none;
+  }
+}
