@@ -33,6 +33,22 @@
 
 ## บันทึกงาน
 
+### 2026-09-30 — Claude: ย้ายงาน simulator ไปที่ branch แล้วเปิด PR #1 (merge แล้ว)
+- ผู้ใช้กด Create PR แต่งานอยู่บน `main` แล้ว จึงเปิด PR จาก `main` เข้า `main` ไม่ได้
+  - สาเหตุ: รอบที่แล้ว Claude push เข้า `main` ตรง ๆ โดยไม่ได้แตก branch ก่อน
+- **ข้อสรุปจากผู้ใช้:** เลือก "ย้ายไป branch ใหม่" จากตัวเลือกที่ Claude เสนอ ซึ่งยอมให้ force push `main` กลับไปที่ commit แรก
+- **ทำแล้ว:**
+  - สร้าง branch `simulator-realism` จาก `236ba7d` และ push ขึ้น GitHub
+  - force push ให้ `main` บน GitHub ถอยกลับไปที่ `2e7de38` และย้าย `main` ในเครื่องตาม
+  - เปิด PR https://github.com/WhiteR3d1/CAI_Final/pull/1 จาก `simulator-realism` เข้า `main` (check ผ่าน)
+- **ผู้ใช้ merge PR #1 แล้ว** เมื่อ 30 ก.ย. 2026 เวลา 15:25 (merge commit `32e794e`) งาน simulator จึงอยู่บน `main` แล้ว
+- บันทึกนี้ push เข้า branch หลังจาก PR #1 merge ไปแล้ว จึงเปิด PR ใหม่จาก `simulator-realism` เพื่อเอาบันทึกเข้า `main`
+- **ตอนนี้โฟลเดอร์งานยังอยู่บน branch `simulator-realism`**
+  - โค้ดเหมือน `main` ทุกอย่าง ต่างกันแค่ HANDOFF.md
+  - หลังจาก PR ของบันทึกนี้ merge แล้ว ให้ `git switch main` แล้ว `git pull`
+- บันทึกด้านล่างบอกว่า push ขึ้น `origin/main` แต่งานนั้นเข้า `main` ผ่าน PR #1 แทน
+- **ข้อเสนอของ Claude:** งานรอบหน้าให้แตก branch ก่อน commit จะได้เปิด PR ได้โดยไม่ต้องเขียนประวัติของ `main` ใหม่
+
 ### 2026-09-30 — Claude: commit และ push งาน simulator ขึ้น GitHub
 - ผู้ใช้สั่ง "commit แล้ว push ขึ้น GitHub ด้วย"
 - ก่อน commit ตรวจแล้ว:
