@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
 import { Icon, type IconName } from '../../components/Icon'
 import './desktop.css'
 
@@ -45,6 +45,8 @@ export function Desktop({ apps, icons, startMenu, winxMenu, volume, initialOpen 
   const [menu, setMenu] = useState<Menu>(null)
   const [toast, setToast] = useState<{ id: number; text: string } | null>(null)
   const [query, setQuery] = useState('')
+  const [selectedIcon, setSelectedIcon] = useState<string | null>(null)
+  const touchRef = useRef(false)
 
   useEffect(() => {
     if (!toast) return
@@ -82,7 +84,17 @@ export function Desktop({ apps, icons, startMenu, winxMenu, volume, initialOpen 
     <div className={`dt dt-${wallpaper}`} onMouseDown={e => e.target === e.currentTarget && setMenu(null)}>
       <div className="dt-icons">
         {icons.map(ic => (
-          <button key={ic.app} type="button" className="dt-icon" onClick={() => ctl.open(ic.app)}>
+          // like Windows: click selects, double-click (or Enter) opens; a tap on a touch screen opens directly
+          <button
+            key={ic.app}
+            type="button"
+            className={`dt-icon${selectedIcon === ic.app ? ' on' : ''}`}
+            title="ดับเบิลคลิกเพื่อเปิด"
+            onPointerDown={e => (touchRef.current = e.pointerType === 'touch')}
+            onClick={() => (touchRef.current ? ctl.open(ic.app) : setSelectedIcon(ic.app))}
+            onDoubleClick={() => ctl.open(ic.app)}
+            onKeyDown={e => e.key === 'Enter' && ctl.open(ic.app)}
+          >
             <span className="dt-icon-img">
               <Icon name={ic.icon} size={30} />
             </span>

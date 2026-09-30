@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
+import { useEffect, useRef, useState, type KeyboardEvent, type MouseEvent as ReactMouseEvent } from 'react'
 import { Fact } from '../../screens/workbench/Fact'
 import { KeyPad } from './Monitor'
 
@@ -49,6 +49,7 @@ export function BiosSetup({ mode, variant = 'uefi', info, drives, onDrivesChange
   const [view, setView] = useState<BiosView>('tab')
   const [popup, setPopup] = useState<{ slot: number; index: number } | null>(null)
   const [dialog, setDialog] = useState<{ kind: 'save' | 'exit'; ok: boolean } | null>(null)
+  const [mouseTip, setMouseTip] = useState(false)
 
   useEffect(() => {
     ref.current?.focus({ preventScroll: true })
@@ -184,29 +185,26 @@ export function BiosSetup({ mode, variant = 'uefi', info, drives, onDrivesChange
 
   const title = view === 'hdd' ? 'Hard Disk Drives' : view === 'priority' ? 'Boot Device Priority' : null
 
+  // A real BIOS only listens to the keyboard: a click just focuses the screen (and explains once).
+  const onMouseDown = (e: ReactMouseEvent) => {
+    if ((e.target as HTMLElement).closest('.fact-pin')) return
+    e.preventDefault()
+    ref.current?.focus({ preventScroll: true })
+    if (!mouseTip) {
+      setMouseTip(true)
+      onNote('หน้า BIOS ใช้เมาส์ไม่ได้เหมือนเครื่องจริง ใช้ปุ่มลูกศร Enter Esc และ F10 บนคีย์บอร์ด หรือกดปุ่มบนจอด้านล่าง')
+    }
+  }
+
   return (
     <div className="bios-wrap">
-      <div ref={ref} className="bios" tabIndex={0} role="application" aria-label="BIOS Setup Utility ใช้ลูกศร Enter Esc และ F10" onKeyDown={onKeyDown}>
+      <div ref={ref} className="bios" tabIndex={0} role="application" aria-label="BIOS Setup Utility ใช้ลูกศร Enter Esc และ F10" onKeyDown={onKeyDown} onMouseDown={onMouseDown}>
         <div className="bios-title">BIOS SETUP UTILITY</div>
         <div className="bios-tabs" role="tablist">
           {tabs.map((t, i) => (
-            <button
-              key={t}
-              type="button"
-              role="tab"
-              tabIndex={-1}
-              aria-selected={tab === i}
-              className={tab === i ? 'on' : undefined}
-              onClick={() => {
-                setTab(i)
-                setView('tab')
-                setCursor(0)
-                setPopup(null)
-                ref.current?.focus({ preventScroll: true })
-              }}
-            >
+            <span key={t} role="tab" aria-selected={tab === i} className={tab === i ? 'on' : undefined}>
               {t}
-            </button>
+            </span>
           ))}
         </div>
         <div className="bios-body">
@@ -217,12 +215,6 @@ export function BiosSetup({ mode, variant = 'uefi', info, drives, onDrivesChange
                 <li
                   key={r.label}
                   className={i === safeCursor ? 'on' : undefined}
-                  onClick={e => {
-                    if ((e.target as HTMLElement).closest('.fact-pin')) return
-                    setCursor(i)
-                    r.action?.()
-                    ref.current?.focus({ preventScroll: true })
-                  }}
                 >
                   <span className="bios-label">{r.label}</span>
                   {r.value !== undefined && <span className="bios-value">{r.fact ? <Fact id={r.fact}>[{r.value}]</Fact> : `[${r.value}]`}</span>}
@@ -252,40 +244,20 @@ export function BiosSetup({ mode, variant = 'uefi', info, drives, onDrivesChange
           <div className="bios-popup" role="listbox" aria-label="เลือกอุปกรณ์">
             <div className="bios-popup-title">Options</div>
             {popupOptions.map((o, i) => (
-              <button
-                key={o}
-                type="button"
-                tabIndex={-1}
-                role="option"
-                aria-selected={popup.index === i}
-                className={popup.index === i ? 'on' : undefined}
-                onClick={() => {
-                  choosePopup(i)
-                  ref.current?.focus({ preventScroll: true })
-                }}
-              >
+              <div key={o} role="option" aria-selected={popup.index === i} className={popup.index === i ? 'on' : undefined}>
                 {o}
-              </button>
+              </div>
             ))}
           </div>
         )}
         {dialog && (
           <div className="bios-dialog" role="alertdialog" aria-label={dialog.kind === 'save' ? 'บันทึกและออก' : 'ออกโดยไม่บันทึก'}>
-            <p>{dialog.kind === 'save' ? 'Save configuration changes and exit now?' : 'Quit without saving?'}</p>
+            <p>{dialog.kind === 'save' ? 'Save configuration changes and exit now?' : 'Discard changes and exit setup now?'}</p>
             <div>
               {[true, false].map(ok => (
-                <button
-                  key={String(ok)}
-                  type="button"
-                  tabIndex={-1}
-                  className={dialog.ok === ok ? 'on' : undefined}
-                  onClick={() => {
-                    confirmDialog(ok)
-                    ref.current?.focus({ preventScroll: true })
-                  }}
-                >
+                <span key={String(ok)} className={dialog.ok === ok ? 'on' : undefined}>
                   [{ok ? 'Ok' : 'Cancel'}]
-                </button>
+                </span>
               ))}
             </div>
           </div>

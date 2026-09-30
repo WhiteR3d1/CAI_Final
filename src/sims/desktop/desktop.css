@@ -51,6 +51,11 @@
   background: rgb(255 255 255 / 18%);
 }
 
+.dt-icon.on {
+  border-color: rgb(255 255 255 / 60%);
+  background: rgb(120 180 255 / 35%);
+}
+
 .dt-icon-img {
   display: grid;
   place-items: center;
@@ -938,6 +943,24 @@
   align-items: center;
   gap: 12px;
   color: #8a5a00;
+}
+
+.w-update-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.w-update-list li {
+  display: grid;
+  gap: 1px;
+  font-size: 12.5px;
+}
+
+.w-update-list small {
+  color: #555;
 }
 
 @container screen (max-width: 640px) {

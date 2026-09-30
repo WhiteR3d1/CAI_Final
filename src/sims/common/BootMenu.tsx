@@ -7,7 +7,7 @@ interface Props {
   onEscape: () => void
 }
 
-/** One-time boot menu (F12). */
+/** One-time boot menu (F12). Keyboard only, like the real firmware menu. */
 export function BootMenu({ items, onSelect, onEscape }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const [index, setIndex] = useState(0)
@@ -31,6 +31,10 @@ export function BootMenu({ items, onSelect, onEscape }: Props) {
         tabIndex={0}
         role="listbox"
         aria-label="Please select boot device"
+        onMouseDown={e => {
+          e.preventDefault()
+          ref.current?.focus({ preventScroll: true })
+        }}
         onKeyDown={e => {
           if (['ArrowUp', 'ArrowDown', 'Enter', 'Escape'].includes(e.key)) {
             e.preventDefault()
@@ -41,20 +45,9 @@ export function BootMenu({ items, onSelect, onEscape }: Props) {
         <div className="bootmenu-box">
           <div className="bootmenu-title">Please select boot device:</div>
           {items.map((item, i) => (
-            <button
-              key={item.value}
-              type="button"
-              tabIndex={-1}
-              role="option"
-              aria-selected={i === index}
-              className={i === index ? 'on' : undefined}
-              onClick={() => {
-                setIndex(i)
-                onSelect(item.value)
-              }}
-            >
+            <div key={item.value} role="option" aria-selected={i === index} className={`bootmenu-item${i === index ? ' on' : ''}`}>
               {item.label}
-            </button>
+            </div>
           ))}
           <div className="bootmenu-help">
             ↑ and ↓ to move selection
@@ -65,7 +58,13 @@ export function BootMenu({ items, onSelect, onEscape }: Props) {
           </div>
         </div>
       </div>
-      <KeyPad keys={['ArrowUp', 'ArrowDown', 'Enter', 'Escape']} onKey={press} />
+      <KeyPad
+        keys={['ArrowUp', 'ArrowDown', 'Enter', 'Escape']}
+        onKey={k => {
+          press(k)
+          ref.current?.focus({ preventScroll: true })
+        }}
+      />
     </div>
   )
 }

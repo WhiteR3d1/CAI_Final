@@ -1,18 +1,51 @@
-import { useState } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { useRun } from '../../screens/workbench/runContext'
 import { BiosSetup, type BiosInfoRow } from '../common/BiosSetup'
 import { BootMenu } from '../common/BootMenu'
 import { BenchBar, Monitor } from '../common/Monitor'
 import { PostScreen } from '../common/PostScreen'
-import { Desktop, RestartScreen, type DesktopApp } from '../desktop/Desktop'
+import { Desktop, type DesktopApp } from '../desktop/Desktop'
 import { FileExplorer, type FsNode } from '../desktop/FileExplorer'
 import { ActivationPage, SettingsApp, UpdatePage, type UpdateState } from '../desktop/SettingsApp'
-import { SCHEME_LABEL, type Part, type RufusConfig, type RufusDevice } from '../windows/media'
+import { SCHEME_LABEL, UPDATE_MS, type Part, type RufusConfig, type RufusDevice } from '../windows/media'
 import { Oobe } from '../windows/Oobe'
 import { Rufus } from '../windows/Rufus'
+import { SignIn, WorkingOnUpdates } from '../windows/WindowsBoot'
 import { WinSetup } from '../windows/WinSetup'
 import './reinstall.css'
+
+const COPY_MS = 8000
+
+/** Windows' copy progress dialog, sped up (a real copy of 1.21 TB takes hours). */
+function CopyDialog({ onDone }: { onDone: () => void }) {
+  const [percent, setPercent] = useState(0)
+  const done = useEffectEvent(() => onDone())
+  useEffect(() => {
+    const started = Date.now()
+    const t = window.setInterval(() => {
+      const p = Math.min(100, Math.floor(((Date.now() - started) / COPY_MS) * 100))
+      setPercent(p)
+      if (p >= 100) {
+        window.clearInterval(t)
+        done()
+      }
+    }, 150)
+    return () => window.clearInterval(t)
+  }, [])
+  const hours = Math.max(0, 3 - (percent / 100) * 3)
+  return (
+    <div className="copy-dialog" role="status">
+      <strong>Copying 12,480 items from PHOTOS (D:) to SHOP-BACKUP (E:)</strong>
+      <small>{percent}% complete</small>
+      <div className="copy-bar">
+        <span style={{ transform: `scaleX(${percent / 100})` }} />
+      </div>
+      <small>Speed: 118 MB/s · Time remaining: About {hours >= 1 ? `${Math.ceil(hours)} hours` : `${Math.ceil(hours * 60)} minutes`}</small>
+      <small className="muted">(เกมเร่งเวลาให้ ของจริงใช้เวลาหลายชั่วโมง)</small>
+    </div>
+  )
+}
 
 type Stage = 'backup' | 'rufus' | 'bios' | 'setup' | 'oobe' | 'verify'
 type BiosScreen = 'post' | 'setup' | 'bootmenu' | 'oldwin'
@@ -20,8 +53,8 @@ type BiosScreen = 'post' | 'setup' | 'bootmenu' | 'oldwin'
 const HDD = 'SATA: WDC WD40EZRZ (4TB)'
 const USB = 'USB: KINGSTON DT (16GB)'
 const DEVICES: RufusDevice[] = [
-  { id: 'E', label: 'SHOP-BACKUP (E:) [2 TB]' },
-  { id: 'F', label: 'KINGSTON (F:) [16 GB]' },
+  { id: 'E', label: 'SHOP-BACKUP (E:) [2TB]' },
+  { id: 'F', label: 'KINGSTON (F:) [16GB]' },
 ]
 const CUSTOMER_DISK: Part[] = [
   { id: 'p1', label: 'Drive 0 Partition 1: System', size: 0.1, free: 0.071, type: 'System', kind: 'sys' },
@@ -54,9 +87,10 @@ export function ReinstallSim() {
   const [order, setOrder] = useState([HDD, USB])
   const [saved, setSaved] = useState([HDD, USB])
   const [setupRound, setSetupRound] = useState(0)
-  const [update, setUpdate] = useState<UpdateState>('idle')
-  const [restarting, setRestarting] = useState(false)
+  const [update, setUpdate] = useState<{ state: UpdateState; startedAt: number | null }>({ state: 'idle', startedAt: null })
+  const [verifyPhase, setVerifyPhase] = useState<'desktop' | 'updating' | 'signin'>('desktop')
   const [desktopRound, setDesktopRound] = useState(0)
+  const [account, setAccount] = useState({ user: 'Keng', password: '' })
 
   const go = (next: Stage) => {
     setStageLocal(next)
@@ -67,13 +101,13 @@ export function ReinstallSim() {
   const startCopy = () => {
     if (copying || backedUp) return
     setCopying(true)
-    window.setTimeout(() => {
-      setCopying(false)
-      setBackedUp(true)
-      run.log('สำรองโฟลเดอร์งานลูกค้า 12,480 ไฟล์จาก D: ไปไว้ใน SHOP-BACKUP (E:) ก่อนเริ่ม')
-      run.say('good', 'สำรองข้อมูลเสร็จ ต่อให้พลาดตอนติดตั้ง งานของลูกค้าก็ยังปลอดภัย')
-      run.play('success')
-    }, 3200)
+  }
+  const copyDone = () => {
+    setCopying(false)
+    setBackedUp(true)
+    run.log('สำรองโฟลเดอร์งานลูกค้า 12,480 ไฟล์จาก D: ไปไว้ใน SHOP-BACKUP (E:) ก่อนเริ่ม')
+    run.say('good', 'สำรองข้อมูลเสร็จ ต่อให้พลาดตอนติดตั้ง งานของลูกค้าก็ยังปลอดภัย')
+    run.play('success')
   }
 
   const leaveBackup = () => {
@@ -169,7 +203,14 @@ export function ReinstallSim() {
       })
       return false
     }
-    if (config.iso.kind !== 'windows') {
+    if (config.boot !== 'iso') {
+      run.mistake('rufus-not-bootable', {
+        lead: config.boot === 'freedos' ? 'เลือก FreeDOS ไว้ แฟลชไดรฟ์จะบูตเข้า DOS ไม่ใช่ตัวติดตั้ง Windows' : 'ไม่ได้ติ๊ก Create a bootable disk using ไว้ Rufus จะแค่ฟอร์แมตแฟลชไดรฟ์ให้ว่าง',
+        actions: [{ label: 'ตั้งค่าใหม่', variant: 'primary' }],
+      })
+      return false
+    }
+    if (config.iso?.kind !== 'windows') {
       run.mistake('rufus-wrong-iso', { actions: [{ label: 'เลือกไฟล์ใหม่', variant: 'primary' }] })
       return false
     }
@@ -226,18 +267,24 @@ export function ReinstallSim() {
   }
 
   const checkUpdates = () => {
-    setUpdate('checking')
-    window.setTimeout(() => setUpdate(u => (u === 'checking' ? 'restart' : u)), 1800)
+    setUpdate({ state: 'working', startedAt: Date.now() })
+    window.setTimeout(() => setUpdate(u => (u.state === 'working' ? { state: 'restart', startedAt: u.startedAt } : u)), UPDATE_MS)
   }
   const restartForUpdate = () => {
-    setRestarting(true)
-    window.setTimeout(() => {
-      setUpdate('done')
-      setRestarting(false)
-      setDesktopRound(r => r + 1)
+    setVerifyPhase('updating')
+    run.log('กด Restart now เพื่อให้การอัปเดตเสร็จสมบูรณ์')
+  }
+  const afterSignIn = () => {
+    setUpdate({ state: 'done', startedAt: null })
+    setDesktopRound(r => r + 1)
+    setVerifyPhase('desktop')
+    run.say('info', 'เข้าเครื่องได้แล้ว เปิด Windows Update อีกครั้งเพื่อตรวจว่าเป็นเวอร์ชันล่าสุด')
+  }
+  const onOpenApp = (id: string) => {
+    if (id === 'settings' && update.state === 'done' && !run.hasCheck('check-update')) {
       run.check('check-update')
-      run.log('ค้นหา Windows Update กด Check for updates แล้ว Restart จนเป็นเวอร์ชันล่าสุด (ขั้นที่ 17)')
-    }, 2400)
+      run.log("รีสตาร์ตแล้วเปิด Windows Update อีกครั้ง ขึ้น You're up to date (ขั้นที่ 17)")
+    }
   }
 
   const verifyApps: DesktopApp[] = [
@@ -271,7 +318,12 @@ export function ReinstallSim() {
           initial="update"
           onPage={id => id === 'activation' && run.check('check-activation')}
           pages={[
-            { id: 'update', label: 'Windows Update', icon: 'refresh', render: () => <UpdatePage state={update} onCheck={checkUpdates} onRestart={restartForUpdate} /> },
+            {
+              id: 'update',
+              label: 'Windows Update',
+              icon: 'refresh',
+              render: () => <UpdatePage state={update.state} startedAt={update.startedAt} arch="x64" onCheck={checkUpdates} onRestart={restartForUpdate} />,
+            },
             { id: 'activation', label: 'Activation', icon: 'check', render: () => <ActivationPage activated edition="Windows 10 Home" /> },
           ]}
         />
@@ -292,16 +344,7 @@ export function ReinstallSim() {
               winxMenu={[{ label: 'File Explorer', app: 'explorer' }, { label: 'Settings' }, { label: 'Device Manager' }, { label: 'Run' }]}
               initialOpen={['adware', 'explorer']}
             >
-              {copying && (
-                <div className="copy-dialog" role="status">
-                  <strong>กำลังคัดลอก 12,480 รายการ</strong>
-                  <small>จาก PHOTOS (D:) ไป SHOP-BACKUP (E:)</small>
-                  <div className="copy-bar">
-                    <span />
-                  </div>
-                  <small className="muted">จำลอง: ของจริงใช้เวลาหลายชั่วโมง</small>
-                </div>
-              )}
+              {copying && <CopyDialog onDone={copyDone} />}
             </Desktop>
           </Monitor>
           <BenchBar>
@@ -321,7 +364,7 @@ export function ReinstallSim() {
             </div>
           </Monitor>
           <BenchBar>
-            <p>{usb ? 'แฟลชไดรฟ์พร้อมแล้ว' : 'ตั้งค่าใน Rufus ให้ครบแล้วกด START'}</p>
+            <p>{usb ? 'แฟลชไดรฟ์พร้อมแล้ว' : 'ตั้งค่าใน Rufus ให้ครบแล้วกด Start'}</p>
             <button
               type="button"
               className="btn btn-primary btn-sm"
@@ -365,12 +408,12 @@ export function ReinstallSim() {
                 onSaveExit={() => {
                   setSaved(order)
                   if (order[0] === USB) run.log('ตั้ง BIOS: Boot → Hard Disk Drives → 1st Drive = USB แล้วกด F10 บันทึกและออก')
-                  bootBy(order)
+                  restart()
                 }}
                 onDiscardExit={() => {
                   if (order[0] !== saved[0]) run.mistake('bios-no-save')
                   setOrder(saved)
-                  bootBy(saved)
+                  restart()
                 }}
                 onNote={t => run.say('info', t)}
               />
@@ -423,8 +466,26 @@ export function ReinstallSim() {
             key={setupRound}
             disk="existing"
             parts={CUSTOMER_DISK}
+            bootMode={usb?.scheme === 'mbr-bios' ? 'legacy' : 'uefi'}
+            diskStyle="gpt"
             editions={EDITIONS}
-            keyHint="(คีย์นี้ใช้กับเครื่องนี้ไม่ได้ — เครื่องเคยเปิดใช้งานแล้ว ลองอ่านข้อความด้านบนอีกครั้ง)"
+            onKeyRejected={() => run.say('info', 'เครื่องนี้เคยเปิดใช้งานแล้ว อ่านข้อความบนจออีกครั้ง: ถ้าติดตั้งใหม่ให้กด I don\'t have a product key')}
+            onBlocked={(_, reason) => {
+              if (reason !== 'gpt') return
+              run.mistake('rufus-mbr', {
+                actions: [
+                  {
+                    label: 'กลับไปทำ USB ใหม่ด้วย GPT',
+                    variant: 'primary',
+                    onClick: () => {
+                      setUsb(null)
+                      setRufusRound(r => r + 1)
+                      go('rufus')
+                    },
+                  },
+                ],
+              })
+            }}
             onArch={(arch, proceed) => {
               if (arch === 32) {
                 run.mistake('setup-32bit', { actions: [{ label: 'เลือกใหม่', variant: 'primary' }] })
@@ -442,13 +503,7 @@ export function ReinstallSim() {
               run.log('ไม่ใส่ Product Key (เครื่องเคยเปิดใช้งานแล้ว) และเลือกรุ่น Windows 10 Home ให้ตรงลิขสิทธิ์เดิม')
               return true
             }}
-            onUpgrade={() =>
-              run.mistake('setup-upgrade', {
-                modal: true,
-                lead: "ตัวติดตั้งแจ้งว่า: The upgrade option isn't available if you start your computer using Windows installation media.",
-                actions: [{ label: 'เลือกใหม่', variant: 'primary' }],
-              })
-            }
+            onUpgrade={() => run.mistake('setup-upgrade', { lead: 'หน้า Compatibility report บอกว่า Upgrade ใช้ไม่ได้เมื่อบูตจากแฟลชไดรฟ์ กด Close แล้วเลือก Custom' })}
             onDestroy={(part, mode, undo) => {
               if (part.kind === 'data') {
                 run.mistake('setup-wipe-photos', {
@@ -462,34 +517,6 @@ export function ReinstallSim() {
               }
             }}
             onTarget={part => {
-              if (usb?.scheme === 'mbr-bios') {
-                run.alert({
-                  tone: 'bad',
-                  title: 'Windows cannot be installed to this disk',
-                  text: 'The selected disk is of the GPT partition style. — USB ที่ทำแบบ MBR for BIOS or UEFI บูตเครื่องนี้แบบเดิม (BIOS) จึงติดตั้งลงดิสก์ GPT ขนาด 4 TB ไม่ได้',
-                  actions: [
-                    {
-                      label: 'ดูว่าพลาดตรงไหน',
-                      variant: 'primary',
-                      onClick: () =>
-                        run.mistake('rufus-mbr', {
-                          actions: [
-                            {
-                              label: 'กลับไปทำ USB ใหม่ด้วย GPT',
-                              variant: 'primary',
-                              onClick: () => {
-                                setUsb(null)
-                                setRufusRound(r => r + 1)
-                                go('rufus')
-                              },
-                            },
-                          ],
-                        }),
-                    },
-                  ],
-                })
-                return false
-              }
               if (part.kind === 'data') {
                 run.mistake('setup-wrong-target', { actions: [{ label: 'เลือกพาร์ทิชันใหม่', variant: 'primary' }] })
                 return false
@@ -517,9 +544,14 @@ export function ReinstallSim() {
             onRegion={r => r !== 'Thailand' && run.say('info', `คุณเก่งอยู่ประเทศไทย ภูมิภาคที่เหมาะคือ Thailand (เลือก ${r} ก็ใช้งานได้ แต่รูปแบบวันที่และเวลาจะไม่ตรง)`)}
             onAccount={(kind, next, back) => {
               if (kind === 'microsoft') {
-                run.say('info', 'งานนี้สร้างบัญชีในเครื่องให้คุณเก่งก่อนก็พอ ใช้ลิงก์ Offline account มุมซ้ายล่าง')
+                run.say('info', 'งานนี้สร้างบัญชีในเครื่องให้คุณเก่งก่อนก็พอ ใช้ลิงก์ Offline account มุมซ้ายล่าง แล้วเลือก Limited experience')
                 back()
               } else next()
+            }}
+            onName={user => setAccount(a => ({ ...a, user }))}
+            onPassword={password => {
+              setAccount(a => ({ ...a, password }))
+              return true
             }}
             onDone={() => {
               run.log('ตั้งค่าเริ่มต้น: ภูมิภาค แป้นพิมพ์ บัญชีผู้ใช้ และความเป็นส่วนตัว (ขั้นที่ 10–16)')
@@ -532,8 +564,15 @@ export function ReinstallSim() {
       {stage === 'verify' && (
         <>
           <Monitor label="เครื่องลูกค้า · Windows 10 ติดตั้งใหม่">
-            {restarting ? (
-              <RestartScreen label="Working on updates · Don't turn off your computer" />
+            {verifyPhase === 'updating' ? (
+              <WorkingOnUpdates onDone={() => setVerifyPhase('signin')} />
+            ) : verifyPhase === 'signin' ? (
+              <SignIn
+                user={account.user}
+                password={account.password}
+                onWrong={() => run.say('warn', 'รหัสผ่านไม่ถูก ใช้รหัสผ่านที่ตั้งไว้ตอนสร้างบัญชีให้คุณเก่ง')}
+                onDone={afterSignIn}
+              />
             ) : (
               <Desktop
                 key={desktopRound}
@@ -555,13 +594,19 @@ export function ReinstallSim() {
                   { label: 'Run' },
                 ]}
                 search={q => (q.includes('update') || q.includes('อัปเดต') || q.includes('setting') ? 'settings' : q.includes('explorer') || q.includes('this pc') ? 'explorer' : null)}
-                initialOpen={update === 'done' ? ['settings'] : []}
+                onOpenApp={onOpenApp}
               />
             )}
           </Monitor>
           <BenchBar>
-            <p>ก่อนส่งคืน ตรวจว่างานลูกค้ายังอยู่ และ Windows อัปเดตแล้ว (ขั้นที่ 17)</p>
-            <button type="button" className="btn btn-primary btn-sm" disabled={restarting} onClick={run.complete}>
+            <p>
+              {verifyPhase === 'signin'
+                ? 'เครื่องรีสตาร์ตแล้ว คลิกหน้าจอล็อก แล้วใส่รหัสผ่านที่ตั้งไว้'
+                : update.state === 'done' && !run.hasCheck('check-update')
+                  ? 'เปิด Windows Update อีกครั้งเพื่อตรวจผลหลังรีสตาร์ต'
+                  : 'ก่อนส่งคืน ตรวจว่างานลูกค้ายังอยู่ และ Windows อัปเดตแล้ว (ขั้นที่ 17)'}
+            </p>
+            <button type="button" className="btn btn-primary btn-sm" disabled={verifyPhase !== 'desktop'} onClick={run.complete}>
               ส่งงาน <Icon name="arrowRight" size={16} />
             </button>
           </BenchBar>

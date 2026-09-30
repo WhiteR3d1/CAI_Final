@@ -76,7 +76,7 @@ export const installNewJob: JobDef = {
         items: [
           '**Language to install** ภาษาที่ติดตั้ง · **Time and currency format** รูปแบบเวลาและเงิน · **Keyboard or input method** ภาษาของแป้นพิมพ์ แล้วกด Next',
           'กด **Install now** เพื่อเริ่มติดตั้ง',
-          'หน้า Activate Windows ใส่ **Product Key** หรือ CD Key (รหัสลิขสิทธิ์ 25 ตัว) แล้วกด Next',
+          'หน้า Activate Windows ใส่ **Product Key** หรือ CD Key (รหัสลิขสิทธิ์ 25 ตัว พิมพ์แค่ตัวอักษรและตัวเลข ขีดจะขึ้นเอง) แล้วกด Next',
           'ติ๊ก **I accept the license terms** (ยอมรับข้อตกลงการใช้งาน) แล้วกด Next',
           'เลือก **Custom: Install Windows only (advanced)**',
         ],
@@ -86,7 +86,7 @@ export const installNewJob: JobDef = {
         title: 'ขั้นที่ 8–9',
         items: [
           'เลือกไดรฟ์ที่จะติดตั้ง ถ้าเป็น**ฮาร์ดดิสก์ใหม่ ให้สร้าง Partition ก่อน** (Partition = ส่วนแบ่งของฮาร์ดดิสก์) ด้วยปุ่ม New แล้วกด Next',
-          'ระหว่างติดตั้งให้รอจนเสร็จ เครื่องจะ **Restart เอง** ช่วงนี้ไม่ต้องทำอะไร',
+          'ระหว่างติดตั้งให้รอจนเสร็จ ตัวติดตั้งจะขึ้น Windows needs to restart แล้ว **Restart เอง** ต่อด้วย Getting devices ready และ Getting ready ช่วงนี้ไม่ต้องทำอะไร',
         ],
       },
       {
@@ -101,6 +101,12 @@ export const installNewJob: JobDef = {
         kind: 'note',
         tone: 'extra',
         text: 'ตอนสร้างพาร์ทิชันบนดิสก์ใหม่ Windows จะสร้างพาร์ทิชันเล็ก ๆ ชื่อ System Reserved เพิ่มให้อัตโนมัติ เป็นพาร์ทิชันสำหรับไฟล์บูต ไม่ต้องลบ และติดตั้งลงไม่ได้',
+      },
+      {
+        kind: 'note',
+        tone: 'extra',
+        title: 'สิ่งที่เครื่องจริงทำ',
+        text: 'หน้า Windows Boot Manager ใช้ได้แค่ปุ่มลูกศรกับ Enter และถ้าไม่เลือกภายใน 30 วินาที เครื่องจะเริ่มตัวที่ไฮไลต์ไว้เอง ถ้าเลือกพาร์ทิชันที่ติดตั้งไม่ได้ จะขึ้น "Windows can\'t be installed on …" ให้กด Show details ดูสาเหตุ',
       },
     ],
     refs: ['ใบเนื้อหา หน้า 6–11 ขั้นตอนการติดตั้ง Windows 10 ด้วย USB Drive ขั้นที่ 1–9'],
@@ -134,14 +140,14 @@ export const installNewJob: JobDef = {
     { id: 'wait', label: 'รอให้เครื่องรีสตาร์ต (ขั้นที่ 9)' },
   ],
   hints: {
-    boot: ['กดปุ่ม "เปิดเครื่อง" แล้วปล่อยให้เครื่องบูตต่อ BIOS ตั้งให้ USB มาก่อนแล้วจากงาน 02', 'หรือกด F12 เพื่อเลือกอุปกรณ์บูต แล้วเลือก KINGSTON'],
+    boot: ['กดปุ่ม "เปิดเครื่อง" แล้วปล่อยให้เครื่องบูตต่อ BIOS ตั้งให้ USB มาก่อนแล้วจากงาน 02', 'หรือกด F12 เพื่อเลือกอุปกรณ์บูต แล้วใช้ลูกศรเลือก KINGSTON กด Enter'],
     setup: [
-      'RAM 2 GB น้อยกว่า 4 GB จึงเลือก Windows Setup (32-bit)',
+      'หน้า Windows Boot Manager ใช้ปุ่มลูกศรกับ Enter: RAM 2 GB น้อยกว่า 4 GB จึงเลือก Windows Setup (32-bit)',
       'ช่อง Time and currency format เลือก Thai (Thailand) ตามใบงาน',
-      'ใส่ Product Key ตามใบงาน (กดปุ่ม "พิมพ์ตามสติกเกอร์" ได้) แล้วติ๊กยอมรับข้อตกลง จากนั้นเลือก Custom',
+      'พิมพ์ Product Key ตามใบงาน พิมพ์แค่ตัวอักษรและตัวเลข ขีดจะขึ้นเอง แล้วติ๊กยอมรับข้อตกลง จากนั้นเลือก Custom',
     ],
     disk: ['เลือก Drive 0 Unallocated Space แล้วกด New', 'ใส่ขนาด 102400 แล้วกด Apply และ OK จากนั้นเลือก Drive 0 Partition 2 แล้วกด Next'],
-    wait: ['ตอนขึ้นข้อความ Press any key... ไม่ต้องกดอะไร รอให้เครื่องบูตต่อเอง'],
+    wait: ['รอให้ติดตั้งจนเสร็จ เครื่องจะนับถอยหลังแล้วรีสตาร์ตเอง', 'ตอนขึ้นข้อความ Press any key to boot from CD or DVD... ไม่ต้องกดอะไร รอให้เครื่องบูตต่อเอง'],
   },
   evidence: {
     'wo-ram2': { label: 'เครื่องมี RAM 2 GB', source: 'ใบสั่งงาน' },
@@ -190,7 +196,7 @@ export const installNewJob: JobDef = {
       label: 'กดปุ่มตอนเครื่องรีสตาร์ตหลังติดตั้ง',
       severity: 'minor',
       criterion: 'accuracy',
-      explain: 'ขั้นที่ 9 เครื่องจะรีสตาร์ตเอง ช่วงนี้ไม่ต้องทำอะไร ถ้ากดปุ่มตอนขึ้น Press any key... เครื่องจะบูตจาก USB และเริ่มติดตั้งใหม่อีกรอบ',
+      explain: 'ขั้นที่ 9 เครื่องจะรีสตาร์ตเอง ช่วงนี้ไม่ต้องทำอะไร ถ้ากดปุ่มตอนขึ้น Press any key to boot from CD or DVD... เครื่องจะบูตจาก USB และเริ่มติดตั้งใหม่อีกรอบ (ข้อความนี้เขียนว่า CD or DVD แม้จะบูตจาก USB)',
       ref: 'ใบเนื้อหา หน้า 10',
     },
     'ev-missing': {

@@ -17,12 +17,106 @@
 - เกมร้านซ่อมคอมจำลอง วิชา 20204-2001 ใช้เป็นสื่อการสอน (รายละเอียดใน GAME_PLAN.md)
 - (29 ก.ย. 2026) ให้พัฒนา "ตามแผน" ได้เลย ต่อยอดจากพื้นฐานที่ทำไว้ และรูปแบบเป็น **เกม simulation บนเว็บ**
 - (29 ก.ย. 2026) ผู้ใช้สั่ง "ขอเปลี่ยนเนื้อหาเป็นไฟล์ pdf อันนี้" หมายถึงใบเนื้อหาเรื่องการติดตั้งระบบปฏิบัติการ Windows ยาว 15 หน้า (ที่อยู่ไฟล์อยู่ใน GAME_PLAN.md) และถามต่อว่า "อันนี้เปลี่ยนเนื้อหารึยัง"
+- (30 ก.ย. 2026) ผู้ใช้ถามว่าทำ simulator ให้เหมือนจริงได้ไหม
+  - จากตัวเลือกที่ Claude เสนอ ผู้ใช้เลือก **"การทำงานเหมือนเครื่องจริง"** ข้อเดียว
+    - BIOS/หน้าบูตใช้คีย์บอร์ดเท่านั้น
+    - Product Key ใส่ขีดให้เอง
+    - มีหน้า Restarting/Getting ready
+    - เวลาคัดลอกและติดตั้งใกล้ของจริง
+    - ข้อความ error ตรงของจริง
+  - ผู้ใช้ไม่ได้เลือกข้อเหล่านี้: หน้าจอเหมือนภาพทุกหน้า, โหมดจำลองแยกจากโหมดฝึก, ฉากฮาร์ดแวร์
+  - ให้ Rufus มีหน้าตา**เหมือนภาพในใบเนื้อหา (เวอร์ชัน 1.4)**
 
 ## คำถาม/ข้อโต้แย้ง
 
 - (Claude, 29 ก.ย. 2026) ต้นแบบสลับเคสเสียงจากตัวอย่างใน GAME_PLAN.md: งาน 03 สาเหตุคือไดรเวอร์ (หน่วย 4) ส่วนงาน 04 ซึ่งเป็นงานถ่ายโอน สาเหตุคืออุปกรณ์ส่งออก (เสริมนอกเล่ม) เหตุผลอยู่ในบันทึกงานล่าสุดของ Claude ถ้า Codex เห็นต่างให้เขียนไว้ที่นี่ ผู้ใช้เป็นคนตัดสิน — **ไม่ต้องตัดสินแล้ว:** งานเสียงทั้งสองถูกย้ายไป `archive/` ตอนเปลี่ยนเนื้อหาเป็นใบเนื้อหา PDF
 
 ## บันทึกงาน
+
+### 2026-09-30 — Claude: commit และ push งาน simulator ขึ้น GitHub
+- ผู้ใช้สั่ง "commit แล้ว push ขึ้น GitHub ด้วย"
+- ก่อน commit ตรวจแล้ว:
+  - ไม่พบ commit ที่บันทึกของ Codex ด้านล่างพูดถึง
+    - `git log` และ `git reflog` มีแค่ `2e7de38`, ไม่มี stash และ `origin/main` ก็ยังเป็น `2e7de38`
+    - ไฟล์ทั้งหมดยังค้างอยู่ใน working tree จึง commit ทั้งหมดในรอบนี้
+  - `npm run build`, `npx eslint .`, `npm test` 47/47 และ `git diff --check` ผ่าน
+- สร้าง commit เดียวบน `main` ชื่อ "Make the simulator behave like a real PC" แล้ว push ขึ้น `origin/main` (https://github.com/WhiteR3d1/CAI_Final.git)
+  - มีทุกไฟล์ในบันทึก "✅ simulator ทำงานเหมือนเครื่องจริงแล้ว" (รวม `src/sims/windows/WindowsBoot.tsx` ที่เพิ่มใหม่) และบันทึกนี้
+- ไม่ได้ commit `.claude/launch.json` เพราะเป็นค่าตั้งสำหรับเปิด dev server ในแผงเบราว์เซอร์ของ Claude ที่ใช้เฉพาะเครื่องนี้
+
+### 2026-09-30 — Codex: บันทึกงาน simulator ลง Git
+- ผู้ใช้ขอ commit งานล่าสุด รวมการปรับ Rufus, BIOS/Boot, Windows Setup, OOBE และเอกสารของ Claude
+- ตรวจ git diff --check ผ่าน ไม่แก้พฤติกรรมเกม รอบนี้ไม่ได้รันชุดทดสอบซ้ำ (ผล 47/47 ของ Claude อยู่ในบันทึกด้านล่าง)
+- สร้าง commit ในเครื่องตามคำขอ ยังไม่ push ในรอบนี้
+
+### 2026-09-30 — Claude: ✅ simulator ทำงานเหมือนเครื่องจริงแล้ว
+- ข้อสรุปจากผู้ใช้อยู่ในหัวข้อด้านบน: เลือกแค่ "การทำงานเหมือนเครื่องจริง" และให้ Rufus เหมือนภาพในใบเนื้อหา (1.4)
+- **ปลดการจองไฟล์แล้ว**
+- **หลักที่ใช้:** ข้อความบนจอจำลองเป็นข้อความจริงภาษาอังกฤษ ส่วนคำอธิบายภาษาไทยอยู่ในกล่องพี่บูต
+- **สิ่งที่ทำ:**
+  - **Rufus (หน้าตา 1.4.12 ตามรูปในใบเนื้อหา):**
+    - ช่อง Partition scheme and target system type, File system, Cluster size, New volume label
+    - Format Options: Quick format และ Create a bootable disk using ISO Image พร้อมปุ่มรูปแผ่นดิสก์
+    - แถบสถานะ ปุ่ม About และ Log
+    - ข้อความจริง: ยังไม่เลือก ISO, Unsupported ISO และคำเตือนก่อนลบ
+    - ความคืบหน้า Formatting → Copying ISO files x% → DONE ประมาณ 15 วินาที
+    - ไฟล์ดาวน์โหลดเป็น rufus-1.4.12.exe
+  - **BIOS / Boot menu / Windows Boot Manager:**
+    - รับแค่คีย์บอร์ดหรือปุ่มบนจอ คลิกแล้วพี่บูตบอก
+    - Esc ขึ้นข้อความ "Discard changes and exit setup now?"
+    - หลัง F10 เครื่องรีสตาร์ตผ่านหน้า POST อีกรอบ
+    - Boot Manager นับถอยหลัง 30 วินาทีแล้วเลือกเอง
+  - **POST:** เครื่องห้องแล็บเป็นแบบตัวอักษร (Memory Test นับขึ้น ตรวจพบ SATA/USB)
+  - **Windows Setup:**
+    - Setup is starting
+    - Product Key ใส่ขีดเอง และ Next กดได้เมื่อครบ 25 ตัว
+    - หน้า Compatibility report เมื่อเลือก Upgrade
+    - พาร์ทิชันที่ติดตั้งไม่ได้ขึ้น "Windows can't be installed… (Show details)" และปิด Next
+    - กล่องข้อความของ Setup แสดงในจอ
+    - GPT error ของงาน 05 เกิดตอนกด Show details
+    - Installing มีเปอร์เซ็นต์ → Windows needs to restart (นับ 10) → Press any key to boot from CD or DVD → Getting devices ready % → Getting ready
+  - **OOBE:**
+    - แถบ Basics/Account/Services
+    - "Sign in with Microsoft instead?" → Limited experience
+    - หน้า Confirm your password และคำถามความปลอดภัย 3 ข้อ
+    - Hi → Don't turn off your PC
+  - **Windows Update:**
+    - รายการ 3 อัปเดต Downloading/Installing % → Restart required
+    - Working on updates % → หน้าจอล็อก → ต้องใส่รหัสผ่านที่ตั้งใน OOBE (ผิดขึ้น "The password is incorrect. Try again.")
+    - ต้องเปิด Windows Update อีกครั้งจึงนับการตรวจ
+  - **เดสก์ท็อป:** ไอคอนต้องดับเบิลคลิก (จอสัมผัสแตะครั้งเดียว)
+  - **งาน 05:** หน้าต่างคัดลอกของ Windows แสดง % ความเร็ว และเวลาที่เหลือ
+  - เพิ่มข้อผิด `rufus-not-bootable` ในงาน 01 และ 05
+  - ปรับคำใบ้ การ์ดความรู้ และคู่มือ (ตอน 1, 3, 4, 5) ให้ตรงพฤติกรรมใหม่
+    - ส่วนที่ใบเนื้อหาไม่มีติดป้ายเสริม เช่น Limited experience, คำถามความปลอดภัย, ตัวนับของ Boot Manager
+- **ไฟล์ที่แตะ:**
+  - `src/sims/windows/{Rufus,WinSetup,Oobe,media}.ts(x)`, `WindowsBoot.tsx` (ใหม่), `windows.css`
+  - `src/sims/common/{BiosSetup,BootMenu,PostScreen}.tsx`, `sims.css`
+  - `src/sims/desktop/{Desktop,SettingsApp}.tsx`, `desktop.css`
+  - `src/sims/{makeUsb,biosBoot,installNew,firstSetup,reinstall}/*`
+  - `src/data/jobs/{makeUsb,biosBoot,installNew,firstSetup,reinstall}.ts`, `src/data/manual.ts`
+  - DEVELOPMENT.md (checklist ใหม่), GAME_PLAN.md, HANDOFF.md
+- **ตรวจแล้ว:**
+  - `npm run build`, `npx eslint .` และ `npm test` 47/47 ผ่าน
+  - ทดลองทุกพฤติกรรมใหม่ในเบราว์เซอร์ครบ 5 งานบน 127.0.0.1:5173 และไม่มี error ใน console
+- **ระหว่างทดสอบ:**
+  - Claude เผลอเปิดสวิตช์ "เปิดทุกงาน" และรับงาน 01 ใน save ของผู้ใช้บน localhost:5173 (ผู้ใช้เล่นไว้ 750 เหรียญ 12 ดาว)
+  - คืนค่าเดิมแล้ว: ปิดสวิตช์ และตั้งจำนวนครั้งที่เปิดงาน 01 กลับเป็น 1
+  - หลังจากนั้นทดสอบบน 127.0.0.1 แล้วล้างข้อมูลทดสอบ
+- **ยังไม่ทำ (ผู้ใช้ไม่ได้เลือก):** หน้าจอเหมือนภาพทุกหน้า, โหมดจำลองแยกจากโหมดฝึก, ฉากฮาร์ดแวร์
+- **ข้อเสนอของ Claude:** ยังคงปุ่ม "ข้ามเวลารอ" ใน Installing ไว้ เพื่อไม่ให้รอนานในคาบเรียน
+- git: ยังไม่ commit
+
+### 2026-09-30 — Claude: แก้ช่องกรอกในหน้าตั้งค่าเริ่มต้น (OOBE) ที่พิมพ์แล้วเป็นตัวสีขาว
+- ผู้ใช้แจ้งพร้อมภาพหน้า "Create a super memorable password": พิมพ์แล้วตัวอักษรเป็นสีขาว มองไม่เห็น
+- สาเหตุ:
+  - `src/index.css` ตั้ง `input { color: inherit }`
+  - หน้า `.oobe` ใช้ตัวอักษรสีขาว
+  - ช่องกรอกจึงได้ตัวขาวบนพื้นขาว เป็นทุกช่องของ OOBE (ชื่อผู้ใช้ รหัสผ่าน อีเมล PIN เบอร์โทร)
+- แก้ใน `src/sims/windows/windows.css`: `.oobe-field input` กำหนดพื้นขาว ตัวอักษร #1b1b1b และสีของ placeholder
+- ตรวจแล้วว่าช่องกรอกอื่นไม่เป็น (ช่องค้นหาบน Taskbar และช่องใน Browser กำหนดสีเองอยู่แล้ว) และ eslint ผ่าน
+- เพิ่ม `.claude/launch.json` สำหรับเปิด dev server ในแผงเบราว์เซอร์ของ Claude (`npm run dev -- --host 127.0.0.1 --port 5173`)
+- git: ผู้ใช้ commit แรกไว้แล้ว (`2e7de38`) งานนี้ยังไม่ได้ commit
 
 ### 2026-09-29 — Codex: เตรียมอัปโหลด GitHub
 - ผู้ใช้สั่งอัปโหลดโปรเจกต์ไป https://github.com/WhiteR3d1/CAI_Final.git

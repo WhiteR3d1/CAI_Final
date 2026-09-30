@@ -157,6 +157,23 @@
   color: #050605;
 }
 
+/* text-mode POST of the old legacy-BIOS lab PC */
+.post-text {
+  grid-template-rows: 1fr auto;
+  padding: 4% 5% 60px;
+  font-size: clamp(0.72rem, 1.7cqi, 0.95rem);
+}
+
+.post-text-lines p {
+  margin: 0;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.post-text .post-lines p {
+  margin: 0 0 4px;
+}
+
 .post-continue {
   padding: 4px 10px;
   border: 1px solid #4b544e;
@@ -236,7 +253,7 @@
   background: #0b1c6b;
 }
 
-.bios-tabs button {
+.bios-tabs span {
   padding: 2px 12px;
   border: 0;
   background: transparent;
@@ -244,7 +261,7 @@
   font: inherit;
 }
 
-.bios-tabs button.on {
+.bios-tabs span.on {
   background: #c9c9c9;
   color: #0b1c6b;
 }
@@ -367,7 +384,7 @@
   text-align: center;
 }
 
-.bios-popup button {
+.bios-popup [role='option'] {
   display: block;
   width: 100%;
   padding: 2px 8px;
@@ -378,7 +395,7 @@
   text-align: left;
 }
 
-.bios-popup button.on {
+.bios-popup [role='option'].on {
   background: #e9ecf6;
   color: #0b1c6b;
 }
@@ -399,7 +416,7 @@
   gap: 24px;
 }
 
-.bios-dialog button {
+.bios-dialog span {
   padding: 2px 8px;
   border: 0;
   background: transparent;
@@ -407,7 +424,7 @@
   font: inherit;
 }
 
-.bios-dialog button.on {
+.bios-dialog span.on {
   background: #0b1c6b;
   color: #fff;
 }
@@ -443,7 +460,7 @@
   text-align: center;
 }
 
-.bootmenu-box button {
+.bootmenu-item {
   display: block;
   width: 100%;
   padding: 2px 8px;
@@ -454,7 +471,7 @@
   text-align: left;
 }
 
-.bootmenu-box button.on {
+.bootmenu-item.on {
   background: #e7f3f2;
   color: #146c69;
 }
