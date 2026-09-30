@@ -43,5 +43,5 @@
   width: 100%;
   background: #06b025;
   transform-origin: left;
-  animation: fill 3.2s linear forwards;
+  transition: transform 0.15s linear;
 }

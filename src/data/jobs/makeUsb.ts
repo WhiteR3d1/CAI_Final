@@ -62,7 +62,7 @@ export const makeUsbJob: JobDef = {
           '**Device** (อุปกรณ์) ชื่อแฟลชไดรฟ์ที่จะใช้ ต้องตรวจชื่อและขนาดให้ถูก เพราะข้อมูลในอุปกรณ์นี้จะถูกลบทั้งหมด',
           '**Partition scheme** (รูปแบบพาร์ทิชัน) เลือกให้เหมาะกับเครื่องและฮาร์ดดิสก์ที่จะติดตั้ง',
           '**File system** ตัวอย่างในใบเนื้อหาใช้ NTFS และ **Cluster size** 4096',
-          '**Boot selection** กด SELECT แล้วเลือกไฟล์ ISO (ไฟล์ติดตั้งระบบ) ของ Windows 10',
+          'ติ๊ก **Create a bootable disk using: ISO Image** แล้วกดปุ่มรูปแผ่นดิสก์ เพื่อเลือกไฟล์ ISO (ไฟล์ติดตั้งระบบ) ของ Windows 10',
         ],
       },
       {
@@ -86,7 +86,7 @@ export const makeUsbJob: JobDef = {
       {
         kind: 'note',
         tone: 'tip',
-        text: 'ใบเนื้อหาระบุว่าใช้ Rufus ได้หลายเวอร์ชัน ตัวอย่างใช้เวอร์ชัน 3.4 หน้าจอในเกมเป็นแบบจำลอง อาจต่างจากโปรแกรมจริงเล็กน้อย',
+        text: 'ใบเนื้อหาระบุว่าใช้ Rufus ได้หลายเวอร์ชัน ข้อความบอกว่าตัวอย่างใช้เวอร์ชัน 3.4 แต่รูปประกอบเป็นเวอร์ชัน 1.4 หน้าจอในเกมทำตามรูปในใบเนื้อหา ระหว่างเขียน USB จะมีสถานะ Formatting และ Copying ISO files ขึ้นที่แถบล่าง จนเสร็จเป็น DONE',
       },
       {
         kind: 'note',
@@ -125,14 +125,15 @@ export const makeUsbJob: JobDef = {
     { id: 'verify', label: 'ตรวจ USB ที่สร้างเสร็จ' },
   ],
   hints: {
-    download: ['เปิด Browser บนหน้าจอ แล้วค้นหาคำว่า rufus', 'เลือกผลลัพธ์ rufus.ie ซึ่งเป็นเว็บของโปรแกรม แล้วกดดาวน์โหลดไฟล์ rufus-3.4.exe'],
-    plug: ['กดปุ่ม "เสียบแฟลชไดรฟ์ของครูแอน" ใต้จอ', 'เปิด This PC แล้วดับเบิลคลิกไดรฟ์ KINGSTON (F:) 16 GB เพื่อตรวจว่าเครื่องเห็น จากนั้นจดเป็นหลักฐาน'],
+    download: ['เปิด Browser บนหน้าจอ แล้วค้นหาคำว่า rufus', 'เลือกผลลัพธ์ rufus.ie ซึ่งเป็นเว็บของโปรแกรม แล้วกดดาวน์โหลดไฟล์ rufus-1.4.12.exe'],
+    plug: ['กดปุ่ม "เสียบแฟลชไดรฟ์ของครูแอน" ใต้จอ', 'ดับเบิลคลิก This PC แล้วดับเบิลคลิกไดรฟ์ KINGSTON (F:) 16 GB เพื่อตรวจว่าเครื่องเห็น จากนั้นจดเป็นหลักฐาน'],
     rufus: [
-      'เปิด Rufus จากแถบดาวน์โหลดในเบราว์เซอร์ หรือไอคอน rufus-3.4 บนเดสก์ท็อป',
-      'ช่อง Device ต้องเป็น KINGSTON (F:) 16 GB ไม่ใช่ SHOP-TOOLS (E:) 32 GB',
-      'เครื่องปลายทางเป็น BIOS แบบเก่า จึงเลือก MBR partition scheme for BIOS or UEFI computers แล้วกด SELECT เลือกไฟล์ Windows 10',
+      'เปิด Rufus จากแถบดาวน์โหลดในเบราว์เซอร์ หรือโฟลเดอร์ Downloads',
+      'ช่อง Device ต้องเป็น KINGSTON (F:) [16GB] ไม่ใช่ SHOP-TOOLS (E:) [32GB]',
+      'เครื่องปลายทางเป็น BIOS แบบเก่า จึงเลือก MBR partition scheme for BIOS or UEFI computers',
+      'ติ๊ก Create a bootable disk using: ISO Image แล้วกดปุ่มรูปแผ่นดิสก์ เลือกไฟล์ Windows 10 แล้วกด Start',
     ],
-    verify: ['เปิด This PC แล้วเปิดไดรฟ์ WIN10_TH (F:) ดูว่ามีไฟล์ติดตั้ง เช่น setup.exe'],
+    verify: ['รอจนแถบล่างของ Rufus ขึ้น DONE แล้วเปิด This PC ดับเบิลคลิกไดรฟ์ CCCOMA_X86FRE_TH-TH_DV9 (F:) ดูว่ามีไฟล์ติดตั้ง เช่น setup.exe'],
   },
   evidence: {
     'wo-usb': { label: 'แฟลชไดรฟ์ของครูแอน KINGSTON 16 GB', source: 'ใบสั่งงาน' },
@@ -161,7 +162,14 @@ export const makeUsbJob: JobDef = {
       label: 'เลือกไฟล์ ISO ที่ไม่ใช่ Windows 10',
       severity: 'major',
       criterion: 'accuracy',
-      explain: 'ครูแอนต้องการ Windows 10 จึงต้องเลือกไฟล์ ISO ของ Windows 10 ในช่อง Boot selection',
+      explain: 'ครูแอนต้องการ Windows 10 จึงต้องเลือกไฟล์ ISO ของ Windows 10 ด้วยปุ่มรูปแผ่นดิสก์',
+      ref: 'ใบเนื้อหา หน้า 3',
+    },
+    'rufus-not-bootable': {
+      label: 'สร้างแฟลชไดรฟ์ที่ใช้บูตติดตั้ง Windows ไม่ได้',
+      severity: 'major',
+      criterion: 'accuracy',
+      explain: 'ต้องติ๊ก Create a bootable disk using แล้วเลือก ISO Image กับไฟล์ ISO ของ Windows 10 ถ้าไม่ติ๊กหรือเลือก FreeDOS จะได้แฟลชไดรฟ์ที่ใช้ติดตั้ง Windows ไม่ได้',
       ref: 'ใบเนื้อหา หน้า 3',
     },
     'ev-missing': {

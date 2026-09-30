@@ -112,9 +112,9 @@ export const reinstallJob: JobDef = {
       'เปิด PHOTOS (D:) เลือกโฟลเดอร์ งานลูกค้า แล้วกดปุ่มคัดลอกไป SHOP-BACKUP (E:)',
     ],
     rufus: [
-      'ดูขนาดอุปกรณ์ในช่อง Device แฟลชไดรฟ์ของร้านคือ 16 GB',
+      'ดูขนาดอุปกรณ์ในช่อง Device แฟลชไดรฟ์ของร้านคือ [16GB]',
       'ใบงานบอกว่าเครื่องเป็น UEFI และฮาร์ดดิสก์ 4 TB จึงควรเลือก GPT partition scheme for UEFI computer',
-      'ไฟล์ ISO ต้องเป็น Windows 10 ไม่ใช่ Ubuntu หรือ Office',
+      'ติ๊ก Create a bootable disk using: ISO Image แล้วกดปุ่มรูปแผ่นดิสก์ เลือกไฟล์ Windows 10 (ไม่ใช่ Ubuntu หรือ Office)',
     ],
     bios: [
       'กด F2 ตอนหน้าจอโลโก้เพื่อเข้า BIOS หรือกด F12 เพื่อเลือกอุปกรณ์บูตเฉพาะครั้งนี้',
@@ -125,12 +125,14 @@ export const reinstallJob: JobDef = {
       'RAM 16 GB จึงเลือก Windows Setup (64-bit)',
       'เครื่องเคยเปิดใช้งานแล้ว กด I don\'t have a product key แล้วเลือกรุ่นให้ตรงลิขสิทธิ์เดิม (Home)',
       'เลือก Custom แล้วเลือกพาร์ทิชัน Windows ขนาด 237.9 GB ห้ามแตะ PHOTOS',
-      'หลังติดตั้งเสร็จ ถ้าขึ้นให้กดปุ่มเพื่อบูตจาก USB ให้รอเฉย ๆ',
+      'ถ้าใต้ตารางขึ้น "Windows can\'t be installed on …" กด Show details ดูสาเหตุ',
+      'หลังติดตั้งเสร็จ ถ้าขึ้น Press any key to boot from CD or DVD ให้รอเฉย ๆ',
     ],
-    oobe: ['เลือก Thailand และแป้นพิมพ์ แล้วใช้ Offline account ตั้งชื่อผู้ใช้ให้คุณเก่ง'],
+    oobe: ['เลือก Thailand และแป้นพิมพ์ ใช้ Offline account (Limited experience) ตั้งชื่อผู้ใช้ให้คุณเก่ง และจำรหัสผ่านที่ตั้งไว้'],
     verify: [
-      'เปิด This PC ตรวจว่า PHOTOS (D:) ยังมีงานครบ 12,480 ไฟล์',
+      'ดับเบิลคลิก This PC ตรวจว่า PHOTOS (D:) ยังมีงานครบ 12,480 ไฟล์',
       'พิมพ์ Windows Update ในช่องค้นหา กด Check for updates แล้ว Restart now ตามขั้นที่ 17',
+      'หลังรีสตาร์ตใส่รหัสผ่านที่ตั้งไว้ แล้วเปิด Windows Update อีกครั้งให้เห็น You\'re up to date',
     ],
   },
   evidence: {
@@ -163,6 +165,13 @@ export const reinstallJob: JobDef = {
       explain: 'ลูกค้าต้องการ Windows 10 จึงต้องใช้ไฟล์ ISO ของ Windows 10',
       ref: 'ใบเนื้อหา หน้า 3',
     },
+    'rufus-not-bootable': {
+      label: 'สร้างแฟลชไดรฟ์ที่ใช้บูตติดตั้ง Windows ไม่ได้',
+      severity: 'major',
+      criterion: 'accuracy',
+      explain: 'ต้องติ๊ก Create a bootable disk using แล้วเลือก ISO Image กับไฟล์ ISO ของ Windows 10 ถ้าไม่ติ๊กหรือเลือก FreeDOS จะได้แฟลชไดรฟ์ที่ใช้ติดตั้ง Windows ไม่ได้',
+      ref: 'ใบเนื้อหา หน้า 3',
+    },
     'rufus-scheme': {
       label: 'เลือก Partition scheme ไม่เหมาะกับฮาร์ดดิสก์ 4 TB',
       severity: 'minor',
@@ -174,7 +183,7 @@ export const reinstallJob: JobDef = {
       label: 'ใช้ MBR partition scheme for BIOS or UEFI กับดิสก์ 4 TB ที่เป็น UEFI',
       severity: 'major',
       criterion: 'accuracy',
-      explain: 'แฟลชไดรฟ์แบบนี้บูตเครื่องนี้แบบเดิม (BIOS) ตัวติดตั้งจึงติดตั้งลงดิสก์ GPT ขนาด 4 TB ไม่ได้ ต้องใช้ GPT partition scheme for UEFI computer',
+      explain: 'ตัวติดตั้งแจ้งว่า Windows cannot be installed to this disk. The selected disk is of the GPT partition style. เพราะแฟลชไดรฟ์แบบนี้บูตเครื่องนี้แบบเดิม (BIOS) จึงติดตั้งลงดิสก์ GPT ขนาด 4 TB ไม่ได้ ต้องใช้ GPT partition scheme for UEFI computer',
       ref: 'ใบเนื้อหา หน้า 2–3',
     },
     'bios-no-save': {
@@ -227,16 +236,16 @@ export const reinstallJob: JobDef = {
       extra: true,
     },
     'reboot-keypress': {
-      label: 'กดปุ่มตอนขึ้น Press any key to boot from USB',
+      label: 'กดปุ่มตอนขึ้น Press any key to boot from CD or DVD',
       severity: 'minor',
       criterion: 'accuracy',
-      explain: 'ขั้นที่ 9 เครื่องจะรีสตาร์ตเอง ช่วงนี้ไม่ต้องทำอะไร ถ้ากดปุ่ม เครื่องจะบูตจากแฟลชไดรฟ์และเริ่มติดตั้งใหม่อีกรอบ',
+      explain: 'ขั้นที่ 9 เครื่องจะรีสตาร์ตเอง ช่วงนี้ไม่ต้องทำอะไร ถ้ากดปุ่ม เครื่องจะบูตจากแฟลชไดรฟ์และเริ่มติดตั้งใหม่อีกรอบ (ข้อความเขียนว่า CD or DVD แม้จะบูตจาก USB)',
       ref: 'ใบเนื้อหา หน้า 10',
     },
   },
   checks: [
     { id: 'check-photos', label: 'ตรวจว่างานลูกค้าใน PHOTOS (D:) ยังอยู่ครบ', required: true },
-    { id: 'check-update', label: 'ตรวจ Windows Update และ Restart จนขึ้น You\'re up to date (ขั้นที่ 17)', required: true },
+    { id: 'check-update', label: 'อัปเดต Windows กด Restart แล้วเปิด Windows Update อีกครั้งจนเห็น You\'re up to date (ขั้นที่ 17)', required: true },
     { id: 'check-activation', label: 'ตรวจว่า Windows เปิดใช้งานแล้ว', required: false },
   ],
   principles: [
@@ -280,7 +289,7 @@ export const reinstallJob: JobDef = {
     {
       id: 'q-anykey',
       kind: 'transfer',
-      prompt: 'หลังติดตั้งเสร็จ เครื่องรีสตาร์ตแล้วขึ้น "Press any key to boot from USB..." ควรทำอย่างไร',
+      prompt: 'หลังติดตั้งเสร็จ เครื่องรีสตาร์ตแล้วขึ้น "Press any key to boot from CD or DVD..." ควรทำอย่างไร',
       choices: [
         {
           text: 'รอเฉย ๆ ให้เครื่องบูตจากฮาร์ดดิสก์ต่อเอง',

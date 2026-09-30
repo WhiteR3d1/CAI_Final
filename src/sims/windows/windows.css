@@ -26,138 +26,154 @@
   background: rgb(10 20 30 / 18%);
 }
 
-.rufus {
+/* Rufus 1.4 (as pictured in the content sheet) */
+.rufus14 {
   position: relative;
-  width: min(440px, 100%);
+  display: grid;
+  width: min(360px, 100%);
   margin: auto;
   border: 1px solid #7a7a7a;
   background: #f0f0f0;
   box-shadow: 0 12px 32px rgb(0 0 0 / 40%);
   font-family: var(--font-os);
-  font-size: 13px;
+  font-size: 12.5px;
+  color: #1b1b1b;
 }
 
-.rufus-title {
+.rufus14-title {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 10px;
+  padding: 5px 4px 5px 10px;
   background: #fff;
   border-bottom: 1px solid #ddd;
 }
 
-.rufus-title .rufus-x {
+.rufus14-x {
   display: grid;
   place-items: center;
-  width: 26px;
+  width: 30px;
   height: 22px;
   margin-left: auto;
   border: 0;
   background: transparent;
 }
 
-.rufus-title .rufus-x:hover {
+.rufus14-x:not(:disabled):hover {
   background: #e81123;
   color: #fff;
 }
 
-.rufus-body {
+.rufus14-body {
   display: grid;
-  gap: 5px;
-  padding: 6px 14px 12px;
+  gap: 3px;
+  padding: 8px 12px 10px;
 }
 
-.rufus-body h3 {
-  margin: 2px 0 0;
-  padding-bottom: 2px;
-  border-bottom: 1px solid #c7c7c7;
-  color: #1c3e72;
-  font-family: var(--font-os);
-  font-size: 15px;
-  font-weight: 600;
+.rufus14-label,
+.rufus14-label-row {
+  margin-top: 3px;
+  color: #1b1b1b;
 }
 
-.rufus-field {
-  display: grid;
-  gap: 2px;
+.rufus14-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.rufus-field > span {
-  color: #333;
-  font-size: 12px;
-}
-
-.rufus-field select,
-.rufus-out {
-  display: block;
+.rufus14-body > select,
+.rufus14-body > input {
   width: 100%;
-  min-height: 26px;
-  padding: 3px 6px;
+  min-height: 24px;
+  padding: 2px 4px;
   border: 1px solid #adadad;
   background: #fff;
-  font-size: 13px;
-}
-
-.rufus-out {
-  overflow: hidden;
-  color: #333;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.rufus-row {
-  display: flex;
-  gap: 6px;
-}
-
-.rufus-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
-}
-
-.rufus-status {
-  position: relative;
-  display: grid;
-  place-items: center;
-  height: 26px;
-  overflow: hidden;
-  border: 1px solid #adadad;
-  background: #e6e6e6;
+  color: #1b1b1b;
   font-size: 12.5px;
 }
 
-.rufus-fill {
-  position: absolute;
-  inset: 0;
+.rufus14-options {
+  display: grid;
+  gap: 4px;
+  margin: 6px 0 0;
+  padding: 6px 8px 8px;
+  border: 1px solid #c7c7c7;
+}
+
+.rufus14-options legend {
+  padding: 0 4px;
+  color: #1c3e72;
+}
+
+.rufus14-check,
+.rufus14-check > label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rufus14-check select {
+  margin-left: auto;
+  padding: 1px 2px;
+  border: 1px solid #adadad;
+  background: #fff;
+  color: #1b1b1b;
+  font-size: 12px;
+}
+
+.rufus14-disc {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 24px;
+  border: 1px solid #adadad;
+  background: #fdfdfd;
+}
+
+.rufus14-progress {
+  height: 18px;
+  margin-top: 8px;
+  overflow: hidden;
+  border: 1px solid #adadad;
+  background: #e6e6e6;
+}
+
+.rufus14-progress span {
+  display: block;
+  height: 100%;
   background: #06b025;
-  transform-origin: left;
-  transform: scaleX(0);
+  transition: width 0.15s linear;
 }
 
-.rufus-status em {
-  position: relative;
-  font-style: normal;
+.rufus14-buttons {
+  display: grid;
+  grid-template-columns: auto auto 1fr auto auto;
+  gap: 6px;
+  margin-top: 8px;
 }
 
-.rufus-busy .rufus-fill {
-  animation: fill 3.4s linear forwards;
-  transform: scaleX(1);
+.rufus14-status {
+  padding: 3px 8px;
+  border-top: 1px solid #c7c7c7;
+  background: #f7f7f7;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.rufus-done .rufus-fill {
-  transform: scaleX(1);
+.rufus14-log {
+  max-height: 160px;
+  margin: 0 12px;
+  padding: 6px 8px;
+  overflow: auto;
+  border: 1px solid #c7c7c7;
+  background: #fff;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  white-space: pre-wrap;
 }
-
-.rufus-error {
-  background: #fde7e9;
-  color: #a4262c;
-}
-
-.rufus-done {
-  color: #fff;
-}
-
 .rufus-dialog {
   position: absolute;
   left: 50%;
@@ -222,10 +238,6 @@
   color: #a4262c;
 }
 
-.rufus-thai {
-  font-family: var(--font);
-  color: #a4262c;
-}
 
 /* a second toast (e.g. "USB detected") sits above the desktop's own toast */
 .dt-toast.dt-toast-device {
@@ -311,7 +323,7 @@
   color: #8a8a8a;
 }
 
-.bootmgr button {
+.bootmgr-item {
   width: 100%;
   margin-left: 6%;
   padding: 2px 8px;
@@ -322,7 +334,7 @@
   text-align: left;
 }
 
-.bootmgr button.on {
+.bootmgr-item.on {
   background: #c9c9c9;
   color: #000;
 }
@@ -793,10 +805,17 @@
   text-align: left;
 }
 
+/* inputs inherit color globally (index.css), so reset it here or typed text turns white like the OOBE text */
 .oobe-field input {
   padding: 6px 10px;
   border: 0;
+  background: #fff;
+  color: #1b1b1b;
   font-size: 14px;
+}
+
+.oobe-field input::placeholder {
+  color: #767676;
 }
 
 .oobe-error {
@@ -928,4 +947,246 @@
 .oldwin-popup p {
   margin: 4px 0 0;
   color: #333;
+}
+
+/* ---------- windows setup: real-behaviour details ---------- */
+.bootmgr-timer {
+  margin-top: 14px !important;
+}
+
+.ws-dialog-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ws-starting {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  margin: auto;
+  color: #fff;
+  font-size: 16px;
+}
+
+.ws-key {
+  width: min(320px, 100%);
+  padding: 5px 8px;
+  border: 1px solid #7a7a7a;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ws-muted {
+  color: #0a5bc4;
+  cursor: default;
+}
+
+.ws-blocked {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: #8a5a00;
+  font-size: 13px;
+}
+
+.ws-blocked .link-btn {
+  color: #0a5bc4;
+  font-size: 13px;
+}
+
+.ws-modal {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgb(0 0 0 / 25%);
+}
+
+.ws-modal-box {
+  width: min(460px, 100%);
+  border: 1px solid #2c5aa0;
+  background: #fff;
+  box-shadow: 0 16px 40px rgb(0 0 0 / 45%);
+}
+
+.ws-modal-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 18px 6px;
+}
+
+.ws-modal-body p {
+  margin: 0;
+  font-size: 13.5px;
+}
+
+.ws-modal-box .w-buttons {
+  padding: 8px 14px 12px;
+}
+
+.ws-modal-icon {
+  flex: none;
+}
+
+.ws-modal-warn {
+  color: #c78400;
+}
+
+.ws-modal-error {
+  color: #c42b1c;
+}
+
+.ws-modal-info {
+  color: #0a5bc4;
+}
+/* ---------- oobe: real-behaviour details ---------- */
+.oobe-steps {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  display: flex;
+  gap: 18px;
+  transform: translateX(-50%);
+  color: rgb(255 255 255 / 55%);
+  font-size: 12px;
+}
+
+.oobe-steps .on {
+  color: #fff;
+  border-bottom: 2px solid #fff;
+}
+
+.oobe-benefits {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0 0 0 18px;
+  color: #cfe0f5;
+  text-align: left;
+}
+
+.oobe-field select {
+  padding: 6px 8px;
+  border: 0;
+  background: #fff;
+  color: #1b1b1b;
+  font-size: 14px;
+}
+/* the page content is centred with auto margins so tall pages can still scroll */
+.oobe-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  margin: auto;
+  padding-top: 18px;
+}
+/* ---------- restart after updates, lock screen and sign-in ---------- */
+.win-boot {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  background: #0a4f8f;
+  color: #fff;
+  font-family: var(--font-os);
+  text-align: center;
+}
+
+.win-boot p {
+  margin: 0;
+}
+
+.win-lock {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  padding: 0 0 8% 6%;
+  background:
+    radial-gradient(ellipse at 70% 30%, rgb(160 205 255 / 55%), transparent 55%),
+    linear-gradient(160deg, #06244f, #0c4a8c 60%, #2a6fb5);
+  color: #fff;
+  font-family: var(--font-os);
+  cursor: pointer;
+  outline: none;
+}
+
+.win-lock-clock {
+  display: grid;
+}
+
+.win-lock-clock strong {
+  font-size: clamp(40px, 9cqi, 72px);
+  font-weight: 300;
+  line-height: 1;
+}
+
+.win-lock-clock span {
+  font-size: clamp(16px, 3cqi, 24px);
+}
+
+.win-signin {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  background: linear-gradient(160deg, #06244f, #0c4a8c 60%, #2a6fb5);
+  color: #fff;
+  font-family: var(--font-os);
+}
+
+.win-signin p {
+  margin: 0;
+}
+
+.win-avatar {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 20%);
+}
+
+.win-user {
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.win-pw {
+  display: flex;
+  width: min(260px, 80cqi);
+  border: 2px solid rgb(255 255 255 / 70%);
+}
+
+.win-pw input {
+  flex: 1;
+  min-width: 0;
+  padding: 7px 10px;
+  border: 0;
+  background: #fff;
+  color: #1b1b1b;
+  font-size: 14px;
+}
+
+.win-pw button {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  border: 0;
+  background: rgb(255 255 255 / 25%);
+  color: #fff;
 }

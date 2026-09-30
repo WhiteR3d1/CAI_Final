@@ -4,6 +4,7 @@ import { useRun } from '../../screens/workbench/runContext'
 import { BiosSetup, type BiosInfoRow, type BiosView } from '../common/BiosSetup'
 import { BenchBar, Monitor } from '../common/Monitor'
 import { PostScreen } from '../common/PostScreen'
+import { LAB_POST_LINES } from '../windows/media'
 import '../windows/windows.css'
 
 type Stage = 'enter' | 'order' | 'save' | 'test'
@@ -28,6 +29,7 @@ export function BiosBootSim() {
   const [timed, setTimed] = useState(false)
   const [order, setOrder] = useState([HDD, USB])
   const [saved, setSaved] = useState([HDD, USB])
+  const [savedOnce, setSavedOnce] = useState(false)
 
   const toStage = (next: Stage) => {
     setStageLocal(next)
@@ -83,7 +85,8 @@ export function BiosBootSim() {
             seconds={7}
             untimed={!timed}
             keys={['F2']}
-            firmware="BIOS v02.61"
+            textLines={LAB_POST_LINES}
+            memoryMb={2048}
             onKey={() => {
               setOrder(saved)
               setScreen('bios')
@@ -104,13 +107,15 @@ export function BiosBootSim() {
             onDisable={() => run.mistake('bios-disable')}
             onSaveExit={() => {
               setSaved(order)
+              setSavedOnce(true)
               if (order[0] === USB) run.log('กด F10 แล้วเลือก OK บันทึกการตั้งค่าและออกจาก BIOS (ขั้นที่ 6–7)')
-              bootBy(order)
+              // a real BIOS restarts the PC after Save & Exit
+              powerOn()
             }}
             onDiscardExit={() => {
               if (order[0] !== saved[0]) run.mistake('bios-no-save')
               setOrder(saved)
-              bootBy(saved)
+              powerOn()
             }}
             onNote={t => run.say('info', t)}
           />
@@ -130,12 +135,8 @@ export function BiosBootSim() {
               <div className="bootmgr-head">Windows Boot Manager</div>
               <p>Choose an operating system to start, or press TAB to select a tool:</p>
               <p className="bootmgr-dim">(Use the arrow keys to highlight your choice, then press ENTER.)</p>
-              <button type="button" className="on" tabIndex={-1}>
-                Windows Setup (64-bit)
-              </button>
-              <button type="button" tabIndex={-1}>
-                Windows Setup (32-bit)
-              </button>
+              <div className="bootmgr-item on">Windows Setup (64-bit)</div>
+              <div className="bootmgr-item">Windows Setup (32-bit)</div>
               <div className="bootmgr-foot">ENTER=Choose · TAB=Menu · ESC=Cancel</div>
             </div>
             <div className="boot-success">
@@ -154,7 +155,9 @@ export function BiosBootSim() {
               : stage === 'order'
                 ? 'ขั้นที่ 2–5: แท็บ Boot → Hard Disk Drives → 1st Drive เลือก USB'
                 : stage === 'save'
-                  ? 'ขั้นที่ 6–7: กด F10 แล้วเลือก OK เพื่อบันทึกและออก'
+                  ? savedOnce
+                    ? 'เครื่องรีสตาร์ตแล้ว ปล่อยให้บูตต่อ (ไม่ต้องกด F2) เพื่อทดสอบว่าบูตจาก USB'
+                    : 'ขั้นที่ 6–7: กด F10 แล้วเลือก OK เพื่อบันทึกและออก'
                   : 'เครื่องบูตจาก USB แล้ว ส่งงานได้เลย'}
         </p>
         <label className="switch">

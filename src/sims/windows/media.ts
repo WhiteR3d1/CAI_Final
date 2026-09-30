@@ -18,19 +18,46 @@ export interface RufusIso {
   name: string
   size: string
   kind: 'windows' | 'ubuntu' | 'office'
+  /** volume label Rufus copies from the image */
+  label: string
 }
 
 export interface RufusConfig {
   device: string
-  iso: RufusIso
+  /** null when "Create a bootable disk using" is unchecked or set to FreeDOS */
+  iso: RufusIso | null
+  /** what "Create a bootable disk using" produces */
+  boot: 'iso' | 'freedos' | 'none'
   scheme: Scheme
+  fileSystem: string
+  cluster: string
+  label: string
+  quickFormat: boolean
+  badBlocks: boolean
 }
 
 export const ISO_FILES: RufusIso[] = [
-  { name: 'Win10_22H2_Thai_x32x64.iso', size: '5.6 GB', kind: 'windows' },
-  { name: 'ubuntu-20.04.6-desktop-amd64.iso', size: '4.1 GB', kind: 'ubuntu' },
-  { name: 'Office_2019_Setup.iso', size: '3.2 GB', kind: 'office' },
+  { name: 'Win10_22H2_Thai_x32x64.iso', size: '5.6 GB', kind: 'windows', label: 'CCCOMA_X86FRE_TH-TH_DV9' },
+  { name: 'ubuntu-20.04.6-desktop-amd64.iso', size: '4.1 GB', kind: 'ubuntu', label: 'Ubuntu 20.04.6 LTS amd64' },
+  { name: 'Office_2019_Setup.iso', size: '3.2 GB', kind: 'office', label: 'OFFICE2019' },
 ]
+
+/** text-mode POST of the old lab PC (jobs 02–03); the memory test line is added by PostScreen */
+export const LAB_POST_LINES = [
+  'Bloom Firmware BIOS v02.61 (C) 2008',
+  'BLOOM G41M-P28 BIOS Date: 04/12/09',
+  '',
+  'CPU : Bloom Core 2 Duo E7500 @ 2.93GHz',
+  ' Speed : 2.93 GHz',
+  '',
+]
+
+/** how long Windows Update takes from "Check for updates" to "Restart required", in ms */
+export const UPDATE_MS = 10000
+
+/** Rufus version shown in the simulation: the one in the content sheet's figures. */
+export const RUFUS_VERSION = '1.4.12.535'
+export const RUFUS_FILE = 'rufus-1.4.12.exe'
 
 /** A partition row in Windows Setup ("Where do you want to install Windows?"). Sizes are in GB. */
 export interface Part {

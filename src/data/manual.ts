@@ -40,9 +40,9 @@ export const MANUAL: ManualUnit[] = [
         head: ['ช่อง', 'ใช้ทำอะไร'],
         rows: [
           ['Device', 'แสดงชื่อ USB Flash Drive ที่เลือกใช้ (ข้อมูลในอุปกรณ์นี้จะถูกลบ)'],
-          ['Partition scheme', 'รูปแบบของพาร์ทิชัน เลือกให้เหมาะกับเครื่องและฮาร์ดดิสก์'],
+          ['Partition scheme and target system type', 'รูปแบบของพาร์ทิชัน เลือกให้เหมาะกับเครื่องและฮาร์ดดิสก์'],
           ['File system / Cluster size', 'ตัวอย่างใช้ NTFS และ 4096'],
-          ['ไฟล์ ISO', 'ไฟล์ Windows 10 ที่จะนำไปสร้างเป็น USB Boot'],
+          ['Create a bootable disk using: ISO Image', 'กดปุ่มรูปแผ่นดิสก์เพื่อเลือกไฟล์ ISO ของ Windows 10'],
         ],
       },
       {
@@ -63,7 +63,7 @@ export const MANUAL: ManualUnit[] = [
     ],
     terms: ['USB Boot (แฟลชไดรฟ์สำหรับติดตั้ง)', 'Rufus', 'ISO (ไฟล์ติดตั้งระบบ)', 'Device (อุปกรณ์)', 'Partition scheme (รูปแบบพาร์ทิชัน)', 'MBR / GPT', 'NTFS', 'Cluster size'],
     jobs: ['make-usb', 'reinstall'],
-    cautions: ['ใบเนื้อหาระบุว่าตัวอย่างใช้ Rufus เวอร์ชัน 3.4 แต่ภาพประกอบเป็นเวอร์ชันเก่ากว่า หน้าตาโปรแกรมจึงต่างกันได้ ให้ดูชื่อช่องเป็นหลัก'],
+    cautions: ['ข้อความในใบเนื้อหาบอกว่าตัวอย่างใช้ Rufus เวอร์ชัน 3.4 แต่รูปประกอบเป็นเวอร์ชัน 1.4 หน้าจอในเกมทำตามรูป ถ้าใช้ Rufus รุ่นใหม่ หน้าตาจะต่างไปแต่ช่องที่ต้องตั้งยังเหมือนเดิม'],
   },
   {
     no: 2,
@@ -125,7 +125,7 @@ export const MANUAL: ManualUnit[] = [
           ['6', 'License terms', 'ติ๊ก I accept the license terms แล้วกด Next'],
           ['7', 'Type of installation', 'เลือก Custom: Install Windows only (advanced)'],
           ['8', 'Where do you want to install Windows?', 'เลือกไดรฟ์ ถ้าเป็นฮาร์ดดิสก์ใหม่ให้สร้าง Partition ก่อน แล้วกด Next'],
-          ['9', 'Installing Windows', 'รอจนเสร็จ เครื่อง Restart เอง ไม่ต้องทำอะไร'],
+          ['9', 'Installing Windows', 'รอจนเสร็จ เครื่อง Restart เอง ไม่ต้องทำอะไร (ถ้าขึ้น Press any key to boot from CD or DVD ก็ไม่ต้องกด)'],
         ],
       },
       {
@@ -165,6 +165,12 @@ export const MANUAL: ManualUnit[] = [
         tone: 'tip',
         text: '**Offline account** (บัญชีในเครื่อง) ไม่ต้องใช้อีเมล เหมาะกับเครื่องที่หลายคนใช้ร่วมกัน ลิงก์อยู่มุมซ้ายล่างของหน้า Sign in with Microsoft',
       },
+      {
+        kind: 'note',
+        tone: 'extra',
+        title: 'Windows 10 รุ่นใหม่ถามเพิ่ม',
+        text: 'หลังกด Offline account จะถามว่า "Sign in with Microsoft instead?" ให้กด Limited experience และเมื่อตั้งรหัสผ่านจะให้ยืนยันรหัสผ่านกับตั้งคำถามความปลอดภัย 3 ข้อ',
+      },
     ],
     terms: ['Region (ภูมิภาค)', 'Keyboard layout (แป้นพิมพ์)', 'Microsoft Account', 'Offline account (บัญชีในเครื่อง)', 'PIN (รหัสตัวเลข)', 'OneDrive (พื้นที่เก็บไฟล์ออนไลน์)', 'Privacy (ความเป็นส่วนตัว)'],
     jobs: ['first-setup', 'reinstall'],
@@ -187,7 +193,7 @@ export const MANUAL: ManualUnit[] = [
       {
         kind: 'note',
         tone: 'tip',
-        text: 'ถ้าขึ้นว่า You\'re up to date แปลว่า Windows เป็นเวอร์ชันล่าสุดแล้ว',
+        text: 'หลังกด Restart เครื่องจะขึ้น Working on updates แล้วมาที่หน้าจอล็อก ต้องใส่รหัสผ่านที่ตั้งไว้ เปิด Windows Update อีกครั้ง ถ้าขึ้นว่า You\'re up to date แปลว่า Windows เป็นเวอร์ชันล่าสุดแล้ว',
       },
     ],
     terms: ['Windows Update', 'Version (เวอร์ชัน)', 'Restart (เริ่มเครื่องใหม่)'],

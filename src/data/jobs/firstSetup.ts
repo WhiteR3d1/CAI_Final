@@ -54,8 +54,8 @@ export const firstSetupJob: JobDef = {
         title: 'ขั้นที่ 17: ตรวจ Windows Update',
         items: [
           'คลิกช่องค้นหาที่ Taskbar แล้วพิมพ์ **Windows Update**',
-          'ทำตามหน้าจอ และกด **Restart** ในขั้นตอนการอัปเดต',
-          'ขึ้นว่า **You\'re up to date** แปลว่า Windows เป็นเวอร์ชันล่าสุดแล้ว',
+          'กด Check for updates รอให้ดาวน์โหลดและติดตั้ง แล้วกด **Restart now** ตามหน้าจอ',
+          'รีสตาร์ตแล้วใส่รหัสผ่านที่ตั้งไว้เพื่อเข้าเครื่อง จากนั้นเปิด Windows Update อีกครั้ง ถ้าขึ้น **You\'re up to date** แปลว่า Windows เป็นเวอร์ชันล่าสุดแล้ว',
         ],
       },
       {
@@ -71,6 +71,12 @@ export const firstSetupJob: JobDef = {
         tone: 'extra',
         text: 'Location คือการให้แอปรู้ตำแหน่งของเครื่อง ส่วน Advertising ID ใช้ติดตามพฤติกรรมเพื่อแสดงโฆษณา เครื่องที่หลายคนใช้ร่วมกันควรปิดสิ่งที่ไม่จำเป็น',
       },
+      {
+        kind: 'note',
+        tone: 'extra',
+        title: 'สิ่งที่ Windows 10 รุ่นใหม่ถามเพิ่ม',
+        text: 'หลังกด Offline account จะมีหน้า "Sign in with Microsoft instead?" ให้กด Limited experience (มุมซ้ายล่าง) และถ้าตั้งรหัสผ่าน จะให้ยืนยันรหัสผ่านและตั้งคำถามความปลอดภัย 3 ข้อ ไว้ใช้ตอนลืมรหัสผ่าน',
+      },
     ],
     refs: ['ใบเนื้อหา หน้า 11–15 ขั้นตอนที่ 10–17'],
   },
@@ -81,7 +87,7 @@ export const firstSetupJob: JobDef = {
     },
     {
       title: 'หาลิงก์ Offline account',
-      say: 'หน้า Sign in with Microsoft มีช่องใส่อีเมล ถ้าลูกค้าไม่ต้องการบัญชี Microsoft ให้มองหาลิงก์ Offline account มุมซ้ายล่าง แล้วตั้งชื่อผู้ใช้กับรหัสผ่าน',
+      say: 'หน้า Sign in with Microsoft มีช่องใส่อีเมล ถ้าลูกค้าไม่ต้องการบัญชี Microsoft ให้มองหาลิงก์ Offline account มุมซ้ายล่าง Windows จะถามอีกครั้งว่าจะใช้บัญชี Microsoft ไหม ให้กด Limited experience แล้วตั้งชื่อผู้ใช้กับรหัสผ่าน',
     },
     {
       title: 'อัปเดตหลังเข้า Windows',
@@ -96,9 +102,16 @@ export const firstSetupJob: JobDef = {
   ],
   hints: {
     region: ['เลือก Thailand แล้วกด Yes', 'แป้นหลักเลือก US แล้วกด Yes', 'แป้นที่สองกด Add layout แล้วเลือก Thai Kedmanee เพราะนักเรียนต้องพิมพ์ภาษาไทย'],
-    account: ['อย่าใส่อีเมล ให้กดลิงก์ Offline account มุมซ้ายล่าง', 'ตั้งชื่อ Lab01 แล้วใส่รหัสผ่านทั้งสองช่องให้ตรงกัน'],
-    privacy: ['กดปิด Location และ Advertising ID ให้เป็น No (Off) แล้วกด Accept'],
-    update: ['พิมพ์ Windows Update ในช่องค้นหาที่ Taskbar แล้วกด Enter', 'กด Check for updates รอจนขึ้นปุ่ม Restart now แล้วกด'],
+    account: [
+      'อย่าใส่อีเมล ให้กดลิงก์ Offline account มุมซ้ายล่าง แล้วกด Limited experience',
+      'ตั้งชื่อ Lab01 ใส่รหัสผ่าน ยืนยันรหัสผ่านให้ตรงกัน แล้วตั้งคำถามความปลอดภัย 3 ข้อ (จำรหัสผ่านไว้ ต้องใช้ตอนรีสตาร์ต)',
+    ],
+    privacy: ['กดปิด Location และ Advertising ID ให้เป็น No แล้วกด Accept'],
+    update: [
+      'พิมพ์ Windows Update ในช่องค้นหาที่ Taskbar แล้วกด Enter',
+      'กด Check for updates รอจนขึ้นปุ่ม Restart now แล้วกด',
+      'หลังรีสตาร์ต คลิกหน้าจอล็อก ใส่รหัสผ่านที่ตั้งไว้ แล้วเปิด Windows Update อีกครั้งเพื่อดูว่าขึ้น You\'re up to date',
+    ],
   },
   evidence: {
     'wo-th': { label: 'เครื่องใช้งานในประเทศไทย', source: 'ใบสั่งงาน' },
@@ -168,7 +181,7 @@ export const firstSetupJob: JobDef = {
       explain: 'ภูมิภาคหรือแป้นพิมพ์ไม่ได้บอกว่าต้องใช้บัญชีแบบไหน หลักฐานที่ตรงคือความต้องการเรื่องบัญชีผู้ใช้',
     },
   },
-  checks: [{ id: 'check-update', label: 'ตรวจ Windows Update และกด Restart จนขึ้น You\'re up to date (ขั้นที่ 17)', required: true }],
+  checks: [{ id: 'check-update', label: 'อัปเดต Windows กด Restart แล้วเปิด Windows Update อีกครั้งจนเห็น You\'re up to date (ขั้นที่ 17)', required: true }],
   principles: [
     'ขั้นที่ 10–12: ภูมิภาค Thailand → แป้นพิมพ์หลัก → แป้นที่สอง (ต้องการกด Add layout ไม่ต้องการกด Skip)',
     'ขั้นที่ 13–14: เลือก Microsoft Account หรือ Offline account แล้วตั้งชื่อผู้ใช้และรหัสผ่าน',

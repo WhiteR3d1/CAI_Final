@@ -8,7 +8,7 @@ import { Browser, SearchBox, type BrowserPage } from '../desktop/Browser'
 import { Desktop, type DesktopApp, type DesktopControl } from '../desktop/Desktop'
 import { FileExplorer, type FsNode } from '../desktop/FileExplorer'
 import { EvidenceAsk, type Verdict } from '../windows/EvidenceAsk'
-import { SCHEME_LABEL, type RufusConfig, type RufusDevice } from '../windows/media'
+import { RUFUS_FILE, SCHEME_LABEL, type RufusConfig, type RufusDevice } from '../windows/media'
 import { Rufus } from '../windows/Rufus'
 
 type Stage = 'download' | 'plug' | 'rufus' | 'verify'
@@ -49,11 +49,11 @@ export function MakeUsbSim() {
   const download = (ctl: DesktopControl) => {
     if (!downloaded) {
       setDownloaded(true)
-      run.log('ค้นหา rufus แล้วดาวน์โหลด rufus-3.4.exe จากเว็บไซต์ของโปรแกรม (ขั้นที่ 1)')
+      run.log(`ค้นหา rufus แล้วดาวน์โหลด ${RUFUS_FILE} จากเว็บไซต์ของโปรแกรม (ขั้นที่ 1)`)
       run.say('good', 'ดาวน์โหลดเสร็จ ไฟล์อยู่ที่แถบดาวน์โหลดและโฟลเดอร์ Downloads ขั้นต่อไปเสียบแฟลชไดรฟ์ แล้วตรวจว่าเครื่องมองเห็น')
       advance('plug')
     }
-    ctl.toast('ดาวน์โหลดเสร็จ: rufus-3.4.exe (1.1 MB)')
+    ctl.toast(`ดาวน์โหลดเสร็จ: ${RUFUS_FILE} (617 KB)`)
   }
 
   /* ---------- step 2: plug in ---------- */
@@ -71,7 +71,7 @@ export function MakeUsbSim() {
     if (plugged) advance('rufus')
   }
 
-  const devices: RufusDevice[] = [{ id: 'E', label: 'SHOP-TOOLS (E:) [32 GB]' }, ...(plugged ? [{ id: 'F', label: 'KINGSTON (F:) [16 GB]' }] : [])]
+  const devices: RufusDevice[] = [{ id: 'E', label: 'SHOP-TOOLS (E:) [32GB]' }, ...(plugged ? [{ id: 'F', label: 'KINGSTON (F:) [16GB]' }] : [])]
 
   const judge = (verdict: Verdict) => {
     if (verdict === 'ok') {
@@ -99,14 +99,21 @@ export function MakeUsbSim() {
             onClick: () => {
               setToolsWiped(false)
               setRufusRound(r => r + 1)
-              run.say('info', 'ย้อนกลับไปก่อนกด START แล้ว ตรวจชื่อและขนาดในช่อง Device ให้ดีอีกครั้ง')
+              run.say('info', 'ย้อนกลับไปก่อนกด Start แล้ว ตรวจชื่อและขนาดในช่อง Device ให้ดีอีกครั้ง')
             },
           },
         ],
       })
       return false
     }
-    if (config.iso.kind !== 'windows') {
+    if (config.boot !== 'iso') {
+      run.mistake('rufus-not-bootable', {
+        lead: config.boot === 'freedos' ? 'เลือก FreeDOS ไว้ แฟลชไดรฟ์จะบูตเข้า DOS ไม่ใช่ตัวติดตั้ง Windows' : 'ไม่ได้ติ๊ก Create a bootable disk using ไว้ Rufus จะแค่ฟอร์แมตแฟลชไดรฟ์ให้ว่าง',
+        actions: [{ label: 'ตั้งค่าใหม่', variant: 'primary' }],
+      })
+      return false
+    }
+    if (config.iso?.kind !== 'windows') {
       run.mistake('rufus-wrong-iso', { actions: [{ label: 'เลือกไฟล์ใหม่', variant: 'primary' }] })
       return false
     }
@@ -117,13 +124,16 @@ export function MakeUsbSim() {
       })
       return false
     }
-    run.log(`ตั้ง Rufus: Device = KINGSTON (F:) 16 GB, ${SCHEME_LABEL[config.scheme]}, NTFS, Cluster 4096, ISO Windows 10 แล้วกด Start`)
+    if (config.fileSystem !== 'NTFS' || !config.cluster.startsWith('4096')) {
+      run.say('info', `ตัวอย่างในใบเนื้อหาใช้ File system NTFS และ Cluster size 4096 (ตอนนี้เลือก ${config.fileSystem} / ${config.cluster})`)
+    }
+    run.log(`ตั้ง Rufus: Device = KINGSTON (F:) [16GB], ${SCHEME_LABEL[config.scheme]}, ${config.fileSystem}, ${config.cluster}, ISO Windows 10 แล้วกด Start`)
     return true
   }
 
   const rufusDone = (config: RufusConfig) => {
     setUsb(config)
-    run.say('good', 'Rufus ขึ้น READY แล้ว ลองเปิดแฟลชไดรฟ์ใน This PC ดูว่ามีไฟล์ติดตั้งครบก่อนส่งงาน')
+    run.say('good', 'Rufus ขึ้น DONE แล้ว ลองเปิดแฟลชไดรฟ์ใน This PC ดูว่ามีไฟล์ติดตั้งครบก่อนส่งงาน')
     advance('verify')
   }
 
@@ -140,7 +150,7 @@ export function MakeUsbSim() {
         kind: 'folder',
         detail: downloaded ? '4 รายการ' : '3 รายการ',
         children: [
-          ...(downloaded ? [{ id: 'rufus', name: 'rufus-3.4.exe', kind: 'exe' as const, detail: 'Application · 1.1 MB', onOpen: openRufus }] : []),
+          ...(downloaded ? [{ id: 'rufus', name: RUFUS_FILE, kind: 'exe' as const, detail: 'Application · 617 KB', onOpen: openRufus }] : []),
           { id: 'iso-win', name: 'Win10_22H2_Thai_x32x64.iso', kind: 'iso', detail: 'Disc Image File · 5.6 GB' },
           { id: 'iso-ubuntu', name: 'ubuntu-20.04.6-desktop-amd64.iso', kind: 'iso', detail: 'Disc Image File · 4.1 GB' },
           { id: 'iso-office', name: 'Office_2019_Setup.iso', kind: 'iso', detail: 'Disc Image File · 3.2 GB' },
@@ -162,7 +172,7 @@ export function MakeUsbSim() {
         ? [
             {
               id: 'f',
-              name: usb ? 'WIN10_TH (F:)' : 'KINGSTON (F:)',
+              name: usb ? `${usb.label} (F:)` : 'KINGSTON (F:)',
               kind: 'usb' as const,
               detail: usb ? 'USB Boot Windows 10 · 16 GB' : 'แฟลชไดรฟ์ของครูแอน · 16 GB',
               children: usb
@@ -264,9 +274,9 @@ export function MakeUsbSim() {
                 </thead>
                 <tbody>
                   <tr>
-                    <td>rufus-3.4.exe</td>
+                    <td>{RUFUS_FILE}</td>
                     <td>Standard</td>
-                    <td>1.1 MB</td>
+                    <td>617 KB</td>
                     <td>
                       <button type="button" className="w-btn w-btn-primary" onClick={() => download(ctl)}>
                         <Icon name="download" size={14} /> ดาวน์โหลด
@@ -313,7 +323,7 @@ export function MakeUsbSim() {
             downloaded ? (
               <div className="dl-bar">
                 <button type="button" className="dl-file" onClick={openRufus}>
-                  <Icon name="app" size={16} /> rufus-3.4.exe <small>1.1 MB · เปิดไฟล์</small>
+                  <Icon name="app" size={16} /> {RUFUS_FILE} <small>617 KB · เปิดไฟล์</small>
                 </button>
               </div>
             ) : undefined
@@ -332,7 +342,7 @@ export function MakeUsbSim() {
           root={tree}
           quick={[
             { label: 'Downloads', path: ['dl'], icon: 'download' },
-            ...(plugged ? [{ label: usb ? 'WIN10_TH (F:)' : 'KINGSTON (F:)', path: ['f'], icon: 'usb' as const }] : []),
+            ...(plugged ? [{ label: usb ? `${usb.label} (F:)` : 'KINGSTON (F:)', path: ['f'], icon: 'usb' as const }] : []),
           ]}
           onNavigate={onNavigate}
         />
@@ -343,7 +353,7 @@ export function MakeUsbSim() {
   const tip: Record<Stage, string> = {
     download: 'ขั้นที่ 1: ค้นหาและดาวน์โหลดโปรแกรม Rufus',
     plug: plugged ? 'ขั้นที่ 2: เปิด This PC ตรวจว่าเครื่องมองเห็นแฟลชไดรฟ์' : 'ขั้นที่ 2: เสียบแฟลชไดรฟ์ของครูแอน แล้วตรวจว่าเครื่องมองเห็น',
-    rufus: 'ขั้นที่ 3: เปิด Rufus จากแถบดาวน์โหลดหรือโฟลเดอร์ Downloads ตั้งค่าแล้วกด START',
+    rufus: 'ขั้นที่ 3: เปิด Rufus จากแถบดาวน์โหลดหรือโฟลเดอร์ Downloads ตั้งค่าแล้วกด Start',
     verify: 'สร้างเสร็จแล้ว เปิดแฟลชไดรฟ์ใน This PC ตรวจไฟล์ติดตั้ง แล้วส่งงาน',
   }
 
@@ -401,7 +411,7 @@ export function MakeUsbSim() {
       {ask && (
         <EvidenceAsk
           id="usb-setup"
-          title="ก่อนกด START: ตั้งค่าถูกแล้วหรือยัง?"
+          title="ก่อนกด Start: ตั้งค่าถูกแล้วหรือยัง?"
           rule={USB_RULE}
           confirmLabel="ยืนยันและเขียน USB"
           onCancel={() => setAsk(null)}
@@ -418,7 +428,7 @@ export function MakeUsbSim() {
             <br />
             Partition scheme: <strong>{SCHEME_LABEL[ask.config.scheme]}</strong>
             <br />
-            ISO: <strong>{ask.config.iso.name}</strong>
+            ISO: <strong>{ask.config.iso?.name ?? '(ไม่ได้เลือกไฟล์ ISO)'}</strong>
           </p>
           <p>พี่บูตถาม: ทำไมเลือกอุปกรณ์และ Partition scheme นี้</p>
         </EvidenceAsk>

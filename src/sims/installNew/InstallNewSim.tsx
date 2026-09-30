@@ -8,7 +8,7 @@ import { BootMenu } from '../common/BootMenu'
 import { BenchBar, Monitor } from '../common/Monitor'
 import { PostScreen } from '../common/PostScreen'
 import { EvidenceAsk, type Verdict } from '../windows/EvidenceAsk'
-import type { Part } from '../windows/media'
+import { LAB_POST_LINES, type Part } from '../windows/media'
 import { WinSetup, type SetupStep } from '../windows/WinSetup'
 import '../windows/windows.css'
 
@@ -111,7 +111,8 @@ export function InstallNewSim() {
             seconds={7}
             untimed={!timed}
             keys={['F2', 'F12']}
-            firmware="BIOS v02.61"
+            textLines={LAB_POST_LINES}
+            memoryMb={2048}
             onKey={k => setScreen(k === 'F2' ? 'bios' : 'bootmenu')}
             onTimeout={bootUsb}
           />
@@ -122,8 +123,8 @@ export function InstallNewSim() {
             variant="legacy"
             info={BIOS_INFO}
             drives={[USB, HDD]}
-            onSaveExit={bootUsb}
-            onDiscardExit={bootUsb}
+            onSaveExit={powerOn}
+            onDiscardExit={powerOn}
             onNote={t => run.say('info', t)}
             onDrivesChange={() => run.say('info', 'ลำดับบูตตั้งไว้แล้วจากงาน 02 ไม่ต้องเปลี่ยน กด F10 หรือ Esc เพื่อออก')}
           />
@@ -153,6 +154,8 @@ export function InstallNewSim() {
             key={setupRound}
             disk="new"
             parts={NEW_DISK}
+            bootMode="legacy"
+            diskStyle="mbr"
             productKey={LAB_KEY}
             onStep={onStep}
             onArch={(arch, proceed) => (reasoned ? decideArch(arch, proceed) : setAsk({ arch, proceed }))}
@@ -168,13 +171,8 @@ export function InstallNewSim() {
               run.mistake('no-key', { modal: true, actions: [{ label: 'กลับไปใส่ Product Key', variant: 'primary' }] })
               return false
             }}
-            onUpgrade={() =>
-              run.mistake('setup-upgrade', {
-                modal: true,
-                lead: "ตัวติดตั้งแจ้งว่า: The upgrade option isn't available if you start your computer using Windows installation media.",
-                actions: [{ label: 'เลือกใหม่', variant: 'primary' }],
-              })
-            }
+            onKeyRejected={() => run.say('warn', 'คีย์ไม่ตรง ตรวจตัวอักษรกับ Product Key ในใบงานอีกครั้ง พิมพ์แค่ตัวอักษรและตัวเลข ตัวติดตั้งจะใส่ขีดให้เอง')}
+            onUpgrade={() => run.mistake('setup-upgrade', { lead: 'หน้า Compatibility report บอกว่า Upgrade ใช้ไม่ได้เมื่อบูตจากแฟลชไดรฟ์ กด Close แล้วเลือก Custom' })}
             onCreate={mb => run.log(`สร้างพาร์ทิชันใหม่ขนาด ${mb.toLocaleString('en-US')} MB บนฮาร์ดดิสก์ใหม่ (ขั้นที่ 8)`)}
             onTarget={target}
             onPressKey={retry =>
