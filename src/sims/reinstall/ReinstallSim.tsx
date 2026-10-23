@@ -13,6 +13,7 @@ import { Oobe } from '../windows/Oobe'
 import { Rufus } from '../windows/Rufus'
 import { SignIn, WorkingOnUpdates } from '../windows/WindowsBoot'
 import { WinSetup } from '../windows/WinSetup'
+import { Windows10MediaTool } from '../microsoftInstall/Windows10MediaTool'
 import './reinstall.css'
 
 const COPY_MS = 8000
@@ -73,7 +74,7 @@ const BIOS_INFO: BiosInfoRow[] = [
   { label: 'Boot Mode', value: 'UEFI' },
 ]
 
-export function ReinstallSim() {
+export function ReinstallSim({ mediaSource = 'rufus' }: { mediaSource?: 'rufus' | 'microsoft' }) {
   const run = useRun()
   const [stage, setStageLocal] = useState<Stage>('backup')
   const [backedUp, setBackedUp] = useState(false)
@@ -360,11 +361,16 @@ export function ReinstallSim() {
         <>
           <Monitor label="เครื่องของร้าน · เสียบแฟลชไดรฟ์ KINGSTON 16 GB และฮาร์ดดิสก์ SHOP-BACKUP 2 TB อยู่">
             <div className="shop-pc">
-              <Rufus key={rufusRound} devices={DEVICES} defaultScheme="mbr-bios" onStart={rufusStart} onDone={rufusDone} />
+              {mediaSource === 'microsoft' ? (usb ? <div className="w-app"><h2>USB พร้อมติดตั้ง Windows 10 แล้ว</h2><p>KINGSTON (F:) · ภาษาไทย · 64-bit</p></div> : <Windows10MediaTool onDone={() => {
+                // Adapter for the shared installer: this scenario boots the MCT USB in UEFI mode.
+                // MCT has no Rufus partition-scheme selector.
+                setUsb({ device: 'F', iso: null, boot: 'iso', scheme: 'gpt-uefi', fileSystem: 'FAT32', cluster: 'default', label: 'ESD-USB', quickFormat: true, badBlocks: false })
+                run.log('สร้าง USB Windows 10 ภาษาไทย 64-bit ด้วย Media Creation Tool จาก Microsoft แล้ว')
+              }} />) : <Rufus key={rufusRound} devices={DEVICES} defaultScheme="mbr-bios" onStart={rufusStart} onDone={rufusDone} />}
             </div>
           </Monitor>
           <BenchBar>
-            <p>{usb ? 'แฟลชไดรฟ์พร้อมแล้ว' : 'ตั้งค่าใน Rufus ให้ครบแล้วกด Start'}</p>
+            <p>{usb ? 'แฟลชไดรฟ์พร้อมแล้ว' : mediaSource === 'microsoft' ? 'ดาวน์โหลดเครื่องมือจาก Microsoft แล้วสร้าง USB ให้ตรงกับใบงาน' : 'ตั้งค่าใน Rufus ให้ครบแล้วกด Start'}</p>
             <button
               type="button"
               className="btn btn-primary btn-sm"
@@ -464,6 +470,8 @@ export function ReinstallSim() {
         <Monitor label="เครื่องลูกค้า · บูตจากแฟลชไดรฟ์ Windows 10">
           <WinSetup
             key={setupRound}
+            mediaArchitecture={mediaSource === 'microsoft' ? 64 : undefined}
+            initialLanguage={mediaSource === 'microsoft' ? { language: 'ไทย', time: 'Thai (Thailand)', keyboard: 'US' } : undefined}
             disk="existing"
             parts={CUSTOMER_DISK}
             bootMode={usb?.scheme === 'mbr-bios' ? 'legacy' : 'uefi'}

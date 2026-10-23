@@ -29,7 +29,7 @@ export const firstSetupJob: JobDef = {
   ],
   units: ['ใบเนื้อหา Win10 หน้า 11–15'],
   manualNo: 4,
-  reward: 200,
+  reward: 120,
   minutes: 10,
   requires: 'install-new',
   criteria: ['accuracy', 'reasoning', 'dataSafety', 'testing'],

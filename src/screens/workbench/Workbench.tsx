@@ -2,10 +2,13 @@ import { useCallback, useMemo, useReducer, useState, type ComponentType } from '
 import { Stepper } from '../../components/Bits'
 import { Icon } from '../../components/Icon'
 import { KnowledgeView } from '../../components/KnowledgeView'
+import { VisualGuideGallery } from '../../components/VisualGuide'
+import { visualsFor } from '../../data/visualGuides'
 import { Modal } from '../../components/Modal'
 import { RichText } from '../../components/RichText'
 import { useGame } from '../../game/gameContext'
 import { scoreRun } from '../../game/scoring'
+import { MicrosoftInstallSim } from '../../sims/microsoftInstall/MicrosoftInstallSim'
 import type { JobDef, JobId, RunSummary } from '../../game/types'
 import { BiosBootSim } from '../../sims/biosBoot/BiosBootSim'
 import { FirstSetupSim } from '../../sims/firstSetup/FirstSetupSim'
@@ -13,6 +16,7 @@ import { InstallNewSim } from '../../sims/installNew/InstallNewSim'
 import { MakeUsbSim } from '../../sims/makeUsb/MakeUsbSim'
 import { ReinstallSim } from '../../sims/reinstall/ReinstallSim'
 import { W11CheckSim } from '../../sims/w11Check/W11CheckSim'
+import { ModuleSim } from '../../sims/modules/ModuleSim'
 import { Manual } from '../Manual'
 import { CasePanel } from './CasePanel'
 import { Drawer } from './Drawer'
@@ -23,13 +27,15 @@ import { initRun, runReducer, type Phase } from './runState'
 import { Debrief, Handover, ResultView } from './Wrapup'
 import './workbench.css'
 
-const SIMS: Record<JobId, ComponentType> = {
+// jobs with their own sim; module jobs (job.phases) are played by ModuleSim
+const SIMS: Partial<Record<JobId, ComponentType>> = {
   'make-usb': MakeUsbSim,
   'bios-boot': BiosBootSim,
   'install-new': InstallNewSim,
   'first-setup': FirstSetupSim,
   reinstall: ReinstallSim,
   'w11-check': W11CheckSim,
+  'microsoft-install': MicrosoftInstallSim,
 }
 
 interface Props {
@@ -46,8 +52,9 @@ export function Workbench({ job, onExit, onOpenJob }: Props) {
   const [confirmExit, setConfirmExit] = useState(false)
   const closeDrawer = useCallback(() => setDrawer(null), [])
 
-  const order: Phase[] = ['intake', 'learn', ...(job.demo ? (['demo'] as Phase[]) : []), 'practice', 'handover', 'debrief']
-  const steps = ['รับงาน', 'เรียนก่อนทำ', ...(job.demo ? ['ดูตัวอย่าง'] : []), 'ลงมือ', 'ส่งงาน', 'สรุป']
+  const challenge = job.mode === 'challenge'
+  const order: Phase[] = ['intake', ...(!challenge ? (['learn', ...(job.demo ? ['demo'] : [])] as Phase[]) : []), 'practice', 'handover', 'debrief']
+  const steps = ['รับงาน', ...(!challenge ? ['เรียนก่อนทำ', ...(job.demo ? ['ดูตัวอย่าง'] : [])] : []), 'ลงมือ', 'ส่งงาน', 'สรุป']
   const current = state.phase === 'result' ? order.length : order.indexOf(state.phase)
 
   const goPhase = (phase: Phase) => {
@@ -56,7 +63,7 @@ export function Workbench({ job, onExit, onOpenJob }: Props) {
   }
   const accept = () => {
     game.startJob(job.id)
-    goPhase('learn')
+    goPhase(challenge ? 'practice' : 'learn')
   }
   const startPractice = () => {
     if (state.feed.length === 0) {
@@ -80,7 +87,7 @@ export function Workbench({ job, onExit, onOpenJob }: Props) {
   }
   const requestExit = () => (state.phase === 'intake' || state.phase === 'result' ? onExit() : setConfirmExit(true))
 
-  const Sim = SIMS[job.id]
+  const Sim = (job.phases ? ModuleSim : SIMS[job.id]) ?? ModuleSim
   const atBench = state.phase === 'practice' || state.phase === 'handover'
 
   return (
@@ -135,6 +142,7 @@ export function Workbench({ job, onExit, onOpenJob }: Props) {
       )}
       {drawer === 'card' && (
         <Drawer title={job.learn.title} onClose={closeDrawer}>
+          <VisualGuideGallery ids={visualsFor(job.id)} />
           <KnowledgeView blocks={[...job.learn.blocks, ...(job.learn.more ?? [])]} />
           <ul className="ref-list">
             {job.learn.refs.map(r => (

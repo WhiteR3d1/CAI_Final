@@ -1,0 +1,16 @@
+.mct10 { background: #fff; color: #202020; width: 100%; min-height: 420px; font-family: 'Segoe UI', sans-serif; overflow-wrap: anywhere; }
+.mct10-caption { padding: 10px 16px; background: #edf3f8; font-size: 12px; }
+.mct10 section { padding: clamp(16px, 4vw, 36px); }
+.mct10 h2 { color: #0067b8; font-weight: 400; margin-bottom: 24px; }
+.mct10 p { margin: 16px 0; }
+.mct10-site h2 { color: #111; font-size: clamp(24px, 3vw, 34px); font-weight: 600; }
+.mct10-address { font-size: 12px; background: #f2f2f2; border-radius: 4px; padding: 8px; }
+.mct10-download { background: #0067b8; color: white; border: 0; padding: 12px 20px; cursor: pointer; }
+.mct10-result { display: block; width: 100%; padding: 16px; margin: 12px 0; text-align: left; background: white; border: 1px solid #bbb; cursor: pointer; color: #0067b8; }
+.mct10-result small { display: block; margin-top: 8px; color: #444; }
+.mct10-choice { display: flex; align-items: flex-start; gap: 10px; margin: 20px 0; }
+.mct10-choice input { flex-shrink: 0; margin-top: 4px; }
+.mct10-field { display: grid; grid-template-columns: minmax(90px, 1fr) minmax(120px, 2fr); align-items: center; gap: 12px; margin: 16px 0; }
+.mct10-field select { width: 100%; min-width: 0; padding: 6px; }
+.mct10-footer { display: flex; flex-wrap: wrap; gap: 12px; justify-content: flex-end; margin-top: 28px; }
+.mct10 progress { width: 100%; accent-color: #0067b8; }

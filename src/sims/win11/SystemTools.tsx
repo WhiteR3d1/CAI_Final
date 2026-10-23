@@ -95,7 +95,7 @@ export interface HealthRow {
 }
 
 /** PC Health Check: "Introducing Windows 11 · Check now" then the requirement list. */
-export function PcHealthCheck({ rows, onChecked }: { rows: HealthRow[]; onChecked?: () => void }) {
+export function PcHealthCheck({ rows, onChecked, device = 'PLOY-NB · 8 GB RAM · 256 GB SSD' }: { rows: HealthRow[]; onChecked?: () => void; device?: string }) {
   const [state, setState] = useState<'intro' | 'checking' | 'result'>('intro')
   const done = useEffectEvent(() => onChecked?.())
   useEffect(() => {
@@ -114,7 +114,7 @@ export function PcHealthCheck({ rows, onChecked }: { rows: HealthRow[]; onChecke
         <span className="w11-health-logo" aria-hidden />
         <div>
           <strong>PC health at a glance</strong>
-          <p className="w-small">PLOY-NB · 8 GB RAM · 256 GB SSD</p>
+          <p className="w-small">{device}</p>
         </div>
       </div>
       {state !== 'result' ? (

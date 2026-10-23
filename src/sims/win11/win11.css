@@ -1348,3 +1348,13 @@ button.w11-sec-tile {
     display: none;
   }
 }
+
+.w11-sec-alert {
+  border: 1px solid #f3c7cb;
+  background: #fff4f4;
+}
+
+.w11-sec-alert .w-btn {
+  justify-self: start;
+  margin-top: 6px;
+}

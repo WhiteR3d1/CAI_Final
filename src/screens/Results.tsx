@@ -12,11 +12,17 @@ import './results.css'
 // Win10: goals summarised from the Windows 10 content sheet (it has no objective list; see GAME_PLAN.md).
 // Win11: the six behavioural objectives listed in the Windows 11 content-analysis file.
 const GOALS: { track: Track; title: string; jobs: JobId[] }[] = [
+  { track: 'win10', title: 'ดาวน์โหลด Media Creation Tool จาก Microsoft สร้าง USB และติดตั้ง Windows 10 ตามข้อมูลเครื่องลูกค้า (เนื้อหาเสริม)', jobs: ['microsoft-install'] },
   { track: 'win10', title: 'สร้าง USB Boot Windows 10 ด้วยโปรแกรม Rufus ได้ (ใบเนื้อหา Win10 หน้า 1–3)', jobs: ['make-usb', 'reinstall'] },
   { track: 'win10', title: 'กำหนดค่า BIOS ให้เครื่องบูตจาก USB ได้ (หน้า 3–6)', jobs: ['bios-boot', 'reinstall'] },
   { track: 'win10', title: 'ติดตั้ง Windows 10 ตามขั้นตอนที่ 1–9 ได้ถูกต้อง (หน้า 6–11)', jobs: ['install-new', 'reinstall'] },
   { track: 'win10', title: 'ตั้งค่าหลังติดตั้งและตรวจ Windows Update ตามขั้นตอนที่ 10–17 ได้ (หน้า 11–15)', jobs: ['first-setup', 'reinstall'] },
   { track: 'win10', title: 'ติดตั้งระบบปฏิบัติการด้วยความรอบคอบ ไม่ทำข้อมูลเสียหาย', jobs: ['make-usb', 'reinstall'] },
+  { track: 'win11', title: 'ตรวจความพร้อมของเครื่องตามข้อกำหนด Windows 11 และสำรองข้อมูลก่อนติดตั้งได้ (ใบเนื้อหา Win11 หน้า 1–2)', jobs: ['w11-check', 'ch-ready-office', 'ch-ready-old'] },
+  { track: 'win11', title: 'สร้าง USB ติดตั้ง Windows 11 ด้วย Media Creation Tool ได้ (หน้า 2–3)', jobs: ['w11-usb', 'ch-mct-design', 'ch-mct-hotel'] },
+  { track: 'win11', title: 'ตั้งค่า UEFI, Secure Boot และ TPM 2.0 แล้วบูตจาก USB แบบ UEFI ได้ (หน้า 4–5)', jobs: ['w11-uefi', 'ch-uefi-hotel', 'ch-uefi-student'] },
+  { track: 'win11', title: 'ติดตั้ง Windows 11 และตั้งค่าเริ่มต้น (OOBE) ได้ถูกต้อง (หน้า 5–8)', jobs: ['w11-install', 'ch-setup11-design', 'ch-setup11-hotel', 'ch-oobe11-design', 'ch-oobe11-student'] },
+  { track: 'win11', title: 'ตรวจสอบหลังติดตั้ง: Activation, Windows Update, ไดรเวอร์, Windows Security และการสำรองข้อมูลได้ (หน้า 8–10)', jobs: ['w11-verify', 'ch-post-design', 'ch-post-hotel'] },
 ]
 
 function summaryText(save: SaveData, date: string) {

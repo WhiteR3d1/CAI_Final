@@ -1,7 +1,22 @@
 // Shared game types. This file (and other pure logic in src/game) must not touch the DOM,
 // so the node test runner can import it directly.
+import type { Phase } from './scenarios.ts'
 
-export type JobId = 'make-usb' | 'bios-boot' | 'install-new' | 'first-setup' | 'reinstall' | 'w11-check'
+export type StoryJobId =
+  | 'make-usb'
+  | 'bios-boot'
+  | 'install-new'
+  | 'first-setup'
+  | 'reinstall'
+  | 'microsoft-install'
+  | 'w11-check'
+  | 'w11-usb'
+  | 'w11-uefi'
+  | 'w11-install'
+  | 'w11-verify'
+/** short challenge jobs built from module scenarios (src/data/jobs/challenges.ts) */
+export type ChallengeJobId = `ch-${string}`
+export type JobId = StoryJobId | ChallengeJobId
 /** win10 = the Windows 10 content sheet (legacy BIOS, Rufus); win11 = the Windows 11 content sheet (UEFI, Media Creation Tool) */
 export type Track = 'win10' | 'win11'
 export type CriterionId = 'accuracy' | 'reasoning' | 'dataSafety' | 'testing'
@@ -111,7 +126,10 @@ export interface WorkOrderRow {
 
 export interface JobDef {
   id: JobId
+  mode?: 'guided' | 'challenge'
   track: Track
+  /** module jobs are played by src/sims/modules from these phases instead of a dedicated sim */
+  phases?: Phase[]
   /** position within its track (1 = first job of the track) */
   order: number
   code: string

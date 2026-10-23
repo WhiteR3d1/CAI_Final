@@ -409,3 +409,46 @@
  .shop .section-head h2 { font-size: 23px; }
  .shop-page-heading p { font-size: 17px; }
 }
+
+/* challenge jobs under each track */
+.board-challenges {
+  display: grid;
+  gap: 12px;
+  margin-top: 8px;
+  padding: 16px;
+  border: 1px dashed var(--line-2);
+  border-radius: 16px;
+  background: var(--sage-50);
+}
+
+.board-challenges-head h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 19px;
+}
+
+.board-challenges-head p {
+  margin: 4px 0 0;
+  font-size: 15px;
+}
+
+.shop .job-grid-compact {
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.shop .job-grid-compact .job-card {
+  padding: 18px;
+  gap: 12px;
+}
+
+.shop .job-grid-compact .job-card-top h3 {
+  font-size: 18px;
+}
+
+.shop .job-grid-compact .job-tagline {
+  font-size: 15px;
+  line-height: 1.6;
+}

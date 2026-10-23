@@ -36,7 +36,7 @@ export const makeUsbJob: JobDef = {
   ],
   units: ['ใบเนื้อหา Win10 หน้า 1–3'],
   manualNo: 1,
-  reward: 150,
+  reward: 90,
   minutes: 8,
   criteria: ['accuracy', 'reasoning', 'dataSafety', 'testing'],
   learn: {

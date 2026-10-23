@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { JOB_BY_ID } from '../src/data/jobs/index.ts'
+import { JOBS, JOB_BY_ID } from '../src/data/jobs/index.ts'
 import { judgeEvidence } from '../src/game/evidence.ts'
-import { applyResult, defaultSave, isUnlocked, normalizeSave, reputation, shopLevel, startAttempt } from '../src/game/progress.ts'
+import { applyResult, defaultSave, isUnlocked, LEVELS, normalizeSave, reputation, shopLevel, startAttempt } from '../src/game/progress.ts'
+import { quizOrder } from '../src/game/shuffle.ts'
 import { coinsFor, scoreRun } from '../src/game/scoring.ts'
 import type { RunSummary } from '../src/game/types.ts'
 
@@ -81,16 +82,36 @@ describe('coins and progress', () => {
     assert.equal(isUnlocked(done, JOB_BY_ID['bios-boot']), true)
   })
 
-  it('derives reputation and shop level from best stars (30 stars over two tracks)', () => {
+  it('derives reputation and shop level from best stars of every job', () => {
     const r = applyResult(defaultSave(), job, scoreRun(job, clean, 't')).save
     assert.equal(reputation(r), 3)
     assert.equal(shopLevel(0).title, 'ช่างฝึกหัด')
-    assert.equal(shopLevel(5).title, 'ช่างฝึกหัด')
-    assert.equal(shopLevel(6).title, 'ช่างประจำร้าน')
-    // a 12-star save keeps the title it had before the levels were rescaled
-    assert.equal(shopLevel(12).title, 'ช่างมือโปร')
-    assert.equal(shopLevel(26).nextAt, 27)
-    assert.equal(shopLevel(30).nextAt, null)
+    assert.equal(shopLevel(14).title, 'ช่างฝึกหัด')
+    assert.equal(shopLevel(15).title, 'ช่างประจำร้าน')
+    assert.equal(shopLevel(89).nextAt, 90)
+    // the top level must be reachable with three stars on every job
+    assert.ok(JOBS.length * 3 >= LEVELS[LEVELS.length - 1].min)
+    assert.equal(shopLevel(JOBS.length * 3).nextAt, null)
+  })
+})
+
+describe('quiz choice order', () => {
+  const questions = JOBS.flatMap(j => j.quiz.map(q => ({ job: j.id, q })))
+
+  it('is a permutation that stays the same for the same attempt', () => {
+    for (const { q } of questions) {
+      const order = quizOrder(q.id, q.choices.length, 1)
+      assert.deepEqual([...order].sort(), q.choices.map((_, i) => i))
+      assert.deepEqual(quizOrder(q.id, q.choices.length, 1), order)
+    }
+  })
+
+  it('does not always put the correct answer first (the data lists it first)', () => {
+    for (const attempt of [1, 2, 3]) {
+      const positions = questions.map(({ q }) => quizOrder(q.id, q.choices.length, attempt).findIndex(i => q.choices[i].correct))
+      for (const pos of [0, 1, 2]) assert.ok(positions.includes(pos), `attempt ${attempt}: the answer is never shown at ${'กขค'[pos]}`)
+      assert.ok(positions.filter(p => p === 0).length < questions.length * 0.6, `attempt ${attempt}: ก is right too often`)
+    }
   })
 })
 

@@ -111,14 +111,14 @@ export function reputation(save: SaveData): number {
   return Object.values(save.jobs).reduce((sum, p) => sum + (p?.best?.stars ?? 0), 0)
 }
 
-// Two tracks (Windows 10 + Windows 11) × 5 jobs × 3 stars = 30 stars in total.
+// Shop levels over the best stars of all jobs (35 jobs × 3 = 105 stars: story jobs of both tracks + challenges).
 // Shop levels also unlock special decorations (DecorItem.level is an index into this list).
 export const LEVELS = [
   { min: 0, title: 'ช่างฝึกหัด' },
-  { min: 6, title: 'ช่างประจำร้าน' },
-  { min: 12, title: 'ช่างมือโปร' },
-  { min: 20, title: 'หัวหน้าช่าง' },
-  { min: 27, title: 'เจ้าของร้านระดับตำนาน' },
+  { min: 15, title: 'ช่างประจำร้าน' },
+  { min: 35, title: 'ช่างมือโปร' },
+  { min: 60, title: 'หัวหน้าช่าง' },
+  { min: 90, title: 'เจ้าของร้านระดับตำนาน' },
 ] as const
 
 export function shopLevel(rep: number) {

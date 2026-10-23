@@ -6,6 +6,7 @@ import { JOBS, JOB_BY_ID, jobsOf, TRACKS } from '../data/jobs'
 import { MENTOR } from '../data/people'
 import { useGame } from '../game/gameContext'
 import { isUnlocked, jobProgress, lastTrack, LEVELS, nextJob, reputation, shopLevel } from '../game/progress'
+import { learningMode } from '../game/learning'
 import type { JobDef, JobId } from '../game/types'
 import { DecorEditor } from './decor/DecorEditor'
 import { Showcase } from './decor/Showcase'
@@ -36,6 +37,7 @@ function JobCard({ job, onOpen }: { job: JobDef; onOpen: (id: JobId) => void }) 
       </div>
       <p className="job-tagline">{job.tagline}</p>
       <div className="job-meta">
+        {(job.track === 'win10' || job.mode === 'challenge') && <span className="chip chip-good">{learningMode(job) === 'guided' ? 'ฝึกตามขั้นตอน · มีพี่บูตสอน' : 'งานท้าทาย · ลงมือเอง'}</span>}
         {job.units.map(u => (
           <span key={u} className={`chip${u.includes('เสริม') ? ' chip-extra' : ''}`}>
             {u}
@@ -167,6 +169,9 @@ export function Shop({ onOpenJob, onNavigate, view = 'shop' }: { onOpenJob: (id:
         </div>
         {TRACKS.map(track => {
           const jobs = jobsOf(track.id)
+          const main = jobs.filter(j => j.mode !== 'challenge')
+          const challenges = jobs.filter(j => j.mode === 'challenge')
+          const challengesDone = challenges.filter(j => jobProgress(save, j.id).completions > 0).length
           return (
             <div key={track.id} className={`board-track board-track-${track.id}`}>
               <div className="board-track-head">
@@ -175,14 +180,27 @@ export function Shop({ onOpenJob, onNavigate, view = 'shop' }: { onOpenJob: (id:
                   {track.subtitle} · {track.sheet}
                 </p>
               </div>
-              {jobs.length ? (
+              {main.length > 0 && (
                 <div className="job-grid">
-                  {jobs.map(job => (
+                  {main.map(job => (
                     <JobCard key={job.id} job={job} onOpen={onOpenJob} />
                   ))}
                 </div>
-              ) : (
-                <p className="muted board-track-soon">งานสายนี้กำลังเพิ่ม</p>
+              )}
+              {challenges.length > 0 && (
+                <div className="board-challenges">
+                  <div className="board-challenges-head">
+                    <h4>
+                      <Icon name="target" size={18} /> งานท้าทาย ({challengesDone}/{challenges.length})
+                    </h4>
+                    <p className="muted">งานสั้นในขอบเขตใบเนื้อหา ลงมือเองไม่มีการสาธิต ค่าจ้างน้อยกว่างานหลัก ทำหลายงานเพื่อสะสมเหรียญไปแต่งร้าน</p>
+                  </div>
+                  <div className="job-grid job-grid-compact">
+                    {challenges.map(job => (
+                      <JobCard key={job.id} job={job} onOpen={onOpenJob} />
+                    ))}
+                  </div>
+                </div>
               )}
             </div>
           )

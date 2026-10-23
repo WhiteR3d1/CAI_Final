@@ -5,6 +5,7 @@ import { JOBS } from '../../data/jobs'
 import { useGame } from '../../game/gameContext'
 import { isUnlocked, jobProgress, reputation } from '../../game/progress'
 import { CRITERION_LABEL } from '../../game/scoring'
+import { quizOrder } from '../../game/shuffle'
 import type { JobId } from '../../game/types'
 import { useRun } from './runContext'
 import type { RunAction } from './runState'
@@ -70,7 +71,10 @@ export function Handover({ onBack, onSubmit }: { onBack: () => void; onSubmit: (
 
 export function Debrief({ dispatch, onFinish }: { dispatch: (a: RunAction) => void; onFinish: () => void }) {
   const run = useRun()
+  const { save } = useGame()
   const { job, state } = run
+  // the data lists the correct answer first; show the choices in a different order each attempt
+  const attempt = jobProgress(save, job.id).attempts
   const allCorrect = job.quiz.every(q => state.quiz[q.id]?.picked.some(i => q.choices[i]?.correct))
 
   const pick = (qid: string, choice: number, correct: boolean) => {
@@ -150,7 +154,8 @@ export function Debrief({ dispatch, onFinish }: { dispatch: (a: RunAction) => vo
                     ข้อ {qi + 1}. {q.prompt}
                   </legend>
                   <div className="quiz-choices">
-                    {q.choices.map((c, ci) => {
+                    {quizOrder(q.id, q.choices.length, attempt).map((ci, shown) => {
+                      const c = q.choices[ci]
                       const picked = record?.picked.includes(ci)
                       return (
                         <button
@@ -160,7 +165,7 @@ export function Debrief({ dispatch, onFinish }: { dispatch: (a: RunAction) => vo
                           disabled={solved || picked}
                           onClick={() => pick(q.id, ci, Boolean(c.correct))}
                         >
-                          <span className="quiz-letter">{'กขคง'[ci]}</span>
+                          <span className="quiz-letter">{'กขคง'[shown]}</span>
                           {c.text}
                           {picked && <Icon name={c.correct ? 'check' : 'x'} size={16} />}
                         </button>

@@ -68,7 +68,7 @@ export const MANUAL: ManualUnit[] = [
     jobs: ['make-usb', 'reinstall'],
     cautions: [
       'ข้อความในใบเนื้อหาบอกว่าตัวอย่างใช้ Rufus เวอร์ชัน 3.4 แต่รูปประกอบเป็นเวอร์ชัน 1.4 หน้าจอในเกมทำตามรูป ถ้าใช้ Rufus รุ่นใหม่ หน้าตาจะต่างไปแต่ช่องที่ต้องตั้งยังเหมือนเดิม',
-      'ในเกมนี้ Rufus อยู่ในสาย Windows 10 แบบ Legacy BIOS ส่วนสาย Windows 11 ทำ USB ด้วย Media Creation Tool ตามใบเนื้อหา Win11 หน้า 2–3',
+      'สาย Windows 10 ฝึก Rufus ตามใบเนื้อหา และมีงานฝึก Media Creation Tool จาก Microsoft เป็นเนื้อหาเสริม เปิดการ์ดความรู้ในงานฝึก Microsoft เพื่อดูขั้นตอน ส่วนสาย Windows 11 ใช้ Media Creation Tool ตามใบเนื้อหา Win11 หน้า 2–3',
     ],
   },
   {
@@ -147,7 +147,7 @@ export const MANUAL: ManualUnit[] = [
       },
     ],
     terms: ['Windows Boot Manager', '32-bit / 64-bit', 'RAM (หน่วยความจำ)', 'Product Key (รหัสลิขสิทธิ์)', 'License terms (ข้อตกลงการใช้งาน)', 'Custom install', 'Partition (ส่วนแบ่งของฮาร์ดดิสก์)', 'Unallocated Space (พื้นที่ว่างที่ยังไม่แบ่ง)'],
-    jobs: ['install-new', 'reinstall'],
+    jobs: ['install-new', 'microsoft-install', 'reinstall'],
   },
   {
     no: 4,
@@ -297,7 +297,7 @@ export const MANUAL: ManualUnit[] = [
       },
     ],
     terms: ['Media Creation Tool', 'ISO', 'USB flash drive (อย่างน้อย 8 GB)', 'Administrator (สิทธิ์ผู้ดูแลระบบ)', 'Microsoft account'],
-    jobs: [],
+    jobs: ['w11-usb'],
   },
   {
     no: 8,
@@ -332,7 +332,7 @@ export const MANUAL: ManualUnit[] = [
       },
     ],
     terms: ['UEFI', 'Secure Boot', 'TPM 2.0', 'Boot Menu (เมนูเลือกอุปกรณ์บูต)', 'GPT', 'Windows Security', 'Device security'],
-    jobs: [],
+    jobs: ['w11-uefi'],
   },
   {
     no: 9,
@@ -374,7 +374,7 @@ export const MANUAL: ManualUnit[] = [
       },
     ],
     terms: ['Select setup option', 'Product key', 'Digital license (สิทธิ์แบบดิจิทัล)', 'Unallocated Space', 'GPT', 'Ready to install', 'OOBE', 'PIN (Windows Hello)'],
-    jobs: [],
+    jobs: ['w11-install'],
   },
   {
     no: 10,
@@ -404,7 +404,7 @@ export const MANUAL: ManualUnit[] = [
       },
     ],
     terms: ['Activation', 'Windows Update', 'Optional updates / Driver updates', 'Device Manager', 'Windows Security', 'Device encryption / BitLocker', 'Windows Backup'],
-    jobs: [],
+    jobs: ['w11-verify'],
   },
 ]
 

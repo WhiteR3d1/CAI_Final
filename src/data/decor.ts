@@ -48,14 +48,21 @@ export const CATEGORIES: { id: DecorCategory; label: string }[] = [
   { id: 'fun', label: 'ของสนุก' },
 ]
 
+/**
+ * Prices below are design weights; the real price is scaled so that buying the whole catalog costs a little
+ * less than every job pays at three stars (user's request, 23 Oct 2026; tests/decor.test.ts checks the margin).
+ */
+export const PRICE_SCALE = 0.38
+const cost = (weight: number) => (weight === 0 ? 0 : Math.max(5, Math.round((weight * PRICE_SCALE) / 5) * 5))
+
 const wall = (id: string, name: string, price: number, blurb: string, level?: number): DecorItem => ({
-  id, name, price, blurb, kind: 'wall', category: 'surface', w: 0, h: 0, max: 1, level,
+  id, name, price: cost(price), blurb, kind: 'wall', category: 'surface', w: 0, h: 0, max: 1, level,
 })
 const floor = (id: string, name: string, price: number, blurb: string, level?: number): DecorItem => ({
-  id, name, price, blurb, kind: 'floor', category: 'surface', w: 0, h: 0, max: 1, level,
+  id, name, price: cost(price), blurb, kind: 'floor', category: 'surface', w: 0, h: 0, max: 1, level,
 })
 const sign = (id: string, name: string, price: number, blurb: string, level?: number): DecorItem => ({
-  id, name, price, blurb, kind: 'sign', category: 'surface', w: 0, h: 0, max: 1, level,
+  id, name, price: cost(price), blurb, kind: 'sign', category: 'surface', w: 0, h: 0, max: 1, level,
 })
 const place = (
   id: string,
@@ -68,7 +75,7 @@ const place = (
   h: number,
   max: number,
   level?: number,
-): DecorItem => ({ id, name, price, blurb, kind: 'place', category, zone, w, h, max, level })
+): DecorItem => ({ id, name, price: cost(price), blurb, kind: 'place', category, zone, w, h, max, level })
 
 export const DEFAULT_WALL = 'wall-sage'
 export const DEFAULT_FLOOR = 'floor-wood'

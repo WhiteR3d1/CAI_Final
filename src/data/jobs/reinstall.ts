@@ -4,10 +4,11 @@ import { KENG } from '../people.ts'
 // Capstone: every part of the content sheet (pages 1–15) on a customer PC that still has data on it.
 export const reinstallJob: JobDef = {
   id: 'reinstall',
-  order: 5,
+  mode: 'challenge',
+  order: 6,
   track: 'win10',
   code: 'งาน 05',
-  title: 'ลง Windows ใหม่ ห้ามรูปหาย (งานรวม)',
+  title: 'งานท้าทาย: ลง Windows ใหม่ ห้ามรูปหาย',
   tagline: 'ใช้ทุกขั้นตอนในใบเนื้อหากับเครื่องจริงของลูกค้า: สำรองข้อมูล ทำ USB ตั้ง BIOS ติดตั้ง และตรวจงาน',
   customer: KENG,
   intake: [
@@ -37,7 +38,7 @@ export const reinstallJob: JobDef = {
   ],
   units: ['ใบเนื้อหา Win10 หน้า 1–15', 'งานรวม'],
   manualNo: 3,
-  reward: 300,
+  reward: 220,
   minutes: 20,
   requires: 'first-setup',
   criteria: ['accuracy', 'reasoning', 'dataSafety', 'testing'],

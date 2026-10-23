@@ -30,7 +30,7 @@ export const w11CheckJob: JobDef = {
   ],
   units: ['ใบเนื้อหา Win11 หน้า 1–2'],
   manualNo: 6,
-  reward: 150,
+  reward: 90,
   minutes: 10,
   criteria: ['accuracy', 'reasoning', 'dataSafety', 'testing'],
   learn: {

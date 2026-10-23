@@ -16,6 +16,8 @@ interface Props {
   facts?: { tpm?: string; secureBoot?: string; encryption?: string; firewall?: string }
   initial?: SecurityPage
   onPage?: (page: SecurityPage) => void
+  /** shows "Turn on" while the firewall is off */
+  onFirewallOn?: () => void
 }
 
 const NAV: { id: SecurityPage | null; label: string; icon: IconName }[] = [
@@ -29,7 +31,7 @@ const NAV: { id: SecurityPage | null; label: string; icon: IconName }[] = [
 
 const pin = (text: string, fact?: string): ReactNode => (fact ? <Fact id={fact}>{text}</Fact> : text)
 
-export function WindowsSecurity({ tpm, secureBoot, firewall = true, encryption = 'none', facts = {}, initial = 'home', onPage }: Props) {
+export function WindowsSecurity({ tpm, secureBoot, firewall = true, encryption = 'none', facts = {}, initial = 'home', onPage, onFirewallOn }: Props) {
   const [page, setPage] = useState<SecurityPage>(initial)
   const go = (p: SecurityPage) => {
     setPage(p)
@@ -81,6 +83,17 @@ export function WindowsSecurity({ tpm, secureBoot, firewall = true, encryption =
           <>
             <h2>Firewall & network protection</h2>
             <p className="w-small">Who and what can access your networks.</p>
+            {!firewall && onFirewallOn && (
+              <div className="w11-sec-row w11-sec-alert">
+                <Icon name="alert" size={20} />
+                <div>
+                  <strong>Microsoft Defender Firewall is off. Your device may be vulnerable.</strong>
+                  <button type="button" className="w-btn w-btn-primary" onClick={onFirewallOn}>
+                    Turn on
+                  </button>
+                </div>
+              </div>
+            )}
             {['Domain network', 'Private network', 'Public network (active)'].map(n => (
               <div key={n} className="w11-sec-row">
                 <Icon name="wifi" size={20} />

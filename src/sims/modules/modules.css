@@ -1,0 +1,90 @@
+/* shared look of the module jobs (Windows 11 story jobs W11-02..05 and challenge jobs) */
+.module-pc {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow: auto;
+  padding: 12px;
+  background:
+    radial-gradient(ellipse at 70% 45%, rgb(255 255 255 / 25%), transparent 55%),
+    linear-gradient(135deg, #0f4c5c 0%, #1d7a7a 45%, #6fb8a0 100%);
+}
+
+/* auto margins centre the window but keep its top reachable when it is taller than the screen */
+.module-pc > * {
+  margin: auto;
+}
+
+.module-info {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  padding: 24px;
+  background: #0b1a2c;
+  color: #e9f1fb;
+  font-family: var(--font-os);
+  text-align: center;
+}
+
+.module-info strong {
+  font-size: 18px;
+}
+
+.module-info p {
+  max-width: 460px;
+  margin: 0;
+  color: #b8c7d9;
+}
+
+.module-setup-start {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 10px;
+  background: radial-gradient(ellipse at 50% 40%, #3b4f9c, #1b2350 70%);
+  color: #fff;
+  font-family: var(--font-os);
+}
+
+.module-setup-start strong {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.module-choice {
+  display: grid;
+  gap: 8px;
+}
+
+.module-choice button {
+  justify-content: flex-start;
+  text-align: left;
+  white-space: normal;
+}
+
+.module-web {
+  display: grid;
+  gap: 14px;
+}
+
+.module-web section {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border: 1px solid #e3e6ea;
+  border-radius: 8px;
+}
+
+.module-web h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.module-web .w-btn {
+  justify-self: start;
+}

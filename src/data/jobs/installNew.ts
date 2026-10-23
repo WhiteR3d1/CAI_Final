@@ -40,7 +40,7 @@ export const installNewJob: JobDef = {
   ],
   units: ['ใบเนื้อหา Win10 หน้า 6–11'],
   manualNo: 3,
-  reward: 250,
+  reward: 130,
   minutes: 15,
   requires: 'bios-boot',
   criteria: ['accuracy', 'reasoning', 'testing'],

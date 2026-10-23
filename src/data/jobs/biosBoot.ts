@@ -28,7 +28,7 @@ export const biosBootJob: JobDef = {
   ],
   units: ['ใบเนื้อหา Win10 หน้า 3–6'],
   manualNo: 2,
-  reward: 150,
+  reward: 90,
   minutes: 8,
   requires: 'make-usb',
   criteria: ['accuracy', 'reasoning', 'testing'],
