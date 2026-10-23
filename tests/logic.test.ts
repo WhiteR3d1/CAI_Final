@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
 import { JOB_BY_ID } from '../src/data/jobs/index.ts'
 import { judgeEvidence } from '../src/game/evidence.ts'
-import { applyResult, buyItem, defaultSave, isUnlocked, normalizeSave, reputation, shopLevel, startAttempt } from '../src/game/progress.ts'
+import { applyResult, defaultSave, isUnlocked, normalizeSave, reputation, shopLevel, startAttempt } from '../src/game/progress.ts'
 import { coinsFor, scoreRun } from '../src/game/scoring.ts'
 import type { RunSummary } from '../src/game/types.ts'
 
@@ -81,21 +81,16 @@ describe('coins and progress', () => {
     assert.equal(isUnlocked(done, JOB_BY_ID['bios-boot']), true)
   })
 
-  it('buys decorations once and only with enough coins', () => {
-    const rich = { ...defaultSave(), coins: 100 }
-    assert.equal(buyItem(rich, { id: 'lamp', price: 150 }), null)
-    const bought = buyItem(rich, { id: 'fern', price: 80 })
-    assert.equal(bought?.coins, 20)
-    assert.equal(bought && buyItem(bought, { id: 'fern', price: 0 }), null)
-  })
-
-  it('derives reputation and shop level from best stars', () => {
+  it('derives reputation and shop level from best stars (30 stars over two tracks)', () => {
     const r = applyResult(defaultSave(), job, scoreRun(job, clean, 't')).save
     assert.equal(reputation(r), 3)
     assert.equal(shopLevel(0).title, 'ช่างฝึกหัด')
-    assert.equal(shopLevel(4).title, 'ช่างฝึกหัด')
-    assert.equal(shopLevel(5).title, 'ช่างประจำร้าน')
-    assert.equal(shopLevel(15).nextAt, null)
+    assert.equal(shopLevel(5).title, 'ช่างฝึกหัด')
+    assert.equal(shopLevel(6).title, 'ช่างประจำร้าน')
+    // a 12-star save keeps the title it had before the levels were rescaled
+    assert.equal(shopLevel(12).title, 'ช่างมือโปร')
+    assert.equal(shopLevel(26).nextAt, 27)
+    assert.equal(shopLevel(30).nextAt, null)
   })
 })
 
@@ -112,12 +107,13 @@ describe('normalizeSave', () => {
     const s = normalizeSave({
       version: 3,
       coins: -5,
-      owned: ['fern', 3],
+      owned: ['fern', 3, 'no-such-item'],
       jobs: { reinstall: { attempts: 2, completions: 'x', paid: 100 }, broken: 7 },
       settings: { sfx: false, playerName: 42 },
     })
+    assert.equal(s.version, 4)
     assert.equal(s.coins, 0)
-    assert.deepEqual(s.owned, ['fern'])
+    assert.deepEqual(s.inventory, { fern: 1 })
     assert.deepEqual(s.jobs.reinstall, { attempts: 2, completions: 0, paid: 100, best: undefined, last: undefined })
     assert.equal(s.settings.sfx, false)
     assert.equal(s.settings.playerName, '')

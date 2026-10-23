@@ -1,45 +1,74 @@
+import { useId, type KeyboardEvent, type PointerEvent, type Ref } from 'react'
 import { Avatar } from '../components/Avatar'
+import { DECOR_BY_ID } from '../data/decor'
 import { MENTOR } from '../data/people'
-import type { Person } from '../game/types'
+import { layerItems } from '../game/decor'
+import type { DecorState, PlacedDecor, Person } from '../game/types'
+import { FloorSurface, PlacedArt, SignBoard, WallSurface } from './decor/art'
 
-interface Props {
-  owned: string[]
-  customer?: Person
-  onCustomer?: () => void
-  onBoard: () => void
-  onManual: () => void
+/** hooks the decoration editor uses to make placed items draggable */
+export interface SceneEditor {
+  selected: string | null
+  onSelect(uid: string | null): void
+  onPointerDown(e: PointerEvent<SVGGElement>, uid: string): void
+  onKeyDown(e: KeyboardEvent<SVGGElement>, uid: string): void
 }
 
-function BackLayer({ owned }: { owned: string[] }) {
-  const has = (id: string) => owned.includes(id)
+interface Props {
+  decor: DecorState
+  customer?: Person
+  onCustomer?: () => void
+  onBoard?: () => void
+  onManual?: () => void
+  /** false hides the customer and the mentor (editor and show mode) */
+  people?: boolean
+  editor?: SceneEditor
+  sceneRef?: Ref<HTMLDivElement>
+  label?: string
+}
+
+function Items({ items, editor }: { items: PlacedDecor[]; editor?: SceneEditor }) {
   return (
-    <svg className="scene-layer" viewBox="0 0 1000 460" aria-hidden>
+    <>
+      {items.map(p => {
+        const item = DECOR_BY_ID[p.item]
+        const selected = editor?.selected === p.uid
+        return (
+          <g
+            key={p.uid}
+            className={`decor-placed${selected ? ' is-selected' : ''}`}
+            tabIndex={editor ? 0 : undefined}
+            role={editor ? 'button' : undefined}
+            aria-label={editor ? `${item.name} (ลากเพื่อย้าย)` : undefined}
+            aria-pressed={editor ? selected : undefined}
+            onPointerDown={editor ? e => editor.onPointerDown(e, p.uid) : undefined}
+            onKeyDown={editor ? e => editor.onKeyDown(e, p.uid) : undefined}
+            onFocus={editor ? () => editor.onSelect(p.uid) : undefined}
+          >
+            <PlacedArt id={p.item} x={p.x} y={p.y} flip={p.flip} />
+            {editor && <rect className="decor-hit" x={p.x - item.w / 2 - 4} y={p.y - item.h - 4} width={item.w + 8} height={item.h + 8} rx="6" />}
+          </g>
+        )
+      })}
+    </>
+  )
+}
+
+function BackLayer({ decor, pid, editor }: { decor: DecorState; pid: string; editor?: SceneEditor }) {
+  return (
+    <svg className="scene-layer" viewBox="0 0 1000 460" aria-hidden={editor ? undefined : true}>
       <defs>
-        <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id={`${pid}-sky`} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0" stopColor="#cfe5ea" />
           <stop offset="1" stopColor="#eef6ef" />
         </linearGradient>
-        <pattern id="wallpaper" width="44" height="44" patternUnits="userSpaceOnUse">
-          <rect width="44" height="44" fill="#dfe8d5" />
-          <circle cx="22" cy="22" r="1.6" fill="#cfdcc3" />
-        </pattern>
-        <radialGradient id="glow" cx=".5" cy=".5" r=".5">
-          <stop offset="0" stopColor="#ff9fb0" stopOpacity=".9" />
-          <stop offset="1" stopColor="#ff9fb0" stopOpacity="0" />
-        </radialGradient>
       </defs>
-      <rect width="1000" height="300" fill="url(#wallpaper)" />
-      <rect y="296" width="1000" height="48" fill="#c8d7bc" />
-      <rect y="296" width="1000" height="6" fill="#b2c4a5" />
-      <rect y="344" width="1000" height="116" fill="#e6d6b4" />
-      <g stroke="#d4c29c" strokeWidth="2">
-        <path d="M0 372H1000M0 404H1000M0 436H1000" />
-        <path d="M120 344v28M420 372v32M760 344v28M260 404v32M600 404v32M900 372v32" />
-      </g>
+      <WallSurface style={decor.wall} pid={pid} />
+      <FloorSurface style={decor.floor} pid={pid} />
 
       {/* window */}
       <rect x="52" y="58" width="196" height="182" rx="6" fill="#f8f4e3" />
-      <rect x="66" y="72" width="168" height="154" fill="url(#sky)" />
+      <rect x="66" y="72" width="168" height="154" fill={`url(#${pid}-sky)`} />
       <path d="M66 190q40-34 84-10t84-8v54H66z" fill="#b9d3a8" />
       <path d="M66 206q52-22 100 0t68-8v28H66z" fill="#a3c493" />
       <circle cx="198" cy="104" r="15" fill="#fff6d6" />
@@ -49,22 +78,8 @@ function BackLayer({ owned }: { owned: string[] }) {
         <path d="M6 0h28l-3 20H9z" fill="#c07f5f" />
         <path d="M20 0c-10-12-18-8-20-18 10 0 16 6 20 14 2-12 10-18 18-18-2 10-8 16-18 22z" fill="#5f8a55" />
       </g>
-      {has('neon') && (
-        <g>
-          <ellipse cx="150" cy="118" rx="70" ry="30" fill="url(#glow)" />
-          <rect x="102" y="100" width="96" height="36" rx="18" fill="none" stroke="#ff6f86" strokeWidth="4" />
-          <text x="150" y="126" textAnchor="middle" fontFamily="Mitr, sans-serif" fontSize="22" fill="#ff5f79" letterSpacing="3">
-            OPEN
-          </text>
-        </g>
-      )}
 
-      {/* hanging sign */}
-      <path d="M430 0v30M570 0v30" stroke="#8a9b82" strokeWidth="3" />
-      <rect x="392" y="28" width="216" height="54" rx="14" fill="#193d35" />
-      <text x="500" y="64" textAnchor="middle" fontFamily="Mitr, sans-serif" fontSize="25" fill="#e8bd6a" letterSpacing="1">
-        BOOT &amp; BLOOM
-      </text>
+      <SignBoard style={decor.sign} text={decor.signText} />
 
       {/* job board */}
       <rect x="276" y="104" width="178" height="132" rx="8" fill="#a8825a" />
@@ -79,22 +94,6 @@ function BackLayer({ owned }: { owned: string[] }) {
         <circle cx="413" cy="166" r="4" fill="#e8bd6a" />
         <circle cx="333" cy="190" r="4" fill="#3f7a5e" />
       </g>
-
-      {has('poster') && (
-        <g transform="rotate(-3 525 160)">
-          <rect x="482" y="104" width="86" height="112" rx="3" fill="#fbf6e6" />
-          <rect x="482" y="104" width="86" height="26" fill="#2f5e4b" />
-          <text x="525" y="122" textAnchor="middle" fontFamily="IBM Plex Mono, monospace" fontSize="11" fill="#fffdf3">
-            BOOT ORDER
-          </text>
-          <g fontFamily="IBM Plex Mono, monospace" fontSize="11" fill="#2f5e4b">
-            <text x="492" y="150">1 USB</text>
-            <text x="492" y="170">2 HDD</text>
-            <text x="492" y="190">3 F10 ✓</text>
-          </g>
-          <rect x="500" y="98" width="22" height="10" fill="#f2dfa8" opacity=".85" />
-        </g>
-      )}
 
       {/* shelf with manuals */}
       <rect x="700" y="150" width="236" height="10" rx="2" fill="#a8825a" />
@@ -114,27 +113,14 @@ function BackLayer({ owned }: { owned: string[] }) {
         <circle cx="8" cy="10" r="6" fill="#7eaa70" />
       </g>
 
-      {has('fern') && (
-        <g>
-          <path d="M620 0v58" stroke="#8a9b82" strokeWidth="2" />
-          <path d="M604 58h32l-4 22h-24z" fill="#c9926c" />
-          <g fill="#5f8a55">
-            <path d="M606 62c-16 10-22 30-20 50 8-16 14-30 22-44z" />
-            <path d="M634 62c16 10 22 30 20 50-8-16-14-30-22-44z" />
-            <path d="M618 62c-4 16-2 34 4 48 2-16 2-32-2-48z" />
-            <path d="M612 60c-18-2-30 6-36 18 14-4 26-8 36-14z" />
-            <path d="M628 60c18-2 30 6 36 18-14-4-26-8-36-14z" />
-          </g>
-        </g>
-      )}
+      <Items items={layerItems(decor, 'back')} editor={editor} />
     </svg>
   )
 }
 
-function FrontLayer({ owned }: { owned: string[] }) {
-  const has = (id: string) => owned.includes(id)
+function FrontLayer({ decor, editor }: { decor: DecorState; editor?: SceneEditor }) {
   return (
-    <svg className="scene-layer scene-front" viewBox="0 0 1000 460" aria-hidden>
+    <svg className="scene-layer scene-front" viewBox="0 0 1000 460" aria-hidden={editor ? undefined : true}>
       {/* counter */}
       <rect x="246" y="268" width="360" height="22" rx="5" fill="#7e5f3f" />
       <rect x="258" y="290" width="336" height="118" fill="#b48c5f" />
@@ -151,24 +137,10 @@ function FrontLayer({ owned }: { owned: string[] }) {
       </g>
       <g transform="translate(262 238)">
         <rect x="0" y="0" width="64" height="30" rx="4" fill="#fffdf3" stroke="#cdd8c6" />
-        <text x="32" y="20" textAnchor="middle" fontFamily="IBM Plex Sans Thai, sans-serif" fontSize="13" fill="#2f5e4b">
+        <text x="32" y="20" textAnchor="middle" fontFamily="IBM Plex Sans Thai, Tahoma, sans-serif" fontSize="13" fill="#2f5e4b">
           รับซ่อม
         </text>
       </g>
-
-      {has('cat') && (
-        <g transform="translate(352 236)">
-          <ellipse cx="34" cy="26" rx="30" ry="12" fill="#d99c5f" />
-          <path d="M60 26q18-2 12-18" fill="none" stroke="#d99c5f" strokeWidth="6" strokeLinecap="round" />
-          <circle cx="12" cy="20" r="12" fill="#e2a86b" />
-          <path d="M3 12l2-12 8 8zM14 8l8-8 2 12z" fill="#e2a86b" />
-          <path d="M6 21q3 2 6 0M14 21q3 2 6 0" stroke="#5a3a2a" strokeWidth="1.6" fill="none" strokeLinecap="round" />
-          <path d="M26 20q8 6 16 0M40 22q6 5 12 0" stroke="#c1864f" strokeWidth="2" fill="none" />
-          <text x="-2" y="-6" fontFamily="Mitr, sans-serif" fontSize="14" fill="#6f8179">
-            z z
-          </text>
-        </g>
-      )}
 
       {/* workbench */}
       <rect x="640" y="302" width="330" height="16" rx="4" fill="#a8825a" />
@@ -188,39 +160,47 @@ function FrontLayer({ owned }: { owned: string[] }) {
         <path d="M918 262h26M918 272h26" stroke="#5c6f66" strokeWidth="3" />
         <path d="M700 300l6-8h64l6 8z" fill="#e9e3c8" />
       </g>
-      {has('lamp') && (
-        <g>
-          <polygon points="790,210 810,214 905,302 772,302" fill="#ffe7a6" opacity=".3" />
-          <path d="M748 302h26" stroke="#3a4a43" strokeWidth="6" strokeLinecap="round" />
-          <path d="M761 300l-4-58 30-40" fill="none" stroke="#3a4a43" strokeWidth="5" strokeLinecap="round" />
-          <path d="M776 194l36 8-18 18z" fill="#e8bd6a" />
-        </g>
-      )}
+
+      <Items items={layerItems(decor, 'front')} editor={editor} />
     </svg>
   )
 }
 
-export function ShopScene({ owned, customer, onCustomer, onBoard, onManual }: Props) {
+export function ShopScene({ decor, customer, onCustomer, onBoard, onManual, people = true, editor, sceneRef, label }: Props) {
+  // pattern ids must be unique when several scenes are on the page (front page, editor, show mode)
+  const pid = `s${useId().replace(/[^a-zA-Z0-9]/g, '')}`
   return (
-    <div className="scene" role="group" aria-label="ภายในร้าน Boot & Bloom">
-      <BackLayer owned={owned} />
-      {customer && (
+    <div
+      ref={sceneRef}
+      className={`scene${editor ? ' is-editing' : ''}`}
+      role="group"
+      aria-label={label ?? `ภายในร้าน ${decor.signText}`}
+      onPointerDown={editor ? e => e.target === e.currentTarget && editor.onSelect(null) : undefined}
+    >
+      <BackLayer decor={decor} pid={pid} editor={editor} />
+      {people && customer && (
         <div className="scene-person scene-customer">
           <Avatar look={customer.look} mood="worried" size={120} />
         </div>
       )}
-      <div className="scene-person scene-mentor">
-        <Avatar look={MENTOR.look} mood="happy" size={110} />
-      </div>
-      <FrontLayer owned={owned} />
+      {people && (
+        <div className="scene-person scene-mentor">
+          <Avatar look={MENTOR.look} mood="happy" size={110} />
+        </div>
+      )}
+      <FrontLayer decor={decor} editor={editor} />
 
-      <button type="button" className="hotspot hotspot-board" onClick={onBoard}>
-        <span>กระดานงาน</span>
-      </button>
-      <button type="button" className="hotspot hotspot-manual" onClick={onManual}>
-        <span>คู่มือช่าง</span>
-      </button>
-      {customer && onCustomer && (
+      {!editor && onBoard && (
+        <button type="button" className="hotspot hotspot-board" onClick={onBoard}>
+          <span>กระดานงาน</span>
+        </button>
+      )}
+      {!editor && onManual && (
+        <button type="button" className="hotspot hotspot-manual" onClick={onManual}>
+          <span>คู่มือช่าง</span>
+        </button>
+      )}
+      {!editor && customer && onCustomer && (
         <button type="button" className="hotspot hotspot-customer" onClick={onCustomer}>
           <span className="hotspot-alert" aria-hidden>
             !

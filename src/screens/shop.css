@@ -331,7 +331,7 @@
 /* Spacious learning navigation: separate board and decoration screens. */
 .shop-page-heading h1 { margin: 24px 0 10px; font-size: clamp(28px, 3vw, 38px); }
 .shop-page-heading p { font-size: 18px; margin: 0; }
-.shop-shortcuts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.shop-shortcuts { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
 .shortcut { display: flex; align-items: center; gap: 20px; padding: 28px; text-align: left; color: var(--ink); }
 .shortcut:hover { border-color: var(--green-500); background: var(--sage-50); }
 .shortcut strong { display: block; font-size: 24px; }

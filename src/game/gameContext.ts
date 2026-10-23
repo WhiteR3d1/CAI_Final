@@ -1,7 +1,6 @@
 import { createContext, useContext } from 'react'
-import type { DecorItem } from '../data/decor'
 import type { SoundName } from './audio'
-import type { JobDef, JobId, JobResult, SaveData, Settings } from './types'
+import type { DecorState, JobDef, JobId, JobResult, SaveData, Settings } from './types'
 
 export interface GameApi {
   save: SaveData
@@ -9,7 +8,14 @@ export interface GameApi {
   startJob(id: JobId): void
   /** records the run and returns the coins actually paid */
   finishJob(job: JobDef, result: JobResult): number
-  buy(item: DecorItem): boolean
+  /** pays for one copy of a decoration (placed or applied at once); false when not allowed */
+  buyDecor(id: string): boolean
+  /** stands one copy from stock in the shop */
+  placeDecor(id: string): boolean
+  /** switches to an owned wall / floor / sign style */
+  applySurface(id: string): boolean
+  /** stores the shop layout after moving, flipping, stacking, storing or renaming */
+  setDecor(decor: DecorState): void
   updateSettings(patch: Partial<Settings>): void
   reset(): void
   play(name: SoundName): void

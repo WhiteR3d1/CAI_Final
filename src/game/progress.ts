@@ -1,10 +1,12 @@
+import { defaultDecor, migrateOwned, normalizeShop } from './decor.ts'
 import type { JobDef, JobId, JobProgress, JobResult, SaveData, Settings } from './types.ts'
 
 export function defaultSave(): SaveData {
   return {
-    version: 3,
+    version: 4,
     coins: 0,
-    owned: [],
+    inventory: {},
+    decor: defaultDecor(),
     jobs: {},
     settings: { sfx: true, unlockAll: false, playerName: '' },
   }
@@ -28,10 +30,13 @@ function cleanResult(v: unknown): JobResult | undefined {
   }
 }
 
-/** Accepts anything read from storage and returns a valid save (unknown/old versions start fresh). */
+/**
+ * Accepts anything read from storage and returns a valid save.
+ * v3 (five fixed decorations) is migrated; unknown/older versions start fresh.
+ */
 export function normalizeSave(raw: unknown): SaveData {
   const base = defaultSave()
-  if (!isObj(raw) || raw.version !== 3) return base
+  if (!isObj(raw) || (raw.version !== 3 && raw.version !== 4)) return base
   const jobs: SaveData['jobs'] = {}
   if (isObj(raw.jobs)) {
     for (const [id, value] of Object.entries(raw.jobs)) {
@@ -51,13 +56,8 @@ export function normalizeSave(raw: unknown): SaveData {
     unlockAll: typeof s.unlockAll === 'boolean' ? s.unlockAll : base.settings.unlockAll,
     playerName: typeof s.playerName === 'string' ? s.playerName.slice(0, 60) : '',
   }
-  return {
-    version: 3,
-    coins: num(raw.coins),
-    owned: Array.isArray(raw.owned) ? raw.owned.filter((x): x is string => typeof x === 'string') : [],
-    jobs,
-    settings,
-  }
+  const shop = raw.version === 3 ? migrateOwned(raw.owned) : normalizeShop(raw.inventory, raw.decor)
+  return { version: 4, coins: num(raw.coins), ...shop, jobs, settings }
 }
 
 export function jobProgress(save: SaveData, id: JobId): JobProgress {
@@ -94,17 +94,14 @@ export function reputation(save: SaveData): number {
   return Object.values(save.jobs).reduce((sum, p) => sum + (p?.best?.stars ?? 0), 0)
 }
 
-export function buyItem(save: SaveData, item: { id: string; price: number }): SaveData | null {
-  if (save.owned.includes(item.id) || save.coins < item.price) return null
-  return { ...save, coins: save.coins - item.price, owned: [...save.owned, item.id] }
-}
-
-// 5 jobs × 3 stars = 15 stars in total
+// Two tracks (Windows 10 + Windows 11) × 5 jobs × 3 stars = 30 stars in total.
+// Shop levels also unlock special decorations (DecorItem.level is an index into this list).
 export const LEVELS = [
   { min: 0, title: 'ช่างฝึกหัด' },
-  { min: 5, title: 'ช่างประจำร้าน' },
-  { min: 10, title: 'ช่างมือโปร' },
-  { min: 14, title: 'หัวหน้าช่าง' },
+  { min: 6, title: 'ช่างประจำร้าน' },
+  { min: 12, title: 'ช่างมือโปร' },
+  { min: 20, title: 'หัวหน้าช่าง' },
+  { min: 27, title: 'เจ้าของร้านระดับตำนาน' },
 ] as const
 
 export function shopLevel(rep: number) {

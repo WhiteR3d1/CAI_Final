@@ -173,10 +173,31 @@ export interface Settings {
   playerName: string
 }
 
+/** one decoration standing in the shop; (x, y) is its bottom-centre in scene units */
+export interface PlacedDecor {
+  uid: string
+  item: string
+  x: number
+  y: number
+  flip: boolean
+  /** stacking order within its layer (higher is drawn later) */
+  z: number
+}
+
+export interface DecorState {
+  wall: string
+  floor: string
+  sign: string
+  signText: string
+  placed: PlacedDecor[]
+}
+
 export interface SaveData {
-  version: 3
+  version: 4
   coins: number
-  owned: string[]
+  /** decoration id → copies bought */
+  inventory: Record<string, number>
+  decor: DecorState
   jobs: Partial<Record<JobId, JobProgress>>
   settings: Settings
 }
