@@ -55,6 +55,37 @@
 
 ## บันทึกงาน
 
+### 2026-10-23 — Codex: ตรวจปัญหาเชื่อมต่อหลังเปลี่ยนเป็น username/password
+- ผู้ใช้ส่งภาพหน้า login แจ้งติดต่อชีตไม่ได้; ตรวจ URL /exec ที่ตั้งใน src/auth/api.ts แบบไม่ลงชื่อเข้าใช้ พบ HTTP 200 แต่เป็น HTML ข้อผิดพลาด “ไม่พบฟังก์ชันของสคริปต์: doGet” ไม่ใช่ JSON API
+- ยังไม่มี .env.local override ในโปรเจกต์; ต้องอัปเดต deployment เดิมเป็นโค้ดใหม่ หรือรับ URL /exec ใหม่จากผู้ใช้ถ้าสร้าง deployment ใหม่
+- ปรับข้อความ NETWORK ให้ตรวจ URL/deployment access ด้วย ไม่ชี้ว่าเป็นปัญหาอินเทอร์เน็ตอย่างเดียว; ไม่ได้แก้ deployment บน Google
+
+### 2026-10-23 — Codex: เหลือ username/password และตั้งค่าใน Code.gs
+- **ผู้ใช้สั่ง:** ย้ายค่าตั้งค่าเข้า Code.gs และเอา Google login ออก
+- เพิ่ม BB_CONFIG สำหรับ SHEET_ID/ALLOW_REGISTRATION; setupBootBloom สร้าง BB_SESSION_SECRET_V2 อัตโนมัติใน Script Properties ไม่ฝังค่าลับและไม่ใช้ค่า SESSION_SECRET ที่ปรากฏในภาพ; Run ซ้ำคงค่าเดิม
+- ลบ Google UI/library/backend OAuth; คงคอลัมน์เก่า googleSub/email เพื่อไม่ทำ schema/ข้อมูลเดิมเสียหาย ไม่ย้ายบัญชี Google อัตโนมัติ
+- ปรับ src/auth, apps-script/Code.gs, SETUP.md, specs และ tests/accounts.test.ts; ทดสอบสร้าง secret อัตโนมัติและไม่เปลี่ยนเมื่อ run ซ้ำ
+- Build ผ่าน (มีคำเตือนขนาด chunk เดิม); ต้องให้เจ้าของแทน Code.gs, Run setupBootBloom และ Deploy New version จึงใช้ live ได้ ยังไม่ได้แก้ Apps Script บนเว็บแทนเจ้าของ
+
+### 2026-10-23 — Codex: บัญชีและเซฟ Google Sheets โดยตรง ไม่ใช้ Firebase
+- **ข้อสรุปจากผู้ใช้:** ไม่ใช้ Firebase ใช้ชีต ID `1Jr1oHNkKg3kCP171JEqd6BRlDig6KRDoPDRAI3rgXrA`; ต้องการ Google login และสร้าง username/password ได้
+- **การออกแบบของ Codex:** Apps Script เป็น API; bcrypt cost 12 สำหรับ password; session 8 ชั่วโมงเก็บ hash ในชีต; Google OAuth code popup (ต้องตั้งค่า client เพิ่ม); Google กับ username เป็นบัญชีแยก ไม่ auto-link อีเมล
+- เพิ่ม `src/auth/` หน้า login/register, API, save queue, สถานะบันทึก/ลองใหม่/conflict, โหมด local preview; โหลดก่อนเปิดเกมและแยกร่างตาม UID; ปรับ App/GameProvider/storage รับเซฟและ callback แยกบัญชี
+- เพิ่ม `apps-script/Code.gs`, vendor `Bcrypt.gs` + license และ `apps-script/SETUP.md` คู่มือติดตั้งภาษาไทย; setup สร้างเฉพาะ BB_Accounts/BB_Sessions/BB_Saves; ตรวจ session/ownership/schema/revision/idempotency ด้วย LockService ไม่แก้แท็บเดิม
+- เพิ่ม `.env.example`, ปรับ `specs/accounts-and-sheets.md`, เพิ่ม `tests/accounts.test.ts`; ถอน Firebase แล้ว เหลือ bcryptjs เป็น dev dependency; อัปเดต Vite/source-map-js ภายในช่วงเดิมแก้ audit (ล่าสุด 0 vulnerabilities)
+- ตรวจ build/lint ผ่าน, tests 294/294 ผ่าน; build มีคำเตือน bundle หลักเกิน 500 kB (ไม่มี error); browser ตรวจหน้า login/register และ local preview เข้าเกม 35 งานได้ (`specs/account-login.png`); backend ใช้ Node VM mock Sheets + vendor bcrypt จริงในสภาพไม่มี Node crypto/timers
+- **งานค้างตั้งค่าจริง:** ยังไม่ deploy/เขียนชีตจริง เพราะ connector ได้ 403 และ editor เปิดไม่ถึงโค้ดเดิม; URL /exec เดิมตอนตรวจตอบไม่พบ doGet ต้องให้เจ้าของรวม handler กับโค้ดเก่าและ deploy ตามคู่มือ ห้ามอ้างว่า login Google/เซฟ live ผ่านแล้ว
+- **ข้อจำกัด:** ไม่มี reset password/ผูกสองวิธีเข้าบัญชีเดียว; quota Apps Script และ basic rate limit เหมาะชั้นเรียนเล็ก; คะแนนยังมาจาก frontend ไม่ใช่ระบบสอบกันแก้คะแนน; เซฟถาวรไม่กู้ simulation ระหว่างงานที่ยังไม่ส่ง
+- รักษางาน Claude (Win11 +24 challenges/เศรษฐกิจใหม่) ไม่แก้ `.claude/`; ภาพ visual guide และ CSS modal จากรอบก่อนยังอยู่
+
+### 2026-10-23 — Codex: ภาพประกอบขั้นตอนอธิบาย และรับคำขอระบบออนไลน์
+- **ผู้ใช้ยืนยัน:** ต้องการภาพประกอบพร้อมลูกศรชี้จุดที่ต้องกด และคำอธิบายว่าทำเพื่ออะไร
+- เพิ่มภาพ SVG วาดใหม่ 27 ภาพ สำหรับ 7 งานที่มีตอนเริ่มทำ (Win10 และ W11-01) ไม่คัดลอกภาพจาก PDF; หลังจากนั้น Claude เพิ่มงานเป็น 35 งาน ให้ยึด mapping ล่าสุดของ Claude ด้วย
+- แสดงในหน้าเรียนก่อนทำ หน้าเดโม การ์ดความรู้ และแผงพี่บูตแบบเปิดดูภาพของขั้นปัจจุบัน มีปุ่มขยายภาพ/ปิดด้วย Esc ข้อความทำอะไร/ทำไม และคำอธิบายภาพสำหรับ screen reader
+- ไฟล์ภาพที่เพิ่ม: `src/data/visualGuides.ts`, `src/components/{VisualGuide.tsx,visual-guide.css}`, จุดเชื่อม `src/screens/workbench/{Learn,CasePanel,Workbench}.tsx`; Claude รวมเข้าบันทึก Git แล้วระหว่างทำงาน รอบนี้ปรับขนาด modal ภาพเพิ่มเติม
+- ก่อนรับอัปเดต Claude: build/lint ผ่าน, tests 77/77 ผ่าน; ตรวจ mapping ของ 7 งานครบ; เปิดเบราว์เซอร์ 127.0.0.1:5184 ได้เมื่อใช้ dev server นอก sandbox ตรวจเลือกภาพ/ขยายภาพ Rufus แล้ว ยังไม่ได้ตรวจมือถือจริง
+- **คำขอล่าสุด:** เพิ่ม login และบันทึกลง Google Sheets; กำลังถามชนิด login และชีตปลายทาง ยังไม่มีการเชื่อมต่อออนไลน์จริง
+
 ### 2026-10-23 — Claude: ✅ สาย Windows 11 ครบ 5 งาน + งานท้าทาย 24 งาน + สลับตัวเลือกคำถาม + ปรับเศรษฐกิจเหรียญ (branch `win11-track`)
 - **ข้อสรุปจากผู้ใช้:** ดู "23 ต.ค. 2026 รอบ 2" ด้านบน
 - **ปลดการจองไฟล์ของเฟส 2–3 แล้ว**

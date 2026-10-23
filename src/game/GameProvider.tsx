@@ -6,14 +6,15 @@ import { applyResult, defaultSave, reputation, shopLevel, startAttempt } from '.
 import { loadSave, writeSave } from './storage'
 import type { SaveData } from './types'
 
-export function GameProvider({ children }: { children: ReactNode }) {
-  const [save, setSave] = useState<SaveData>(loadSave)
+export function GameProvider({ children, initialSave, saveScope, onSave }: { children: ReactNode; initialSave?: SaveData; saveScope?: string; onSave?: (save: SaveData) => void }) {
+  const [save, setSave] = useState<SaveData>(() => initialSave ?? loadSave())
   const [storageOk, setStorageOk] = useState(true)
 
   const commit = useCallback((next: SaveData) => {
     setSave(next)
-    setStorageOk(writeSave(next))
-  }, [])
+    setStorageOk(writeSave(next, saveScope))
+    onSave?.(next)
+  }, [saveScope, onSave])
 
   const play = useCallback(
     (name: SoundName) => {

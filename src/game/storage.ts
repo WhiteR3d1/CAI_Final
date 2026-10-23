@@ -15,9 +15,9 @@ export function loadSave(): SaveData {
   }
 }
 
-export function writeSave(save: SaveData): boolean {
+export function writeSave(save: SaveData, scope?: string): boolean {
   try {
-    window.localStorage.setItem(SAVE_KEY, JSON.stringify(save))
+    window.localStorage.setItem(scope ? `${SAVE_KEY}:${scope}` : SAVE_KEY, JSON.stringify(save))
     return true
   } catch {
     return false
