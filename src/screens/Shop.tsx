@@ -1,59 +1,18 @@
+import { useState } from 'react'
 import { Avatar } from '../components/Avatar'
 import { CoinAmount, Speech, Stars } from '../components/Bits'
 import { Icon } from '../components/Icon'
-import { DECOR, type DecorItem } from '../data/decor'
-import { JOBS, JOB_BY_ID } from '../data/jobs'
+import { JOBS, JOB_BY_ID, jobsOf, TRACKS } from '../data/jobs'
 import { MENTOR } from '../data/people'
 import { useGame } from '../game/gameContext'
-import { isUnlocked, jobProgress, LEVELS, reputation, shopLevel } from '../game/progress'
+import { isUnlocked, jobProgress, lastTrack, LEVELS, nextJob, reputation, shopLevel } from '../game/progress'
+import { learningMode } from '../game/learning'
 import type { JobDef, JobId } from '../game/types'
+import { DecorEditor } from './decor/DecorEditor'
+import { Showcase } from './decor/Showcase'
 import type { Screen } from './Hud'
 import { ShopScene } from './ShopScene'
 import './shop.css'
-
-function DecorThumb({ id }: { id: string }) {
-  return (
-    <svg viewBox="0 0 48 48" width="48" height="48" aria-hidden>
-      <rect width="48" height="48" rx="12" fill="#eef2e6" />
-      {id === 'fern' && (
-        <g>
-          <path d="M16 20h16l-2 12H18z" fill="#c9926c" />
-          <path d="M18 20c-8 4-10 12-9 18 4-7 7-12 11-17zM30 20c8 4 10 12 9 18-4-7-7-12-11-17zM24 20c-2 7-1 13 1 18 1-6 1-12-1-18z" fill="#5f8a55" />
-          <path d="M24 6v14" stroke="#8a9b82" />
-        </g>
-      )}
-      {id === 'poster' && (
-        <g>
-          <rect x="12" y="8" width="24" height="32" rx="2" fill="#fbf6e6" stroke="#cdd8c6" />
-          <rect x="12" y="8" width="24" height="8" fill="#2f5e4b" />
-          <path d="M16 22h14M16 28h10M16 34h12" stroke="#2f5e4b" strokeWidth="2" />
-        </g>
-      )}
-      {id === 'lamp' && (
-        <g>
-          <path d="M14 40h14M21 40l-4-14 12-12" stroke="#3a4a43" strokeWidth="3" fill="none" strokeLinecap="round" />
-          <path d="M27 10l12 3-6 8z" fill="#e8bd6a" />
-        </g>
-      )}
-      {id === 'neon' && (
-        <g>
-          <rect x="7" y="16" width="34" height="16" rx="8" fill="none" stroke="#ff6f86" strokeWidth="2.5" />
-          <text x="24" y="28" textAnchor="middle" fontSize="10" fontFamily="Mitr, sans-serif" fill="#ff5f79">
-            OPEN
-          </text>
-        </g>
-      )}
-      {id === 'cat' && (
-        <g>
-          <ellipse cx="27" cy="31" rx="13" ry="7" fill="#d99c5f" />
-          <circle cx="16" cy="27" r="7" fill="#e2a86b" />
-          <path d="M11 22l1-7 5 5zM17 20l5-5 1 7z" fill="#e2a86b" />
-          <path d="M13 28q2 1 4 0" stroke="#5a3a2a" fill="none" />
-        </g>
-      )}
-    </svg>
-  )
-}
 
 function JobCard({ job, onOpen }: { job: JobDef; onOpen: (id: JobId) => void }) {
   const { save } = useGame()
@@ -78,6 +37,7 @@ function JobCard({ job, onOpen }: { job: JobDef; onOpen: (id: JobId) => void }) 
       </div>
       <p className="job-tagline">{job.tagline}</p>
       <div className="job-meta">
+        {(job.track === 'win10' || job.mode === 'challenge') && <span className="chip chip-good">{learningMode(job) === 'guided' ? 'ฝึกตามขั้นตอน · มีพี่บูตสอน' : 'งานท้าทาย · ลงมือเอง'}</span>}
         {job.units.map(u => (
           <span key={u} className={`chip${u.includes('เสริม') ? ' chip-extra' : ''}`}>
             {u}
@@ -121,7 +81,10 @@ export function Shop({ onOpenJob, onNavigate, view = 'shop' }: { onOpenJob: (id:
   const { save } = game
   const rep = reputation(save)
   const level = shopLevel(rep)
-  const next = JOBS.find(j => isUnlocked(save, j) && jobProgress(save, j.id).completions === 0)
+  // suggest the next job in the track played last; the other track's next job is offered too
+  const prefer = lastTrack(save, JOBS) ?? 'win10'
+  const next = nextJob(save, JOBS, prefer)
+  const other = next ? nextJob(save, JOBS.filter(j => j.track !== next.track)) : undefined
   const doneCount = JOBS.filter(j => jobProgress(save, j.id).completions > 0).length
   const maxRep = JOBS.length * 3
 
@@ -132,21 +95,18 @@ export function Shop({ onOpenJob, onNavigate, view = 'shop' }: { onOpenJob: (id:
         ? `เก่งมาก! ร้านเริ่มมีชื่อเสียงแล้ว งานถัดไปคือ "${next.title}" ของ${next.customer.name}`
         : 'ทำครบทุกงานแล้ว! ลองเล่นซ้ำเพื่อเก็บสามดาว หรือเปิดคู่มือช่างทบทวนก่อนสอบ'
 
+  const [showcase, setShowcase] = useState(false)
   const openBoard = () => onNavigate({ name: 'board' })
   const openDecor = () => onNavigate({ name: 'decor' })
   const backToShop = () => onNavigate({ name: 'shop' })
 
-  const buy = (item: DecorItem) => {
-    if (game.buy(item)) game.play('coin')
-  }
-
   return (
     <div className={`shop shop-view-${view}`}>
-      {view !== 'shop' && <div className="shop-page-heading"><button type="button" className="btn btn-ghost" onClick={backToShop}><Icon name="arrowLeft" size={20} /> กลับหน้าร้าน</button><h1>{view === 'board' ? 'เลือกงานที่อยากเรียนรู้' : 'แต่งร้านในแบบของเรา'}</h1><p className="muted">{view === 'board' ? 'อ่านโจทย์ เลือกงาน แล้วค่อย ๆ ฝึกทีละขั้น' : 'ใช้เหรียญจากการฝึกซื้อของตกแต่ง ของที่ซื้อจะปรากฏในหน้าร้าน'}</p></div>}
+      {view !== 'shop' && <div className="shop-page-heading"><button type="button" className="btn btn-ghost" onClick={backToShop}><Icon name="arrowLeft" size={20} /> กลับหน้าร้าน</button><h1>{view === 'board' ? 'เลือกงานที่อยากเรียนรู้' : 'แต่งร้านในแบบของเรา'}</h1><p className="muted">{view === 'board' ? 'อ่านโจทย์ เลือกงาน แล้วค่อย ๆ ฝึกทีละขั้น' : 'ซื้อของด้วยเหรียญจากการฝึก แล้วลากไปวางตรงไหนก็ได้ ของพิเศษปลดล็อกตามระดับร้าน'}</p></div>}
       {view === 'shop' && <section className="shop-top">
         <div className="shop-scene-wrap">
           <ShopScene
-            owned={save.owned}
+            decor={save.decor}
             customer={next?.customer}
             onCustomer={next ? () => onOpenJob(next.id) : undefined}
             onBoard={openBoard}
@@ -166,6 +126,11 @@ export function Shop({ onOpenJob, onNavigate, view = 'shop' }: { onOpenJob: (id:
                 รับงานจาก{next.customer.name}
                 <Icon name="arrowRight" size={18} />
               </button>
+              {other && (
+                <button type="button" className="btn btn-ghost btn-sm btn-block shop-other" onClick={() => onOpenJob(other.id)}>
+                  หรือสาย {TRACKS.find(t => t.id === other.track)?.title}: {other.title}
+                </button>
+              )}
             </div>
           )}
           <div className="shop-level">
@@ -181,15 +146,17 @@ export function Shop({ onOpenJob, onNavigate, view = 'shop' }: { onOpenJob: (id:
               <span style={{ width: `${(rep / maxRep) * 100}%` }} />
             </div>
             <small className="muted">
-              {level.nextAt !== null
-                ? `อีก ${level.nextAt - rep} ดาว ได้เลื่อนเป็น "${LEVELS[level.index + 1].title}"`
-                : 'ระดับสูงสุดแล้ว เยี่ยมมาก!'}
+              {level.nextAt === null
+                ? 'ระดับสูงสุดแล้ว เยี่ยมมาก!'
+                : level.nextAt <= maxRep
+                  ? `อีก ${level.nextAt - rep} ดาว ได้เลื่อนเป็น "${LEVELS[level.index + 1].title}"`
+                  : `ระดับ "${LEVELS[level.index + 1].title}" ต้องใช้ดาวจากงานสาย Windows 11 ที่กำลังเพิ่ม`}
             </small>
           </div>
         </aside>
       </section>}
 
-      {view === 'shop' && <section className="shop-shortcuts" aria-label="ไปยังพื้นที่อื่น"><button className="card shortcut" onClick={openBoard}><Icon name="arrowRight" size={28}/><span><strong>กระดานงาน</strong><small>เลือกภารกิจและดูความก้าวหน้าทั้ง {JOBS.length} งาน</small></span></button><button className="card shortcut" onClick={openDecor}><Icon name="star" size={28}/><span><strong>ตกแต่งร้าน</strong><small>เลือกของแต่งร้านด้วยเหรียญที่สะสม</small></span></button></section>}
+      {view === 'shop' && <section className="shop-shortcuts" aria-label="ไปยังพื้นที่อื่น"><button className="card shortcut" onClick={openBoard}><Icon name="arrowRight" size={28}/><span><strong>กระดานงาน</strong><small>เลือกภารกิจและดูความก้าวหน้าทั้ง {JOBS.length} งาน</small></span></button><button className="card shortcut" onClick={openDecor}><Icon name="star" size={28}/><span><strong>ตกแต่งร้าน</strong><small>ซื้อของแล้วลากวางได้อิสระ ตั้งชื่อร้านเอง</small></span></button><button className="card shortcut" onClick={() => setShowcase(true)}><Icon name="monitor" size={28}/><span><strong>โชว์ร้าน</strong><small>เปิดร้านเต็มจอไว้แข่ง และบันทึกเป็นรูป</small></span></button></section>}
       {view === 'board' && <section id="board" className="board" aria-labelledby="board-title">
         <div className="section-head">
           <div>
@@ -200,47 +167,48 @@ export function Shop({ onOpenJob, onNavigate, view = 'shop' }: { onOpenJob: (id:
             ทำเสร็จแล้ว {doneCount}/{JOBS.length} งาน · คะแนนวิชาแยกจากเหรียญในเกม
           </p>
         </div>
-        <div className="job-grid">
-          {JOBS.map(job => (
-            <JobCard key={job.id} job={job} onOpen={onOpenJob} />
-          ))}
-        </div>
+        {TRACKS.map(track => {
+          const jobs = jobsOf(track.id)
+          const main = jobs.filter(j => j.mode !== 'challenge')
+          const challenges = jobs.filter(j => j.mode === 'challenge')
+          const challengesDone = challenges.filter(j => jobProgress(save, j.id).completions > 0).length
+          return (
+            <div key={track.id} className={`board-track board-track-${track.id}`}>
+              <div className="board-track-head">
+                <h3>{track.title}</h3>
+                <p className="muted">
+                  {track.subtitle} · {track.sheet}
+                </p>
+              </div>
+              {main.length > 0 && (
+                <div className="job-grid">
+                  {main.map(job => (
+                    <JobCard key={job.id} job={job} onOpen={onOpenJob} />
+                  ))}
+                </div>
+              )}
+              {challenges.length > 0 && (
+                <div className="board-challenges">
+                  <div className="board-challenges-head">
+                    <h4>
+                      <Icon name="target" size={18} /> งานท้าทาย ({challengesDone}/{challenges.length})
+                    </h4>
+                    <p className="muted">งานสั้นในขอบเขตใบเนื้อหา ลงมือเองไม่มีการสาธิต ค่าจ้างน้อยกว่างานหลัก ทำหลายงานเพื่อสะสมเหรียญไปแต่งร้าน</p>
+                  </div>
+                  <div className="job-grid job-grid-compact">
+                    {challenges.map(job => (
+                      <JobCard key={job.id} job={job} onOpen={onOpenJob} />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        })}
       </section>}
 
-      {view === 'decor' && <section className="decor-shop" aria-labelledby="decor-title">
-        <div className="section-head">
-          <div>
-            <span className="eyebrow">ตกแต่งร้าน</span>
-            <h2 id="decor-title">ใช้เหรียญแต่งร้านให้น่านั่ง</h2>
-          </div>
-          <p className="muted">
-            มีอยู่ <CoinAmount value={save.coins} />
-          </p>
-        </div>
-        <div className="decor-grid">
-          {DECOR.map(item => {
-            const owned = save.owned.includes(item.id)
-            return (
-              <div key={item.id} className={`decor-item card${owned ? ' is-owned' : ''}`}>
-                <DecorThumb id={item.id} />
-                <div>
-                  <strong>{item.name}</strong>
-                  <small className="muted">{item.blurb}</small>
-                </div>
-                {owned ? (
-                  <span className="chip chip-good">
-                    <Icon name="check" size={14} /> ติดตั้งแล้ว
-                  </span>
-                ) : (
-                  <button type="button" className="btn btn-gold btn-sm" aria-label={`ซื้อ${item.name} ราคา ${item.price} เหรียญ`} disabled={save.coins < item.price} onClick={() => buy(item)}>
-                    <CoinAmount value={item.price} size={14} />
-                  </button>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      </section>}
+      {view === 'decor' && <DecorEditor onShowcase={() => setShowcase(true)} />}
+      {showcase && <Showcase onClose={() => setShowcase(false)} />}
     </div>
   )
 }

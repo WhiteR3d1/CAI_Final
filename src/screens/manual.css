@@ -143,3 +143,42 @@
     flex-shrink: 0;
   }
 }
+
+/* parts grouped by track (Windows 10 / Windows 11) */
+.manual-nav-group {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.manual-nav-track {
+  padding: 4px 12px 2px;
+  color: var(--green-600);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.manual-no-win11 {
+  background: #e3eefb;
+  color: #2d5f9e;
+}
+
+.manual-compact .manual-nav-group {
+  display: contents;
+}
+
+.manual-compact .manual-nav-track {
+  align-self: center;
+}
+
+@media (max-width: 820px) {
+  .manual-nav-group {
+    display: contents;
+  }
+
+  .manual-nav-track {
+    flex-shrink: 0;
+    align-self: center;
+  }
+}

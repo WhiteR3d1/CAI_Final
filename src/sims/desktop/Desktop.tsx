@@ -34,13 +34,16 @@ interface Props {
   initialOpen?: string[]
   onOpenApp?: (id: string) => void
   search?: (query: string) => string | null
-  wallpaper?: 'teal' | 'blue'
+  wallpaper?: 'teal' | 'blue' | 'bloom'
+  /** win11 = centred taskbar, rounded windows and the Windows 11 Start menu */
+  variant?: 'win10' | 'win11'
   children?: ReactNode
 }
 
 type Menu = 'start' | 'winx' | 'volume' | null
 
-export function Desktop({ apps, icons, startMenu, winxMenu, volume, initialOpen = [], onOpenApp, search, wallpaper = 'teal', children }: Props) {
+export function Desktop({ apps, icons, startMenu, winxMenu, volume, initialOpen = [], onOpenApp, search, wallpaper = 'teal', variant = 'win10', children }: Props) {
+  const win11 = variant === 'win11'
   const [open, setOpen] = useState<string[]>(initialOpen)
   const [menu, setMenu] = useState<Menu>(null)
   const [toast, setToast] = useState<{ id: number; text: string } | null>(null)
@@ -81,7 +84,7 @@ export function Desktop({ apps, icons, startMenu, winxMenu, volume, initialOpen 
   }
 
   return (
-    <div className={`dt dt-${wallpaper}`} onMouseDown={e => e.target === e.currentTarget && setMenu(null)}>
+    <div className={`dt dt-${wallpaper}${win11 ? ' dt-win11' : ''}`} onMouseDown={e => e.target === e.currentTarget && setMenu(null)}>
       <div className="dt-icons">
         {icons.map(ic => (
           // like Windows: click selects, double-click (or Enter) opens; a tap on a touch screen opens directly
@@ -138,7 +141,7 @@ export function Desktop({ apps, icons, startMenu, winxMenu, volume, initialOpen 
 
       {menu === 'start' && (
         <div className="dt-menu dt-start" role="menu" aria-label="Start">
-          <strong className="dt-menu-title">Start</strong>
+          <strong className="dt-menu-title">{win11 ? 'Pinned' : 'Start'}</strong>
           {startMenu.map(item => (
             <button key={item.label} type="button" role="menuitem" onClick={() => runItem(item)}>
               <Icon name={item.icon ?? 'app'} size={17} />
@@ -189,7 +192,7 @@ export function Desktop({ apps, icons, startMenu, winxMenu, volume, initialOpen 
           }}
         >
           <Icon name="search" size={15} />
-          <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Type here to search" aria-label="ค้นหาในเครื่อง" />
+          <input value={query} onChange={e => setQuery(e.target.value)} placeholder={win11 ? 'Search' : 'Type here to search'} aria-label="ค้นหาในเครื่อง" />
         </form>
         <div className="dt-tasks">
           {open.map(id => {

@@ -64,6 +64,9 @@ interface Dialog {
 }
 
 interface Props {
+  /** Single-architecture media skips the dual-architecture boot menu. */
+  mediaArchitecture?: 32 | 64
+  initialLanguage?: SetupLang
   parts: Part[]
   /** "new" = empty disk where New creates partitions, "existing" = a disk that already has partitions */
   disk: 'new' | 'existing'
@@ -291,8 +294,8 @@ function PressAnyKey({ onKey, onTimeout }: { onKey: () => void; onTimeout: () =>
 export function WinSetup(props: Props) {
   const { disk, bootMode = 'uefi', diskStyle = 'mbr', productKey, editions, onStep, onArch, onLanguage, onKey, onKeyRejected, onEdition, onUpgrade, onCreate, onDestroy, onBlocked, onTarget, onPressKey, onInstalled } = props
   const run = useRun()
-  const [step, setStep] = useState<SetupStep>('bootmgr')
-  const [lang, setLang] = useState<SetupLang>({ language: 'English (United States)', time: 'English (United States)', keyboard: 'US' })
+  const [step, setStep] = useState<SetupStep>(props.mediaArchitecture ? 'lang' : 'bootmgr')
+  const [lang, setLang] = useState<SetupLang>(props.initialLanguage ?? { language: 'English (United States)', time: 'English (United States)', keyboard: 'US' })
   const [keyRaw, setKeyRaw] = useState('')
   const [keyError, setKeyError] = useState(false)
   const [edition, setEdition] = useState<string | null>(null)

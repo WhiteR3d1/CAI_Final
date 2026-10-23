@@ -53,6 +53,7 @@ export function Intake({ onAccept, onBack }: { onAccept: () => void; onBack: () 
             </span>
           </div>
           <h2>{job.title}</h2>
+          {job.mode === 'challenge' && <p className="kb-note kb-note-tip">งานท้าทาย: อ่านข้อมูลลูกค้าแล้วลงมือเอง ไม่มีบทสาธิตก่อนเริ่ม เปิดคู่มือหรือขอคำใบ้ได้ ค่าจ้างสูงสุด {job.reward} เหรียญตามผลงาน นำไปซื้อของตกแต่งร้านได้</p>}
           <WorkOrder />
         </section>
 

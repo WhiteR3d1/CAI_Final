@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Speech } from '../../components/Bits'
 import { Icon } from '../../components/Icon'
 import { KnowledgeView } from '../../components/KnowledgeView'
+import { VisualGuide, VisualGuideGallery } from '../../components/VisualGuide'
+import { JOB_VISUALS, visualsFor } from '../../data/visualGuides'
 import { MENTOR } from '../../data/people'
 import { useRun } from './runContext'
 
@@ -13,6 +15,7 @@ export function Learn({ onNext }: { onNext: () => void }) {
       <article className="card learn-card">
         <span className="eyebrow">เรียนก่อนทำ · อ่านประมาณ 2 นาที</span>
         <h2>{card.title}</h2>
+        <VisualGuideGallery ids={visualsFor(job.id)} />
         <KnowledgeView blocks={card.blocks} />
         {card.more && (
           <details className="learn-more">
@@ -21,7 +24,7 @@ export function Learn({ onNext }: { onNext: () => void }) {
           </details>
         )}
         <div className="learn-refs">
-          <strong>อ้างอิงใบเนื้อหา</strong>
+          <strong>แหล่งอ้างอิง</strong>
           <ul className="ref-list">
             {card.refs.map(r => (
               <li key={r}>
@@ -48,6 +51,7 @@ export function Demo({ onDone }: { onDone: () => void }) {
   const frame = frames[index]
   if (!frame) return null
   const last = index === frames.length - 1
+  const picture = JOB_VISUALS[job.id]?.demos[index]
 
   return (
     <div className="demo">
@@ -61,6 +65,7 @@ export function Demo({ onDone }: { onDone: () => void }) {
       </div>
       <article className="card demo-card" aria-live="polite">
         <h2>{frame.title}</h2>
+        {picture && <VisualGuide id={picture} />}
         <Speech look={MENTOR.look} name={MENTOR.name} mood="happy" size={64}>
           <p>{frame.say}</p>
         </Speech>

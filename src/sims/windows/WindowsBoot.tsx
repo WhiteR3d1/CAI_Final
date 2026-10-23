@@ -38,7 +38,7 @@ export function WorkingOnUpdates({ onDone }: { onDone: () => void }) {
 }
 
 /** Lock screen → sign-in with the account created in OOBE → "Welcome". */
-export function SignIn({ user, password, onWrong, onDone }: { user: string; password: string; onWrong?: () => void; onDone: () => void }) {
+export function SignIn({ user, password, onWrong, onDone, pin = false }: { user: string; password: string; onWrong?: () => void; onDone: () => void; /** Windows Hello PIN instead of a password */ pin?: boolean }) {
   const [view, setView] = useState<'lock' | 'signin' | 'wrong' | 'welcome'>('lock')
   const [typed, setTyped] = useState('')
   const lockRef = useRef<HTMLDivElement>(null)
@@ -94,7 +94,7 @@ export function SignIn({ user, password, onWrong, onDone }: { user: string; pass
       )}
       {view === 'wrong' && (
         <>
-          <p>The password is incorrect. Try again.</p>
+          <p>{pin ? 'The PIN is incorrect. Try again.' : 'The password is incorrect. Try again.'}</p>
           <button type="button" className="oobe-btn" autoFocus onClick={() => setView('signin')}>
             OK
           </button>
@@ -109,7 +109,16 @@ export function SignIn({ user, password, onWrong, onDone }: { user: string; pass
               submit()
             }}
           >
-            <input ref={inputRef} type="password" placeholder="Password" value={typed} onChange={e => setTyped(e.target.value)} aria-label="Password" autoComplete="off" />
+            <input
+              ref={inputRef}
+              type="password"
+              inputMode={pin ? 'numeric' : undefined}
+              placeholder={pin ? 'PIN' : 'Password'}
+              value={typed}
+              onChange={e => setTyped(e.target.value)}
+              aria-label={pin ? 'PIN' : 'Password'}
+              autoComplete="off"
+            />
             <button type="submit" aria-label="Submit">
               <Icon name="arrowRight" size={16} />
             </button>

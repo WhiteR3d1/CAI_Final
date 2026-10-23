@@ -5,6 +5,7 @@ import { ANN } from '../people.ts'
 export const makeUsbJob: JobDef = {
   id: 'make-usb',
   order: 1,
+  track: 'win10',
   code: 'งาน 01',
   title: 'ทำแฟลชไดรฟ์ติดตั้ง Windows 10',
   tagline: 'ดาวน์โหลด Rufus ตรวจว่าเครื่องเห็น USB แล้วสร้าง USB Boot ให้ตรงกับเครื่องปลายทาง',
@@ -33,9 +34,9 @@ export const makeUsbJob: JobDef = {
     { id: 'o2', text: 'สร้าง USB Boot โดยไม่ทำให้ข้อมูลในอุปกรณ์อื่นหาย', rules: [{ criterion: 'dataSafety', min: 1 }] },
     { id: 'o3', text: 'ตรวจว่าเครื่องเห็น USB ก่อนเริ่ม และตรวจไฟล์ติดตั้งหลังสร้างเสร็จ', rules: [{ criterion: 'testing', min: 1 }] },
   ],
-  units: ['ใบเนื้อหา หน้า 1–3'],
+  units: ['ใบเนื้อหา Win10 หน้า 1–3'],
   manualNo: 1,
-  reward: 150,
+  reward: 90,
   minutes: 8,
   criteria: ['accuracy', 'reasoning', 'dataSafety', 'testing'],
   learn: {
@@ -94,7 +95,7 @@ export const makeUsbJob: JobDef = {
         text: 'MBR ใช้กับฮาร์ดดิสก์ได้ไม่เกิน 2 TB ดิสก์ที่ใหญ่กว่านั้นต้องใช้ GPT และบูตแบบ UEFI (จะได้ใช้ในงาน 05)',
       },
     ],
-    refs: ['ใบเนื้อหา หน้า 1–3 การสร้าง USB Boot Windows ด้วยโปรแกรม Rufus'],
+    refs: ['ใบเนื้อหา Win10 หน้า 1–3 การสร้าง USB Boot Windows ด้วยโปรแกรม Rufus'],
   },
   demo: [
     {
@@ -149,28 +150,28 @@ export const makeUsbJob: JobDef = {
       severity: 'critical',
       criterion: 'dataSafety',
       explain: 'Rufus ลบข้อมูลทั้งหมดในอุปกรณ์ที่เลือกในช่อง Device ต้องตรวจชื่อและขนาดให้ตรงกับแฟลชไดรฟ์ที่จะใช้ (KINGSTON 16 GB) ก่อนกด Start',
-      ref: 'ใบเนื้อหา หน้า 2',
+      ref: 'ใบเนื้อหา Win10 หน้า 2',
     },
     'rufus-wrong-scheme': {
       label: 'เลือก Partition scheme แบบ UEFI ให้เครื่อง BIOS แบบเก่า',
       severity: 'major',
       criterion: 'accuracy',
       explain: 'ตัวเลือกที่ลงท้ายว่า "for UEFI computer" ใช้ได้เฉพาะเครื่อง UEFI เครื่องห้องแล็บเป็น BIOS แบบเก่า จึงบูตจาก USB นี้ไม่ได้ ต้องเลือก MBR partition scheme for BIOS or UEFI computers',
-      ref: 'ใบเนื้อหา หน้า 2–3',
+      ref: 'ใบเนื้อหา Win10 หน้า 2–3',
     },
     'rufus-wrong-iso': {
       label: 'เลือกไฟล์ ISO ที่ไม่ใช่ Windows 10',
       severity: 'major',
       criterion: 'accuracy',
       explain: 'ครูแอนต้องการ Windows 10 จึงต้องเลือกไฟล์ ISO ของ Windows 10 ด้วยปุ่มรูปแผ่นดิสก์',
-      ref: 'ใบเนื้อหา หน้า 3',
+      ref: 'ใบเนื้อหา Win10 หน้า 3',
     },
     'rufus-not-bootable': {
       label: 'สร้างแฟลชไดรฟ์ที่ใช้บูตติดตั้ง Windows ไม่ได้',
       severity: 'major',
       criterion: 'accuracy',
       explain: 'ต้องติ๊ก Create a bootable disk using แล้วเลือก ISO Image กับไฟล์ ISO ของ Windows 10 ถ้าไม่ติ๊กหรือเลือก FreeDOS จะได้แฟลชไดรฟ์ที่ใช้ติดตั้ง Windows ไม่ได้',
-      ref: 'ใบเนื้อหา หน้า 3',
+      ref: 'ใบเนื้อหา Win10 หน้า 3',
     },
     'ev-missing': {
       label: 'ยืนยันการตั้งค่า Rufus โดยยังไม่มีหลักฐานครบ',
@@ -205,7 +206,7 @@ export const makeUsbJob: JobDef = {
         { text: 'เพราะ Rufus จะเลือกไฟล์ ISO ให้เองตามขนาดอุปกรณ์', feedback: 'ไม่ใช่ ไฟล์ ISO เราเลือกเองด้วยปุ่ม SELECT' },
         { text: 'เพราะอุปกรณ์ที่ใหญ่กว่าจะทำงานเร็วกว่า', feedback: 'ความเร็วไม่ใช่ประเด็น ประเด็นคือข้อมูลในอุปกรณ์ที่เลือกจะหายทั้งหมด' },
       ],
-      ref: 'ใบเนื้อหา หน้า 2',
+      ref: 'ใบเนื้อหา Win10 หน้า 2',
     },
     {
       id: 'q-scheme',
@@ -216,7 +217,7 @@ export const makeUsbJob: JobDef = {
         { text: 'MBR partition scheme for UEFI computer', feedback: 'ตัวเลือกนี้ใช้ได้เฉพาะเครื่อง UEFI' },
         { text: 'GPT partition scheme for UEFI computer', feedback: 'ตัวเลือกนี้ใช้ได้เฉพาะเครื่อง UEFI' },
       ],
-      ref: 'ใบเนื้อหา หน้า 2–3',
+      ref: 'ใบเนื้อหา Win10 หน้า 2–3',
     },
     {
       id: 'q-order',
@@ -227,7 +228,7 @@ export const makeUsbJob: JobDef = {
         { text: 'เข้า BIOS แล้วกด F10', feedback: 'การตั้งค่า BIOS ทำหลังจากสร้าง USB Boot เสร็จแล้ว' },
         { text: 'เริ่มติดตั้ง Windows ทันที', feedback: 'ยังติดตั้งไม่ได้ เพราะยังไม่มี USB Boot' },
       ],
-      ref: 'ใบเนื้อหา หน้า 1',
+      ref: 'ใบเนื้อหา Win10 หน้า 1',
     },
   ],
   thanks: 'ได้ USB ติดตั้งแล้ว ขอบคุณค่ะ พรุ่งนี้ครูจะยกเครื่องห้องแล็บมาให้ตั้งค่าต่อนะคะ',

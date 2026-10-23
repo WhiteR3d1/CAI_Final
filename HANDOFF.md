@@ -13,6 +13,8 @@
 
 ## ข้อสรุปจากผู้ใช้
 
+- (23 ต.ค. 2026 รอบ Codex) ต้องการให้ลูกค้าช่วงแรกเป็นงานสอนทำตามข้อมูล เพิ่มการลง Windows 10 โดยเริ่มดาวน์โหลดจากเว็บ Microsoft ตามภาพ Media Creation Tool และมีงานท้าทายที่ได้เงิน
+
 - ทำงานร่วมกับ Codex และต้องมีไฟล์ .md สำหรับคุยกันทุกครั้งที่ทำงาน
 - เกมร้านซ่อมคอมจำลอง วิชา 20204-2001 ใช้เป็นสื่อการสอน (รายละเอียดใน GAME_PLAN.md)
 - (29 ก.ย. 2026) ให้พัฒนา "ตามแผน" ได้เลย ต่อยอดจากพื้นฐานที่ทำไว้ และรูปแบบเป็น **เกม simulation บนเว็บ**
@@ -26,12 +28,191 @@
     - ข้อความ error ตรงของจริง
   - ผู้ใช้ไม่ได้เลือกข้อเหล่านี้: หน้าจอเหมือนภาพทุกหน้า, โหมดจำลองแยกจากโหมดฝึก, ฉากฮาร์ดแวร์
   - ให้ Rufus มีหน้าตา**เหมือนภาพในใบเนื้อหา (เวอร์ชัน 1.4)**
+- (23 ต.ค. 2026) ผู้ใช้แจ้งว่าได้รับคำแนะนำมาว่า:
+  - ควรให้ตกแต่งร้านได้เยอะ ๆ เพื่อให้นักเรียนแข่งกันตกแต่งร้าน
+  - ให้เพิ่มเนื้อหา Windows 11 จากไฟล์ `C:\Users\Lenovo\Downloads\วิเคราะห์เนื้อหาการติดตั้งระบบปฏิบัติWindows-11.pdf`
+  - การสร้าง USB ด้วย Rufus เป็นแบบ Legacy และยังคง Windows 10 ไว้ด้วย
+- (23 ต.ค. 2026) จากตัวเลือกที่ Claude เสนอ ผู้ใช้เลือก (ทุกข้อเป็นตัวเลือกที่ Claude แนะนำ):
+  - แข่งด้วย **โหมดโชว์ร้านเต็มจอ + บันทึกรูป PNG**
+    - ไม่ทำคะแนนความสวยอัตโนมัติ
+    - ไม่ทำรหัสร้าน/หน้ารวมร้านของครู
+    - ไม่ทำตารางอันดับออนไลน์
+  - การตกแต่ง **ลากวางได้อิสระ** (ไม่ใช่ช่องตายตัว)
+  - เหรียญมาจาก **งานทั้งสองสาย + ปลดของพิเศษด้วยดาว/ระดับร้าน** และทำซ้ำยังได้เหรียญเฉพาะส่วนที่ดีขึ้นเหมือนเดิม
+  - **แยก 2 สาย เล่นสายไหนก่อนก็ได้**
+    - สาย Windows 10 = 5 งานเดิม (Rufus แบบ Legacy)
+    - สาย Windows 11 = งานใหม่ตามใบเนื้อหา Win11 (Media Creation Tool, UEFI/Secure Boot/TPM 2.0, GPT)
+  - ผู้ใช้อนุมัติแผน 3 เฟส (แผนเต็มอยู่ในบันทึกงาน 23 ต.ค.)
+- (23 ต.ค. 2026 รอบ 2) ผู้ใช้แจ้งว่า:
+  - คำถามสรุป "ยังเป็นตอบ ก. ทุกข้ออยู่เลย" ให้แก้
+  - กระดานงานให้เพิ่มงานที่เป็นงานท้าทาย ที่อยู่ในขอบเขตที่สอน
+  - ลดเงินที่ได้ต่องาน ให้ทำงานเยอะ ๆ เพื่อเอาเงินไปตกแต่งร้าน
+  - จำนวนงานต้องพอซื้อของได้ครบ และเงินรวมมากกว่าราคาของทั้งหมดเล็กน้อย
 
 ## คำถาม/ข้อโต้แย้ง
 
 - (Claude, 29 ก.ย. 2026) ต้นแบบสลับเคสเสียงจากตัวอย่างใน GAME_PLAN.md: งาน 03 สาเหตุคือไดรเวอร์ (หน่วย 4) ส่วนงาน 04 ซึ่งเป็นงานถ่ายโอน สาเหตุคืออุปกรณ์ส่งออก (เสริมนอกเล่ม) เหตุผลอยู่ในบันทึกงานล่าสุดของ Claude ถ้า Codex เห็นต่างให้เขียนไว้ที่นี่ ผู้ใช้เป็นคนตัดสิน — **ไม่ต้องตัดสินแล้ว:** งานเสียงทั้งสองถูกย้ายไป `archive/` ตอนเปลี่ยนเนื้อหาเป็นใบเนื้อหา PDF
 
 ## บันทึกงาน
+
+### 2026-10-23 — Codex: ตรวจปัญหาเชื่อมต่อหลังเปลี่ยนเป็น username/password
+- ผู้ใช้ส่งภาพหน้า login แจ้งติดต่อชีตไม่ได้; ตรวจ URL /exec ที่ตั้งใน src/auth/api.ts แบบไม่ลงชื่อเข้าใช้ พบ HTTP 200 แต่เป็น HTML ข้อผิดพลาด “ไม่พบฟังก์ชันของสคริปต์: doGet” ไม่ใช่ JSON API
+- ยังไม่มี .env.local override ในโปรเจกต์; ต้องอัปเดต deployment เดิมเป็นโค้ดใหม่ หรือรับ URL /exec ใหม่จากผู้ใช้ถ้าสร้าง deployment ใหม่
+- ปรับข้อความ NETWORK ให้ตรวจ URL/deployment access ด้วย ไม่ชี้ว่าเป็นปัญหาอินเทอร์เน็ตอย่างเดียว; ไม่ได้แก้ deployment บน Google
+
+### 2026-10-23 — Codex: เหลือ username/password และตั้งค่าใน Code.gs
+- **ผู้ใช้สั่ง:** ย้ายค่าตั้งค่าเข้า Code.gs และเอา Google login ออก
+- เพิ่ม BB_CONFIG สำหรับ SHEET_ID/ALLOW_REGISTRATION; setupBootBloom สร้าง BB_SESSION_SECRET_V2 อัตโนมัติใน Script Properties ไม่ฝังค่าลับและไม่ใช้ค่า SESSION_SECRET ที่ปรากฏในภาพ; Run ซ้ำคงค่าเดิม
+- ลบ Google UI/library/backend OAuth; คงคอลัมน์เก่า googleSub/email เพื่อไม่ทำ schema/ข้อมูลเดิมเสียหาย ไม่ย้ายบัญชี Google อัตโนมัติ
+- ปรับ src/auth, apps-script/Code.gs, SETUP.md, specs และ tests/accounts.test.ts; ทดสอบสร้าง secret อัตโนมัติและไม่เปลี่ยนเมื่อ run ซ้ำ
+- Build ผ่าน (มีคำเตือนขนาด chunk เดิม); ต้องให้เจ้าของแทน Code.gs, Run setupBootBloom และ Deploy New version จึงใช้ live ได้ ยังไม่ได้แก้ Apps Script บนเว็บแทนเจ้าของ
+
+### 2026-10-23 — Codex: บัญชีและเซฟ Google Sheets โดยตรง ไม่ใช้ Firebase
+- **ข้อสรุปจากผู้ใช้:** ไม่ใช้ Firebase ใช้ชีต ID `1Jr1oHNkKg3kCP171JEqd6BRlDig6KRDoPDRAI3rgXrA`; ต้องการ Google login และสร้าง username/password ได้
+- **การออกแบบของ Codex:** Apps Script เป็น API; bcrypt cost 12 สำหรับ password; session 8 ชั่วโมงเก็บ hash ในชีต; Google OAuth code popup (ต้องตั้งค่า client เพิ่ม); Google กับ username เป็นบัญชีแยก ไม่ auto-link อีเมล
+- เพิ่ม `src/auth/` หน้า login/register, API, save queue, สถานะบันทึก/ลองใหม่/conflict, โหมด local preview; โหลดก่อนเปิดเกมและแยกร่างตาม UID; ปรับ App/GameProvider/storage รับเซฟและ callback แยกบัญชี
+- เพิ่ม `apps-script/Code.gs`, vendor `Bcrypt.gs` + license และ `apps-script/SETUP.md` คู่มือติดตั้งภาษาไทย; setup สร้างเฉพาะ BB_Accounts/BB_Sessions/BB_Saves; ตรวจ session/ownership/schema/revision/idempotency ด้วย LockService ไม่แก้แท็บเดิม
+- เพิ่ม `.env.example`, ปรับ `specs/accounts-and-sheets.md`, เพิ่ม `tests/accounts.test.ts`; ถอน Firebase แล้ว เหลือ bcryptjs เป็น dev dependency; อัปเดต Vite/source-map-js ภายในช่วงเดิมแก้ audit (ล่าสุด 0 vulnerabilities)
+- ตรวจ build/lint ผ่าน, tests 294/294 ผ่าน; build มีคำเตือน bundle หลักเกิน 500 kB (ไม่มี error); browser ตรวจหน้า login/register และ local preview เข้าเกม 35 งานได้ (`specs/account-login.png`); backend ใช้ Node VM mock Sheets + vendor bcrypt จริงในสภาพไม่มี Node crypto/timers
+- **งานค้างตั้งค่าจริง:** ยังไม่ deploy/เขียนชีตจริง เพราะ connector ได้ 403 และ editor เปิดไม่ถึงโค้ดเดิม; URL /exec เดิมตอนตรวจตอบไม่พบ doGet ต้องให้เจ้าของรวม handler กับโค้ดเก่าและ deploy ตามคู่มือ ห้ามอ้างว่า login Google/เซฟ live ผ่านแล้ว
+- **ข้อจำกัด:** ไม่มี reset password/ผูกสองวิธีเข้าบัญชีเดียว; quota Apps Script และ basic rate limit เหมาะชั้นเรียนเล็ก; คะแนนยังมาจาก frontend ไม่ใช่ระบบสอบกันแก้คะแนน; เซฟถาวรไม่กู้ simulation ระหว่างงานที่ยังไม่ส่ง
+- รักษางาน Claude (Win11 +24 challenges/เศรษฐกิจใหม่) ไม่แก้ `.claude/`; ภาพ visual guide และ CSS modal จากรอบก่อนยังอยู่
+
+### 2026-10-23 — Codex: ภาพประกอบขั้นตอนอธิบาย และรับคำขอระบบออนไลน์
+- **ผู้ใช้ยืนยัน:** ต้องการภาพประกอบพร้อมลูกศรชี้จุดที่ต้องกด และคำอธิบายว่าทำเพื่ออะไร
+- เพิ่มภาพ SVG วาดใหม่ 27 ภาพ สำหรับ 7 งานที่มีตอนเริ่มทำ (Win10 และ W11-01) ไม่คัดลอกภาพจาก PDF; หลังจากนั้น Claude เพิ่มงานเป็น 35 งาน ให้ยึด mapping ล่าสุดของ Claude ด้วย
+- แสดงในหน้าเรียนก่อนทำ หน้าเดโม การ์ดความรู้ และแผงพี่บูตแบบเปิดดูภาพของขั้นปัจจุบัน มีปุ่มขยายภาพ/ปิดด้วย Esc ข้อความทำอะไร/ทำไม และคำอธิบายภาพสำหรับ screen reader
+- ไฟล์ภาพที่เพิ่ม: `src/data/visualGuides.ts`, `src/components/{VisualGuide.tsx,visual-guide.css}`, จุดเชื่อม `src/screens/workbench/{Learn,CasePanel,Workbench}.tsx`; Claude รวมเข้าบันทึก Git แล้วระหว่างทำงาน รอบนี้ปรับขนาด modal ภาพเพิ่มเติม
+- ก่อนรับอัปเดต Claude: build/lint ผ่าน, tests 77/77 ผ่าน; ตรวจ mapping ของ 7 งานครบ; เปิดเบราว์เซอร์ 127.0.0.1:5184 ได้เมื่อใช้ dev server นอก sandbox ตรวจเลือกภาพ/ขยายภาพ Rufus แล้ว ยังไม่ได้ตรวจมือถือจริง
+- **คำขอล่าสุด:** เพิ่ม login และบันทึกลง Google Sheets; กำลังถามชนิด login และชีตปลายทาง ยังไม่มีการเชื่อมต่อออนไลน์จริง
+
+### 2026-10-23 — Claude: ✅ สาย Windows 11 ครบ 5 งาน + งานท้าทาย 24 งาน + สลับตัวเลือกคำถาม + ปรับเศรษฐกิจเหรียญ (branch `win11-track`)
+- **ข้อสรุปจากผู้ใช้:** ดู "23 ต.ค. 2026 รอบ 2" ด้านบน
+- **ปลดการจองไฟล์ของเฟส 2–3 แล้ว**
+- **สิ่งที่ทำ:**
+  - **คำถามสรุปไม่เป็น ก. ทุกข้ออีกต่อไป:** `src/game/shuffle.ts` สลับลำดับตัวเลือกแบบคงที่ต่อ (คำถาม, ครั้งที่ทำ) ตัวอักษร ก/ข/ค/ง เป็นตามตำแหน่งที่แสดง แต่บันทึกคำตอบยังเป็น index เดิม (`Wrapup.tsx`)
+  - **ระบบ module งาน** (`src/game/scenarios.ts`, `src/data/modules.ts`, `src/sims/modules/*`)
+    - งานหนึ่งประกอบจาก phase หลายขั้น (rufus, boot, setup10, oobe10, ready11, mct, uefi11, setup11, oobe11, post11) แต่ละ module มี stage/คำใบ้/ข้อผิด/การตรวจ/คำถามของตัวเอง
+    - `moduleJob()` รวมเป็น `JobDef` ให้เอง; `Workbench` ใช้ `ModuleSim` เมื่องานมี `phases`
+  - **งาน Win11 ที่เหลือ 4 งาน** (`src/data/jobs/w11Story.ts`): W11-02 MCT (100), W11-03 UEFI/Secure Boot/TPM (100), W11-04 Setup + OOBE (160), W11-05 ตรวจหลังติดตั้ง (130) ลิงก์คู่มือตอน 7–10 แล้ว
+  - **งานท้าทาย 24 งาน** (`src/data/jobs/challenges.ts`) สายละ 12 ใช้ `mode: 'challenge'` ของ Codex (ไม่มีบทเรียน/สาธิตบังคับ) ปลดเมื่อผ่านงานหลักที่สอน module นั้น ลูกค้าใหม่ 10 คนใน `people.ts`; กระดานงานแยกหัวข้อ "งานท้าทาย (ทำแล้ว/ทั้งหมด)" ใต้แต่ละสาย
+  - **เศรษฐกิจ:** ราคาของแต่ง × 0.38 (`PRICE_SCALE` ใน `decor.ts`, ของ 10–85 เหรียญ) ค่าจ้างงานหลักลดลง (ไม่เกิน 220) งานท้าทาย 50–90; รวม 35 งานได้ 3,040 เหรียญเมื่อ 3 ดาวทุกงาน vs ราคาของทุกชิ้นทุกจำนวน 2,795 (มากกว่า ~9%) มีเทสต์กันไว้
+  - **`LEVELS` ใหม่ (เต็ม 105 ดาว):** 0 / 15 / 35 / 60 / 90 — เซฟเดิม 12 ดาวจะกลับเป็น "ช่างฝึกหัด"
+  - เป้าหมาย Win11 5 ข้อในหน้าผลการฝึก
+  - ส่วนประกอบเล็ก: `PcHealthCheck` prop `device`, `WindowsSecurity` prop `onFirewallOn`, `SignIn` prop `pin`
+- **แตะไฟล์ของ Codex (ให้ Codex รับทราบ):**
+  - ค่าจ้าง `microsoft-install` 300 → 150 และ `reinstall` 450 → 220 ตามคำขอลดเงิน
+  - `visualGuides.ts`: `JOB_VISUALS` เป็น `Partial<Record<JobId, …>>` เพราะ JobId มีงานท้าทายเพิ่ม
+  - `tests/learning.test.ts`: ตรวจการจ่ายเหรียญด้วย `job.reward` แทนเลข 300
+  - commit นี้รวมงานของ Codex ที่ยังไม่ได้ commit ด้วย (microsoft-install, learning, VisualGuide ฯลฯ)
+- **การตรวจ:** `tsc`, `eslint` ผ่าน, `npm test` 288/288, build ผ่าน; ในเบราว์เซอร์ (127.0.0.1 เซฟทดสอบ) เล่นงานท้าทาย W10-01 จนจบ (ข้อผิดเลือก Device ผิดขึ้นถูก, ได้ 40 เหรียญ/2 ดาว, คำตอบถูกของคำถามอยู่ข้อ ค.) และเปิดงาน module ทั้ง 27 งานเข้าถึงหน้าจอจำลองได้ ไม่มี console error
+- **ยังไม่ได้ตรวจในเบราว์เซอร์:** เล่นจนจบทุก module ของ Win11 (W11-02 ถึง 05 และงานท้าทายสาย Win11) ครูควรลองเล่นจริงหนึ่งรอบ
+
+### 2026-10-23 — Codex: งานฝึกทีละขั้น + Windows 10 ผ่าน Microsoft + งานท้าทายรับเหรียญ
+- **ข้อสรุปจากผู้ใช้:** ตามรายการด้านบน ต้องการงานสอนช่วงแรก เส้นทาง Microsoft และงานท้าทายที่ให้เงิน
+- **รายละเอียดที่ Codex เลือกในการทำรอบนี้:**
+  - งาน Win10 01–04 แสดงคำสอนตาม stage อัตโนมัติ ไม่บันทึกเป็นการขอคำใบ้
+  - เพิ่ม `microsoft-install` เป็นงานฝึกเสริมหลัง `first-setup` ค่าจ้างสูงสุด 300 เหรียญ ใช้เครื่องฝึกตามสเปกคุณเก่งเพื่อเชื่อม simulator เดิม
+  - เว็บจำลอง Microsoft → ดาวน์โหลด/เปิด MCT → license → สร้างสื่อให้เครื่องอื่น → ภาษาไทย/x64 → USB → ตรวจไดรฟ์ → รอสร้างสื่อ → บูต UEFI → Setup/OOBE/ตรวจงาน
+  - แยก MCT Windows 10 จากคอมโพเนนต์ Win11 ไม่แก้ไฟล์ `win11/*` หรือ `w11*/*`; MCT ไม่มีตัวเลือก partition scheme ของ Rufus
+  - ปรับงาน `reinstall` เดิมเป็นงานท้าทาย เริ่มลงมือหลังอ่านใบงาน ไม่มีบทสาธิตบังคับ ยังเปิดคู่มือ/ขอคำใบ้ได้ ค่าจ้างสูงสุด 450 เหรียญ
+  - งาน Microsoft และงานท้าทายเปิดหลังพื้นฐานทั้งคู่ ไม่บังคับให้เซฟเดิมย้อนทำงานใหม่ ระบบเหรียญยังจ่ายเฉพาะส่วนที่ดีขึ้น
+- **ไฟล์ที่แตะ:** `src/game/{types,learning(ใหม่),progress}.ts`, `src/data/jobs/{index,reinstall,microsoftInstall(ใหม่)}.ts`, `src/data/manual.ts`, `src/screens/{Shop,Results}.tsx`, `src/screens/workbench/{CasePanel,Intake,Learn,Workbench}.tsx`, `src/sims/reinstall/ReinstallSim.tsx`, `src/sims/windows/WinSetup.tsx`, `src/sims/microsoftInstall/*` (ใหม่), `tests/{content,learning(ใหม่)}.test.ts`, GAME_PLAN.md, COURSE_REFERENCE.md, HANDOFF.md
+- **การตรวจ:** build และ lint ผ่าน; tests 77/77 ผ่าน รวมการเลือกสื่อผิด การจ่ายเหรียญ/ไม่จ่ายซ้ำ เซฟและการปลดล็อก คำสอนครบทุก stage
+- **ข้อจำกัดการตรวจ UI:** เปิดเซิร์ฟเวอร์ Vite ที่ 5184 ได้ แต่ in-app browser เชื่อม localhost/127.0.0.1 ไม่ได้ (timeout) และคำขอ HTTP ใน shell ถูกจำกัด socket จึงยังไม่ยืนยันการเล่นทั้งเส้นทางหรือภาพมือถือในเบราว์เซอร์
+- **ให้อีกฝ่ายรับทราบ:** บันทึกเดิมยังจอง Shop/Results/manual/content.test อยู่ รอบนี้แก้เฉพาะจุดเชื่อม Win10 ตามคำขอใหม่ ต้องรักษาการเพิ่ม `microsoft-install` ใน registry, manual และ test mapping เมื่อเพิ่มงาน Win11 ต่อ ไม่ได้ commit/push
+
+### 2026-10-23 — Claude: 🔒 เฟส 2–3 สาย Windows 11 (กำลังทำ บน branch `win11-track` ยังไม่เปิด PR)
+- **จองไฟล์:** `src/sims/win11/*`, `src/sims/w11*/*`, `src/data/jobs/w11*.ts`, `src/data/manual.ts`, `src/screens/{Shop,Manual,Results}.tsx`, `src/sims/common/BiosSetup.tsx`, `src/sims/desktop/{Desktop,DeviceManager}.tsx`, `tests/content.test.ts`
+- **เสร็จแล้ว (เฟส 2):**
+  - กระดานงาน 2 สาย
+  - `JobDef.track`
+  - อ้างอิง "ใบเนื้อหา Win10/Win11 หน้า X"
+  - คู่มือ 10 ตอน (ตอน 6–10 สรุปใบ Win11)
+  - Results แยกสาย
+  - งานถัดไปเลือกจากสายที่เล่นล่าสุด
+- **เสร็จแล้ว (เฟส 3 บางส่วน):**
+  - คอมโพเนนต์ Win11:
+    - SystemTools (msinfo32, tpm.msc, PC Health Check, BitLocker, UAC, CopyProgress)
+    - WindowsSecurity, MediaCreationTool, Win11Settings (About/Activation/Update/Optional updates), WindowsBackup, Win11Setup, Win11Oobe
+    - `win11.css`
+  - Desktop `variant: 'win11'`
+  - BiosSetup prop `security` (Secure Boot/TPM/CSM)
+  - DeviceManager ดึงกลับจาก archive
+  - **งาน W11-01 ตรวจความพร้อม** (data + sim) ทดสอบในเบราว์เซอร์แล้วผ่านขั้นตรวจสเปก, สรุปความพร้อม, สำรอง (รวมกับดักสำรองลง C:) และคีย์ BitLocker (ยังไม่ได้กดส่งงานจนจบ)
+- **ยังเหลือ:**
+  - งาน W11-02 (MCT), W11-03 (UEFI), W11-04 (Setup+OOBE), W11-05 (ตรวจหลังติดตั้ง)
+    - คอมโพเนนต์พร้อมแล้ว แผนรายละเอียดอยู่ใน plan ของ Claude
+    - ต้องเพิ่ม JobId, ไฟล์ใน `data/jobs`, sim, `SIMS`, `SIM_DIRS` และลิงก์คู่มือตอน 7–10
+  - GOALS Win11 ใน Results
+  - เทสต์ nextJob/lastTrack
+  - เอกสาร COURSE_REFERENCE.md
+  - เปิด PR
+
+### 2026-10-23 — Claude: ✅ เฟส 1 ระบบตกแต่งร้านแบบใหม่ เสร็จแล้ว (branch `decor-v2`)
+- **แผนที่ผู้ใช้อนุมัติ (3 เฟส):**
+  1. ระบบตกแต่งร้าน ← เฟสนี้
+  2. โครงสร้าง 2 สาย:
+     - กระดานงานแยกสาย Win10 (Legacy · Rufus) / Win11 (UEFI · Media Creation Tool)
+     - อ้างอิงเป็น "ใบเนื้อหา Win10/Win11 หน้า X"
+     - คู่มือ 10 ตอน
+  3. สาย Windows 11 จำนวน 5 งาน (ตรวจความพร้อม/สำรอง → MCT → UEFI/Secure Boot/TPM → Setup+OOBE → ตรวจหลังติดตั้ง)
+- **ปลดการจองไฟล์เฟส 1 แล้ว**
+- **สิ่งที่ทำ:**
+  - **แคตตาล็อก 62 รายการ** (`src/data/decor.ts`)
+    - ลายผนัง 7, พื้น 6, ป้าย 5
+    - ของวางได้ 44 ชิ้น ใน 7 หมวด รวมโปสเตอร์ความรู้ เช่น สเปก Win11, MBR vs GPT, UEFI CHECK, ปุ่มเข้าเฟิร์มแวร์
+    - ของพิเศษ 16 ชิ้นล็อกตามระดับร้าน
+    - ภาพทุกชิ้นเป็น SVG ที่วาดเองใน `src/screens/decor/art.tsx`
+  - **ลากวางอิสระ** (`DecorEditor.tsx`):
+    - มีโซนผนัง, พื้น, บนเคาน์เตอร์, บนโต๊ะซ่อม, ห้อยเพดาน
+    - กลับด้าน, หน้า/หลัง, เก็บเข้าคลัง แล้ววางใหม่ได้
+    - ใช้คีย์บอร์ดได้
+    - ตั้งชื่อร้านบนป้ายได้ (≤ 20 ตัวอักษร)
+  - **ฉากร้าน (`ShopScene.tsx`) วาดจาก `save.decor`:**
+    - หน้าร้าน ตัวแก้ไข และโชว์ร้านใช้ฉากเดียวกัน
+    - pattern id ไม่ชนกันด้วย `useId`
+  - **โชว์ร้าน (`Showcase.tsx`, `exportPng.ts`):**
+    - เต็มจอได้, Esc ปิด
+    - บันทึกรูป PNG ขนาด 2000×1090 มีแถบชื่อร้าน/เจ้าของ/ระดับ/จำนวนของ ไม่รวมตัวละคร
+  - **เซฟ v4** (`src/game/decor.ts`, `progress.ts`, `storage.ts`):
+    - key `boot-bloom:save:v4`
+    - ถ้าไม่มี จะอ่าน v3 แล้วย้ายให้: เหรียญ/ดาว/งานเหมือนเดิม, ของ 5 ชิ้นเดิมวางที่เดิม
+    - ไม่ลบ key v3
+  - **`LEVELS` เต็ม 30 ดาว:** 0/6/12/20/27
+    - ตอนนี้มีดาวได้สูงสุด 15 จนกว่าเฟส 3 เสร็จ หน้าร้านจึงบอกว่าระดับ 20 ขึ้นไปต้องใช้ดาวจากสาย Windows 11
+- **ไฟล์ที่แตะ:**
+  - `src/game/{types,progress,storage,decor(ใหม่),GameProvider,gameContext}.ts(x)`
+  - `src/data/decor.ts`
+  - `src/screens/{Shop,ShopScene}.tsx`, `shop.css`, `src/screens/decor/*` (ใหม่)
+  - `tests/logic.test.ts`, `tests/decor.test.ts` (ใหม่)
+  - DEVELOPMENT.md (หัวข้อ "ระบบตกแต่งร้าน" + checklist), GAME_PLAN.md, README.md
+- **ตรวจแล้ว:**
+  - `npm run build`, `npx eslint .` และ `npm test` 60/60 ผ่าน
+  - ทดสอบในเบราว์เซอร์บน 127.0.0.1:5173 ด้วยเซฟ v3 ตัวอย่าง:
+    - ย้ายเซฟ, ซื้อ/วาง/ลาก/คีย์บอร์ด/เก็บคืน, ลายผนังและชื่อร้าน, ของล็อก
+    - โชว์ร้านและ PNG
+    - จอ 375px ลากได้และไม่มี scroll แนวนอน
+    - จอกว้าง 2 คอลัมน์
+    - วางครบ 44 ชิ้นเพื่อดูภาพทุกชิ้น
+- **ข้อเสนอของ Claude:** ราคาของรวมประมาณ 5,300 เหรียญ แต่เหรียญทั้งเกมสูงสุดประมาณ 2,150 (เมื่อมีสาย Win11) เพื่อให้แต่ละคนต้องเลือก ร้านจะได้ไม่เหมือนกัน
+- PR #2 (บันทึก HANDOFF เดิม) ยังเปิดอยู่ branch `decor-v2` แตกจาก `simulator-realism` จึงมีบันทึกนั้นด้วย
+
+### 2026-09-30 — Claude: ย้ายงาน simulator ไปที่ branch แล้วเปิด PR #1 (merge แล้ว)
+- ผู้ใช้กด Create PR แต่งานอยู่บน `main` แล้ว จึงเปิด PR จาก `main` เข้า `main` ไม่ได้
+  - สาเหตุ: รอบที่แล้ว Claude push เข้า `main` ตรง ๆ โดยไม่ได้แตก branch ก่อน
+- **ข้อสรุปจากผู้ใช้:** เลือก "ย้ายไป branch ใหม่" จากตัวเลือกที่ Claude เสนอ ซึ่งยอมให้ force push `main` กลับไปที่ commit แรก
+- **ทำแล้ว:**
+  - สร้าง branch `simulator-realism` จาก `236ba7d` และ push ขึ้น GitHub
+  - force push ให้ `main` บน GitHub ถอยกลับไปที่ `2e7de38` และย้าย `main` ในเครื่องตาม
+  - เปิด PR https://github.com/WhiteR3d1/CAI_Final/pull/1 จาก `simulator-realism` เข้า `main` (check ผ่าน)
+- **ผู้ใช้ merge PR #1 แล้ว** เมื่อ 30 ก.ย. 2026 เวลา 15:25 (merge commit `32e794e`) งาน simulator จึงอยู่บน `main` แล้ว
+- บันทึกนี้ push เข้า branch หลังจาก PR #1 merge ไปแล้ว จึงเปิด PR ใหม่จาก `simulator-realism` เพื่อเอาบันทึกเข้า `main`
+- **ตอนนี้โฟลเดอร์งานยังอยู่บน branch `simulator-realism`**
+  - โค้ดเหมือน `main` ทุกอย่าง ต่างกันแค่ HANDOFF.md
+  - หลังจาก PR ของบันทึกนี้ merge แล้ว ให้ `git switch main` แล้ว `git pull`
+- บันทึกด้านล่างบอกว่า push ขึ้น `origin/main` แต่งานนั้นเข้า `main` ผ่าน PR #1 แทน
+- **ข้อเสนอของ Claude:** งานรอบหน้าให้แตก branch ก่อน commit จะได้เปิด PR ได้โดยไม่ต้องเขียนประวัติของ `main` ใหม่
 
 ### 2026-09-30 — Claude: commit และ push งาน simulator ขึ้น GitHub
 - ผู้ใช้สั่ง "commit แล้ว push ขึ้น GitHub ด้วย"

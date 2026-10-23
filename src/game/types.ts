@@ -1,7 +1,24 @@
 // Shared game types. This file (and other pure logic in src/game) must not touch the DOM,
 // so the node test runner can import it directly.
+import type { Phase } from './scenarios.ts'
 
-export type JobId = 'make-usb' | 'bios-boot' | 'install-new' | 'first-setup' | 'reinstall'
+export type StoryJobId =
+  | 'make-usb'
+  | 'bios-boot'
+  | 'install-new'
+  | 'first-setup'
+  | 'reinstall'
+  | 'microsoft-install'
+  | 'w11-check'
+  | 'w11-usb'
+  | 'w11-uefi'
+  | 'w11-install'
+  | 'w11-verify'
+/** short challenge jobs built from module scenarios (src/data/jobs/challenges.ts) */
+export type ChallengeJobId = `ch-${string}`
+export type JobId = StoryJobId | ChallengeJobId
+/** win10 = the Windows 10 content sheet (legacy BIOS, Rufus); win11 = the Windows 11 content sheet (UEFI, Media Creation Tool) */
+export type Track = 'win10' | 'win11'
 export type CriterionId = 'accuracy' | 'reasoning' | 'dataSafety' | 'testing'
 export type Severity = 'minor' | 'major' | 'critical'
 export type Tone = 'info' | 'good' | 'warn' | 'bad'
@@ -109,6 +126,11 @@ export interface WorkOrderRow {
 
 export interface JobDef {
   id: JobId
+  mode?: 'guided' | 'challenge'
+  track: Track
+  /** module jobs are played by src/sims/modules from these phases instead of a dedicated sim */
+  phases?: Phase[]
+  /** position within its track (1 = first job of the track) */
   order: number
   code: string
   title: string
@@ -117,7 +139,7 @@ export interface JobDef {
   intake: string[]
   workOrder: WorkOrderRow[]
   objectives: Objective[]
-  /** content-sheet pages shown as chips, e.g. "ใบเนื้อหา หน้า 1–3" */
+  /** content-sheet pages shown as chips, e.g. "ใบเนื้อหา Win10 หน้า 1–3" */
   units: string[]
   /** manual section opened from the workbench drawer */
   manualNo: number
@@ -173,10 +195,31 @@ export interface Settings {
   playerName: string
 }
 
+/** one decoration standing in the shop; (x, y) is its bottom-centre in scene units */
+export interface PlacedDecor {
+  uid: string
+  item: string
+  x: number
+  y: number
+  flip: boolean
+  /** stacking order within its layer (higher is drawn later) */
+  z: number
+}
+
+export interface DecorState {
+  wall: string
+  floor: string
+  sign: string
+  signText: string
+  placed: PlacedDecor[]
+}
+
 export interface SaveData {
-  version: 3
+  version: 4
   coins: number
-  owned: string[]
+  /** decoration id → copies bought */
+  inventory: Record<string, number>
+  decor: DecorState
   jobs: Partial<Record<JobId, JobProgress>>
   settings: Settings
 }

@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { Avatar } from '../../components/Avatar'
 import { Icon, type IconName } from '../../components/Icon'
 import { MENTOR } from '../../data/people'
+import { coaching } from '../../game/learning'
+import { VisualGuideGallery } from '../../components/VisualGuide'
+import { visualsFor } from '../../data/visualGuides'
 import type { Tone } from '../../game/types'
 import { WorkOrder } from './Intake'
 import { useRun } from './runContext'
@@ -14,6 +17,7 @@ export function CasePanel({ onManual, onCard }: { onManual: () => void; onCard: 
   const { job, state } = run
   const [tab, setTab] = useState<Tab>('mentor')
   const hints = job.hints[state.stage] ?? []
+  const guidance = coaching(job, state.stage)
   const shown = Math.min(state.hintLevel[state.stage] ?? 0, hints.length)
   const stageIndex = job.stages.findIndex(s => s.id === state.stage)
   const tabs: [Tab, string, IconName][] = [
@@ -53,7 +57,14 @@ export function CasePanel({ onManual, onCard }: { onManual: () => void; onCard: 
           ))}
         </ul>
 
-        {shown > 0 && (
+        {guidance.length > 0 && (
+          <div className="hint-box" aria-live="polite">
+            <strong>ฝึกตามพี่บูต · {job.stages[stageIndex]?.label}</strong>
+            <p>อ่านใบงานและข้อมูลบนจอ แล้วทำตามขั้นด้านล่าง คำสอนนี้ไม่ถูกนับเป็นการขอคำใบ้</p>
+            <ol>{guidance.map(text => <li key={text}>{text}</li>)}</ol>
+          </div>
+        )}
+        {guidance.length === 0 && shown > 0 && (
           <div className="hint-box">
             <strong>
               <Icon name="bulb" size={15} /> คำใบ้ขั้นนี้
@@ -67,10 +78,10 @@ export function CasePanel({ onManual, onCard }: { onManual: () => void; onCard: 
         )}
 
         <div className="case-buttons">
-          <button type="button" className="btn btn-gold btn-sm" onClick={() => run.requestHint(hints.length)} disabled={shown >= hints.length}>
+          {guidance.length === 0 && <button type="button" className="btn btn-gold btn-sm" onClick={() => run.requestHint(hints.length)} disabled={shown >= hints.length}>
             <Icon name="bulb" size={16} />
             {hints.length === 0 ? 'ขั้นนี้ไม่มีคำใบ้' : shown >= hints.length ? 'เปิดคำใบ้ครบแล้ว' : `ขอคำใบ้ (${shown}/${hints.length})`}
-          </button>
+          </button>}
           <button type="button" className="btn btn-ghost btn-sm" onClick={onCard}>
             <Icon name="sparkle" size={16} /> การ์ดความรู้
           </button>
@@ -78,6 +89,11 @@ export function CasePanel({ onManual, onCard }: { onManual: () => void; onCard: 
             <Icon name="book" size={16} /> คู่มือช่าง
           </button>
         </div>
+
+        {visualsFor(job.id, state.stage).length > 0 && <details key={state.stage} className="case-guide">
+          <summary>ดูภาพประกอบขั้นนี้ · จุดที่ต้องดูและเหตุผล</summary>
+          <VisualGuideGallery ids={visualsFor(job.id, state.stage)} />
+        </details>}
 
         <ol className="stage-list" aria-label="ขั้นตอนในงาน">
           {job.stages.map((s, i) => (

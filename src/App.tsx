@@ -7,11 +7,17 @@ import { Manual } from './screens/Manual'
 import { Results } from './screens/Results'
 import { Shop } from './screens/Shop'
 import './App.css'
+import { AccountGate } from './auth/AccountGate'
+import type { SaveData } from './game/types'
 
 // The workbench (all simulations) is the heaviest part, so it loads only when a job opens.
 const Workbench = lazy(() => import('./screens/workbench/Workbench').then(m => ({ default: m.Workbench })))
 
 export default function App() {
+  return <AccountGate>{account => <GameShell key={account?.saveScope ?? 'local'} account={account} />}</AccountGate>
+}
+
+function GameShell({ account }: { account?: { initialSave: SaveData; saveScope: string; onSave: (save: SaveData) => void } }) {
   const [screen, setScreen] = useState<Screen>({ name: 'shop' })
   const [runKey, setRunKey] = useState(0)
 
@@ -26,7 +32,7 @@ export default function App() {
   }
 
   return (
-    <GameProvider>
+    <GameProvider {...account}>
       <div className={`app app-${screen.name}`}>
         <Hud screen={screen} onNavigate={go} />
         <main id="main" className="app-main">

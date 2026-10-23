@@ -5,6 +5,7 @@ import { ANN } from '../people.ts'
 export const biosBootJob: JobDef = {
   id: 'bios-boot',
   order: 2,
+  track: 'win10',
   code: 'งาน 02',
   title: 'ตั้งค่า BIOS ให้บูตจาก USB',
   tagline: 'เข้า BIOS ด้วย F2 ให้ USB เป็นลำดับแรก แล้วบันทึกด้วย F10',
@@ -25,9 +26,9 @@ export const biosBootJob: JobDef = {
     { id: 'o1', text: 'เข้า BIOS และตั้ง USB เป็นอุปกรณ์บูตลำดับแรกได้', rules: [{ criterion: 'accuracy', min: 0.75 }] },
     { id: 'o2', text: 'บันทึกการตั้งค่า แล้วทดสอบว่าเครื่องบูตจาก USB ได้จริง', rules: [{ criterion: 'testing', min: 1 }] },
   ],
-  units: ['ใบเนื้อหา หน้า 3–6'],
+  units: ['ใบเนื้อหา Win10 หน้า 3–6'],
   manualNo: 2,
-  reward: 150,
+  reward: 90,
   minutes: 8,
   requires: 'make-usb',
   criteria: ['accuracy', 'reasoning', 'testing'],
@@ -89,7 +90,7 @@ export const biosBootJob: JobDef = {
         text: 'ข้อความ "Reboot and Select proper Boot device" แปลว่าเครื่องหาอุปกรณ์ที่มีระบบให้บูตไม่เจอ เช่น ฮาร์ดดิสก์ใหม่ที่ยังว่าง',
       },
     ],
-    refs: ['ใบเนื้อหา หน้า 3–6 การกำหนดค่า BIOS ก่อนติดตั้ง Windows 10'],
+    refs: ['ใบเนื้อหา Win10 หน้า 3–6 การกำหนดค่า BIOS ก่อนติดตั้ง Windows 10'],
   },
   demo: [
     {
@@ -137,14 +138,14 @@ export const biosBootJob: JobDef = {
       severity: 'major',
       criterion: 'accuracy',
       explain: 'ลำดับบูตที่ตั้งจะมีผลเมื่อกด F10 แล้วเลือก OK เท่านั้น ถ้าออกโดยไม่บันทึก เครื่องจะบูตจากฮาร์ดดิสก์เหมือนเดิม',
-      ref: 'ใบเนื้อหา หน้า 5–6',
+      ref: 'ใบเนื้อหา Win10 หน้า 5–6',
     },
     'bios-disable': {
       label: 'ปิด (Disabled) อุปกรณ์ในลำดับบูต',
       severity: 'minor',
       criterion: 'accuracy',
       explain: 'ใบเนื้อหาให้เลือก USB เป็นลำดับแรกเท่านั้น ไม่ต้องปิดอุปกรณ์อื่น เพราะหลังติดตั้งเสร็จ เครื่องยังต้องบูตจากฮาร์ดดิสก์',
-      ref: 'ใบเนื้อหา หน้า 5',
+      ref: 'ใบเนื้อหา Win10 หน้า 5',
     },
   },
   checks: [
@@ -167,7 +168,7 @@ export const biosBootJob: JobDef = {
         { text: 'เพื่อล้างการตั้งค่าทั้งหมดกลับเป็นค่าเริ่มต้น', feedback: 'ไม่ใช่ F10 ใช้บันทึกการตั้งค่าและออก' },
         { text: 'ไม่จำเป็น ออกด้วย Esc ก็ได้ผลเหมือนกัน', feedback: 'ถ้าออกโดยไม่บันทึก ลำดับบูตที่ตั้งไว้จะไม่มีผล' },
       ],
-      ref: 'ใบเนื้อหา หน้า 5–6',
+      ref: 'ใบเนื้อหา Win10 หน้า 5–6',
     },
     {
       id: 'q-where',
@@ -178,7 +179,7 @@ export const biosBootJob: JobDef = {
         { text: 'แท็บ Main', feedback: 'แท็บ Main แสดงข้อมูลเครื่อง ไม่ได้ใช้ตั้งลำดับบูต' },
         { text: 'แท็บ Security', feedback: 'แท็บ Security ใช้ตั้งรหัสผ่าน BIOS' },
       ],
-      ref: 'ใบเนื้อหา หน้า 4',
+      ref: 'ใบเนื้อหา Win10 หน้า 4',
     },
     {
       id: 'q-late',
@@ -189,7 +190,7 @@ export const biosBootJob: JobDef = {
         { text: 'ถอดฮาร์ดดิสก์ออกจากเครื่อง', feedback: 'ไม่จำเป็น ฮาร์ดดิสก์ไม่ได้เสีย แค่ยังไม่มีระบบ' },
         { text: 'กลับไปทำ USB ใหม่ด้วย Rufus', feedback: 'USB ไม่ได้ผิด ปัญหาคือยังเข้า BIOS ไปตั้งลำดับบูตไม่ทัน' },
       ],
-      ref: 'ใบเนื้อหา หน้า 3',
+      ref: 'ใบเนื้อหา Win10 หน้า 3',
     },
   ],
   thanks: 'เครื่องขึ้นหน้าติดตั้ง Windows แล้ว! งานต่อไปช่วยติดตั้งให้ครบเลยนะคะ',
