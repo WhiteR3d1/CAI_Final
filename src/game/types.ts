@@ -1,7 +1,9 @@
 // Shared game types. This file (and other pure logic in src/game) must not touch the DOM,
 // so the node test runner can import it directly.
 
-export type JobId = 'make-usb' | 'bios-boot' | 'install-new' | 'first-setup' | 'reinstall'
+export type JobId = 'make-usb' | 'bios-boot' | 'install-new' | 'first-setup' | 'reinstall' | 'w11-check'
+/** win10 = the Windows 10 content sheet (legacy BIOS, Rufus); win11 = the Windows 11 content sheet (UEFI, Media Creation Tool) */
+export type Track = 'win10' | 'win11'
 export type CriterionId = 'accuracy' | 'reasoning' | 'dataSafety' | 'testing'
 export type Severity = 'minor' | 'major' | 'critical'
 export type Tone = 'info' | 'good' | 'warn' | 'bad'
@@ -109,6 +111,8 @@ export interface WorkOrderRow {
 
 export interface JobDef {
   id: JobId
+  track: Track
+  /** position within its track (1 = first job of the track) */
   order: number
   code: string
   title: string
@@ -117,7 +121,7 @@ export interface JobDef {
   intake: string[]
   workOrder: WorkOrderRow[]
   objectives: Objective[]
-  /** content-sheet pages shown as chips, e.g. "ใบเนื้อหา หน้า 1–3" */
+  /** content-sheet pages shown as chips, e.g. "ใบเนื้อหา Win10 หน้า 1–3" */
   units: string[]
   /** manual section opened from the workbench drawer */
   manualNo: number

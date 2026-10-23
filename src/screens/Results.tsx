@@ -2,30 +2,31 @@ import { useState } from 'react'
 import { CoinAmount, ScoreRing, Stars } from '../components/Bits'
 import { Icon } from '../components/Icon'
 import { Modal } from '../components/Modal'
-import { JOBS, JOB_BY_ID } from '../data/jobs'
+import { JOBS, JOB_BY_ID, jobsOf, TRACKS } from '../data/jobs'
 import { useGame } from '../game/gameContext'
 import { isUnlocked, jobProgress, reputation } from '../game/progress'
 import { CRITERION_LABEL } from '../game/scoring'
-import type { JobId, SaveData } from '../game/types'
+import type { JobId, SaveData, Track } from '../game/types'
 import './results.css'
 
-// Learning goals summarised from the content sheet (the sheet itself has no objective list; see GAME_PLAN.md).
-const GOALS: { title: string; jobs: JobId[] }[] = [
-  { title: 'สร้าง USB Boot Windows 10 ด้วยโปรแกรม Rufus ได้ (ใบเนื้อหา หน้า 1–3)', jobs: ['make-usb', 'reinstall'] },
-  { title: 'กำหนดค่า BIOS ให้เครื่องบูตจาก USB ได้ (หน้า 3–6)', jobs: ['bios-boot', 'reinstall'] },
-  { title: 'ติดตั้ง Windows 10 ตามขั้นตอนที่ 1–9 ได้ถูกต้อง (หน้า 6–11)', jobs: ['install-new', 'reinstall'] },
-  { title: 'ตั้งค่าหลังติดตั้งและตรวจ Windows Update ตามขั้นตอนที่ 10–17 ได้ (หน้า 11–15)', jobs: ['first-setup', 'reinstall'] },
-  { title: 'ติดตั้งระบบปฏิบัติการด้วยความรอบคอบ ไม่ทำข้อมูลเสียหาย', jobs: ['make-usb', 'reinstall'] },
+// Win10: goals summarised from the Windows 10 content sheet (it has no objective list; see GAME_PLAN.md).
+// Win11: the six behavioural objectives listed in the Windows 11 content-analysis file.
+const GOALS: { track: Track; title: string; jobs: JobId[] }[] = [
+  { track: 'win10', title: 'สร้าง USB Boot Windows 10 ด้วยโปรแกรม Rufus ได้ (ใบเนื้อหา Win10 หน้า 1–3)', jobs: ['make-usb', 'reinstall'] },
+  { track: 'win10', title: 'กำหนดค่า BIOS ให้เครื่องบูตจาก USB ได้ (หน้า 3–6)', jobs: ['bios-boot', 'reinstall'] },
+  { track: 'win10', title: 'ติดตั้ง Windows 10 ตามขั้นตอนที่ 1–9 ได้ถูกต้อง (หน้า 6–11)', jobs: ['install-new', 'reinstall'] },
+  { track: 'win10', title: 'ตั้งค่าหลังติดตั้งและตรวจ Windows Update ตามขั้นตอนที่ 10–17 ได้ (หน้า 11–15)', jobs: ['first-setup', 'reinstall'] },
+  { track: 'win10', title: 'ติดตั้งระบบปฏิบัติการด้วยความรอบคอบ ไม่ทำข้อมูลเสียหาย', jobs: ['make-usb', 'reinstall'] },
 ]
 
 function summaryText(save: SaveData, date: string) {
   const lines = [
-    'สรุปผลการฝึก Boot & Bloom — การติดตั้งระบบปฏิบัติการ Windows 10',
+    'สรุปผลการฝึก Boot & Bloom — การติดตั้งระบบปฏิบัติการ Windows 10 / 11',
     `ผู้เรียน: ${save.settings.playerName.trim() || '-'}`,
     `วันที่: ${date}`,
-    '',
   ]
-  for (const job of JOBS) {
+  for (const job of TRACKS.flatMap(t => jobsOf(t.id))) {
+    if (job.order === 1) lines.push('', `[สาย ${TRACKS.find(t => t.id === job.track)?.title}]`)
     const p = jobProgress(save, job.id)
     if (!p.best) {
       lines.push(`${job.code} ${job.title}: ยังไม่ได้ทำ`)
@@ -131,11 +132,12 @@ export function Results({ onOpenJob }: { onOpenJob: (id: JobId) => void }) {
       </section>
 
       <section className="results-jobs">
-        {JOBS.map(job => {
+        {TRACKS.flatMap(t => jobsOf(t.id)).map(job => {
           const p = jobProgress(save, job.id)
           const best = p.best
           return (
             <article key={job.id} className="card result-job">
+              {job.order === 1 && <span className="result-track">สาย {TRACKS.find(t => t.id === job.track)?.title}</span>}
               <div className="result-job-main">
                 {best ? <ScoreRing score={best.score} size={104} /> : <div className="result-empty">ยังไม่ได้ทำ</div>}
                 <div className="result-job-info">
@@ -209,23 +211,28 @@ export function Results({ onOpenJob }: { onOpenJob: (id: JobId) => void }) {
       <section className="card results-comp">
         <h2>จุดประสงค์การเรียนรู้จากใบเนื้อหา</h2>
         <p className="muted">ถือว่าผ่านเมื่อทำงานที่เกี่ยวข้องสำเร็จและผ่านเป้าหมายการเรียนรู้ครบอย่างน้อย 1 งาน</p>
-        <ul>
-          {GOALS.map(c => {
-            const ok = c.jobs.some(id => {
-              const best = jobProgress(save, id).best
-              return best && best.objectives.every(o => o.passed)
-            })
-            return (
-              <li key={c.title} className={ok ? 'ok' : undefined}>
-                <Icon name={ok ? 'check' : 'target'} size={18} />
-                <div>
-                  <strong>{c.title}</strong>
-                  <small className="muted">ฝึกใน: {c.jobs.map(id => JOB_BY_ID[id].code).join(', ')}</small>
-                </div>
-              </li>
-            )
-          })}
-        </ul>
+        {TRACKS.filter(t => GOALS.some(g => g.track === t.id)).map(t => (
+          <div key={t.id}>
+            <h3 className="results-goal-track">สาย {t.title}</h3>
+            <ul>
+              {GOALS.filter(g => g.track === t.id).map(c => {
+                const ok = c.jobs.some(id => {
+                  const best = jobProgress(save, id).best
+                  return best && best.objectives.every(o => o.passed)
+                })
+                return (
+                  <li key={c.title} className={ok ? 'ok' : undefined}>
+                    <Icon name={ok ? 'check' : 'target'} size={18} />
+                    <div>
+                      <strong>{c.title}</strong>
+                      <small className="muted">ฝึกใน: {c.jobs.map(id => JOB_BY_ID[id].code).join(', ')}</small>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        ))}
       </section>
 
       <section className="card results-teacher">

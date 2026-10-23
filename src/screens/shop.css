@@ -328,6 +328,50 @@
   }
 }
 
+/* two tracks on the board */
+.board-track {
+  display: grid;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.board-track-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 14px;
+  padding: 12px 16px;
+  border-left: 6px solid var(--green-600);
+  border-radius: 14px;
+  background: var(--sage-100);
+}
+
+.board-track-win11 .board-track-head {
+  border-left-color: #2d6cb5;
+  background: #e3eefb;
+}
+
+.board-track-head h3 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.board-track-head p {
+  margin: 0;
+  font-size: 15px;
+}
+
+.board-track-soon {
+  padding: 8px 16px;
+}
+
+.shop .shop-other {
+  min-height: 40px;
+  margin-top: 8px;
+  font-size: 15px;
+  white-space: normal;
+}
+
 /* Spacious learning navigation: separate board and decoration screens. */
 .shop-page-heading h1 { margin: 24px 0 10px; font-size: clamp(28px, 3vw, 38px); }
 .shop-page-heading p { font-size: 18px; margin: 0; }

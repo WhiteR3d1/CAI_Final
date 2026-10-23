@@ -4,7 +4,7 @@ import { join } from 'node:path'
 import { describe, it } from 'node:test'
 import { JOBS, JOB_BY_ID } from '../src/data/jobs/index.ts'
 import { MANUAL } from '../src/data/manual.ts'
-import type { JobId } from '../src/game/types.ts'
+import type { JobId, Track } from '../src/game/types.ts'
 
 const SIM_DIRS: Record<JobId, string> = {
   'make-usb': 'src/sims/makeUsb',
@@ -12,10 +12,11 @@ const SIM_DIRS: Record<JobId, string> = {
   'install-new': 'src/sims/installNew',
   'first-setup': 'src/sims/firstSetup',
   reinstall: 'src/sims/reinstall',
+  'w11-check': 'src/sims/w11Check',
 }
 
-// evidence ids: wo- = work order, fe- = File Explorer, bs- = BIOS screen
-const EVIDENCE_ID = /['"]((?:wo|fe|bs)-[a-z0-9-]+)['"]/g
+// evidence ids: wo- = work order, fe- = File Explorer, bs- = BIOS screen, si- = system tools (PC Health Check, msinfo32, tpm.msc, Settings, Windows Security)
+const EVIDENCE_ID = /['"]((?:wo|fe|bs|si)-[a-z0-9-]+)['"]/g
 
 function simSource(id: JobId) {
   const dir = SIM_DIRS[id]
@@ -68,27 +69,43 @@ describe('job data', () => {
   }
 })
 
+const SHEET: Record<Track, string> = { win10: 'ใบเนื้อหา Win10', win11: 'ใบเนื้อหา Win11' }
+
 describe('manual', () => {
-  it('covers the five parts of the content sheet in order and links real jobs', () => {
+  it('covers the parts of both content sheets in order and links real jobs of the same track', () => {
     assert.deepEqual(
       MANUAL.map(u => u.no),
-      [1, 2, 3, 4, 5],
+      [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     )
-    for (const u of MANUAL) for (const id of u.jobs) assert.ok(JOB_BY_ID[id], `part ${u.no} links unknown job ${id}`)
+    assert.deepEqual(
+      MANUAL.map(u => u.track),
+      ['win10', 'win10', 'win10', 'win10', 'win10', 'win11', 'win11', 'win11', 'win11', 'win11'],
+    )
+    for (const u of MANUAL) {
+      assert.ok(u.pages.startsWith(`${SHEET[u.track]} หน้า `), `part ${u.no} pages "${u.pages}"`)
+      for (const id of u.jobs) {
+        assert.ok(JOB_BY_ID[id], `part ${u.no} links unknown job ${id}`)
+        assert.equal(JOB_BY_ID[id].track, u.track, `part ${u.no} links ${id} from the other track`)
+      }
+    }
   })
 
-  it('gives every job a manual part that exists and is linked back', () => {
+  it('gives every job a manual part of its track that exists and is linked back', () => {
     for (const job of JOBS) {
       const part = MANUAL.find(u => u.no === job.manualNo)
       assert.ok(part, `${job.id} opens missing manual part ${job.manualNo}`)
+      assert.equal(part.track, job.track, `${job.id} opens a manual part of the other track`)
       assert.ok(MANUAL.some(u => u.jobs.includes(job.id)), `${job.id} is not listed in any manual part`)
     }
   })
 
-  it('cites the content sheet in every job', () => {
+  it('cites the content sheet of its own track in every job', () => {
     for (const job of JOBS) {
-      assert.ok(job.learn.refs.every(r => r.includes('ใบเนื้อหา')), `${job.id} has a reference outside the content sheet`)
-      for (const [id, m] of Object.entries(job.mistakes)) if (m.ref) assert.match(m.ref, /^ใบเนื้อหา หน้า \d/, `${job.id}/${id}`)
+      const sheet = SHEET[job.track]
+      const page = new RegExp(`^${sheet} หน้า \\d`)
+      assert.ok(job.learn.refs.every(r => r.includes(sheet)), `${job.id} has a reference outside its content sheet`)
+      for (const [id, m] of Object.entries(job.mistakes)) if (m.ref) assert.match(m.ref, page, `${job.id}/${id}`)
+      for (const q of job.quiz) if (q.ref) assert.match(q.ref, page, `${job.id}/${q.id}`)
     }
   })
 })

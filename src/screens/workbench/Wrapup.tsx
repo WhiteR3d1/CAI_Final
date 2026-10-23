@@ -193,7 +193,7 @@ export function ResultView({ onExit, onOpenJob }: { onExit: () => void; onOpenJo
   if (!outcome) return null
   const { result, paid } = outcome
   const progress = jobProgress(save, job.id)
-  const nextJob = JOBS.find(j => j.order === job.order + 1)
+  const nextJob = JOBS.find(j => j.track === job.track && j.order === job.order + 1)
   const nextOpen = nextJob && isUnlocked(save, nextJob)
   const allPassed = result.objectives.every(o => o.passed)
 

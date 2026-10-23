@@ -1,0 +1,1350 @@
+/* ===================== Windows 11 look (track Win11) ===================== */
+
+/* ---------- desktop variant ---------- */
+.dt-bloom {
+  background:
+    radial-gradient(ellipse 40% 55% at 52% 60%, #bfe3ff 0%, rgb(191 227 255 / 0%) 70%),
+    radial-gradient(ellipse 60% 70% at 45% 70%, #3d8ee8 0%, rgb(61 142 232 / 0%) 70%),
+    linear-gradient(160deg, #dcebf9 0%, #8fbcec 45%, #2a62b8 100%);
+}
+
+.dt-win11 .dt-icon {
+  color: #fff;
+}
+
+.dt-win11 .dt-window {
+  overflow: hidden;
+  border-color: #c3ccd6;
+  border-radius: 8px;
+  box-shadow: 0 12px 34px rgb(0 0 0 / 28%);
+}
+
+.dt-win11 .dt-window.is-focused {
+  border-color: #8fb4e6;
+}
+
+.dt-win11 .dt-titlebar {
+  background: #f3f3f3;
+}
+
+.dt-win11 .dt-taskbar {
+  justify-content: center;
+  height: 44px;
+  background: rgb(238 242 247 / 92%);
+  color: #1b1b1b;
+  backdrop-filter: blur(10px);
+}
+
+.dt-win11 .dt-start-btn,
+.dt-win11 .dt-task,
+.dt-win11 .dt-vol {
+  width: 40px;
+  height: 36px;
+  border-radius: 6px;
+  color: #1b1b1b;
+}
+
+.dt-win11 .dt-start-btn {
+  color: #1667d9;
+}
+
+.dt-win11 .dt-start-btn:hover,
+.dt-win11 .dt-start-btn.on,
+.dt-win11 .dt-task:hover,
+.dt-win11 .dt-vol:hover {
+  background: rgb(0 0 0 / 7%);
+}
+
+.dt-win11 .dt-search {
+  width: min(200px, 30%);
+  height: 32px;
+  border: 1px solid #d6dce3;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.dt-win11 .dt-tasks {
+  flex: 0 1 auto;
+}
+
+.dt-win11 .dt-task::after {
+  left: 15px;
+  right: 15px;
+  height: 3px;
+  border-radius: 2px;
+  background: #1667d9;
+}
+
+.dt-win11 .dt-tray {
+  position: absolute;
+  right: 8px;
+  color: #1b1b1b;
+}
+
+.dt-win11 .dt-menu {
+  left: 50%;
+  bottom: 52px;
+  transform: translateX(-50%);
+  width: min(340px, 92%);
+  padding: 10px 6px;
+  border: 1px solid #d6dce3;
+  border-radius: 10px;
+  background: rgb(243 245 249 / 98%);
+  color: #1b1b1b;
+}
+
+.dt-win11 .dt-menu button {
+  border-radius: 6px;
+}
+
+.dt-win11 .dt-menu button:hover,
+.dt-win11 .dt-menu button:focus-visible {
+  background: rgb(0 0 0 / 6%);
+}
+
+.dt-win11 .dt-menu-hint {
+  border-top-color: #d6dce3 !important;
+  color: #1667d9 !important;
+}
+
+.dt-win11 .dt-flyout {
+  border-radius: 10px;
+  background: #f3f5f9;
+  color: #1b1b1b;
+}
+
+/* Settings shell in the Windows 11 look */
+.dt-win11 .w-settings {
+  background: #f3f3f3;
+}
+
+.dt-win11 .w-settings-nav button {
+  border-radius: 6px;
+}
+
+.dt-win11 .w-settings-nav button.on {
+  background: #e5e9ef;
+}
+
+/* ---------- shared bits ---------- */
+.w11-link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #1667d9;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.w11-link:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.w11-link:disabled,
+.w11-link.is-muted {
+  color: #7a8592;
+  cursor: default;
+  text-decoration: none;
+}
+
+.w11-check,
+.w11-radio {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.w11-radio span {
+  display: grid;
+}
+
+.w11-ms-logo {
+  display: inline-grid;
+  grid-template-columns: 6px 6px;
+  gap: 1px;
+  width: 13px;
+  height: 13px;
+  vertical-align: -1px;
+  background:
+    linear-gradient(#f25022, #f25022) 0 0 / 6px 6px no-repeat,
+    linear-gradient(#7fba00, #7fba00) 7px 0 / 6px 6px no-repeat,
+    linear-gradient(#00a4ef, #00a4ef) 0 7px / 6px 6px no-repeat,
+    linear-gradient(#ffb900, #ffb900) 7px 7px / 6px 6px no-repeat;
+}
+
+.w11-bar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: #dfe5ec;
+}
+
+.w11-bar span {
+  display: block;
+  height: 100%;
+  background: #1667d9;
+  transform-origin: left;
+  transition: transform 0.2s linear;
+}
+
+.w11-skip {
+  justify-self: start;
+}
+
+.w11-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.w11-table th,
+.w11-table td {
+  padding: 3px 8px;
+  border-bottom: 1px solid #eef0f2;
+  text-align: left;
+  vertical-align: top;
+}
+
+.w11-table th {
+  position: sticky;
+  top: 0;
+  background: #f5f6f7;
+  font-weight: 600;
+}
+
+.w11-card {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  border: 1px solid #e3e6ea;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.w11-row-card {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.w11-row-card > div {
+  display: grid;
+}
+
+.w11-row-card small {
+  color: #5f6b77;
+}
+
+.w11-row-card.is-muted {
+  color: #6b7480;
+}
+
+.w11-row-btn {
+  width: 100%;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.w11-row-btn:hover {
+  background: #f7f9fb;
+}
+
+.w11-pill {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #eef1f5;
+  color: #3c4752;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.w11-pill.ok {
+  background: #dff3e4;
+  color: #0f7b3e;
+}
+
+.w11-pill.bad {
+  background: #fde7e9;
+  color: #b4262e;
+}
+
+/* ---------- System Information / tpm.msc / Control Panel ---------- */
+.w11-menubar {
+  display: flex;
+  gap: 14px;
+  padding: 2px 4px 6px;
+  border-bottom: 1px solid #e6e8eb;
+  font-size: 12px;
+}
+
+.w11-msinfo-body {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 8px;
+  min-height: 0;
+}
+
+.w11-msinfo-tree {
+  margin: 0;
+  padding: 4px;
+  border: 1px solid #e6e8eb;
+  list-style: none;
+  font-size: 12px;
+}
+
+.w11-msinfo-tree li {
+  padding: 2px 4px;
+}
+
+.w11-msinfo-tree li.on {
+  background: #cce4f7;
+}
+
+.w11-msinfo-scroll {
+  overflow: auto;
+  border: 1px solid #e6e8eb;
+}
+
+.w11-mmc-title,
+.w11-cpl-title {
+  margin: 0;
+  color: #1a4fa0;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.w11-mmc-box {
+  padding: 8px 10px;
+  border: 1px solid #dde3ea;
+  border-radius: 4px;
+}
+
+.w11-mmc-box h4,
+.w11-cpl-drive h4 {
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+
+.w11-mmc-box p {
+  margin: 0;
+}
+
+.w11-cpl-drive {
+  padding: 10px;
+  border-top: 1px solid #dde3ea;
+}
+
+.w11-cpl-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.w11-cpl-links {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  margin: 8px 0 0 32px;
+}
+
+/* ---------- PC Health Check ---------- */
+.w11-health-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.w11-health-logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2b7de9, #6cc1ff);
+}
+
+.w11-health-card,
+.w11-health-result {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid #dde3ea;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.w11-health-card .w-btn,
+.w11-health-result .w-btn {
+  justify-self: start;
+}
+
+.w11-health-result h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: #b4262e;
+  font-size: 15px;
+}
+
+.w11-health-result.is-pass h3 {
+  color: #0f7b3e;
+}
+
+.w11-health-result ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.w11-health-result li {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 6px;
+}
+
+.w11-health-result li > div {
+  display: grid;
+}
+
+.w11-health-result li small {
+  color: #5f6b77;
+}
+
+.w11-health-result li.ok svg {
+  color: #0f7b3e;
+}
+
+.w11-health-result li.no svg {
+  color: #b4262e;
+}
+
+/* ---------- UAC ---------- */
+.w11-uac-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 95;
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 45%);
+}
+
+.w11-uac {
+  width: min(420px, 92%);
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 18px 40px rgb(0 0 0 / 45%);
+  font-family: var(--font-os);
+}
+
+.w11-uac-head {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  background: #1f6fc5;
+  color: #fff;
+}
+
+.w11-uac-head strong {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.w11-uac-body {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+}
+
+.w11-uac-app {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.w11-uac-btns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 0 16px 14px;
+}
+
+/* ---------- copy progress ---------- */
+.w11-copy {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  z-index: 90;
+  display: grid;
+  gap: 6px;
+  width: min(380px, 88%);
+  padding: 14px 16px;
+  transform: translate(-50%, -50%);
+  border: 1px solid #c3ccd6;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 30%);
+  font-family: var(--font);
+}
+
+.w11-copy-bar {
+  height: 12px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: #e6e9ee;
+}
+
+.w11-copy-bar span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #0f9d58;
+  transform-origin: left;
+  transition: transform 0.15s linear;
+}
+
+/* ---------- Windows Security ---------- */
+.w11-sec {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  min-height: 100%;
+  background: #f3f3f3;
+  font-family: var(--font-os);
+}
+
+.w11-sec-nav {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  padding: 10px 6px;
+}
+
+.w11-sec-nav button,
+.w11-sec-nav-off {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  font-size: 12.5px;
+  text-align: left;
+}
+
+.w11-sec-nav button {
+  cursor: pointer;
+}
+
+.w11-sec-nav button:hover,
+.w11-sec-nav button.on {
+  background: #e3e8ee;
+}
+
+.w11-sec-nav-off {
+  color: #7a8592;
+}
+
+.w11-sec-main {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 14px 16px;
+}
+
+.w11-sec-main h2 {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.w11-sec-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.w11-sec-tile {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  padding: 12px;
+  border: 1px solid #e3e6ea;
+  border-radius: 8px;
+  background: #fff;
+  font: inherit;
+  font-size: 12.5px;
+  text-align: left;
+}
+
+button.w11-sec-tile {
+  cursor: pointer;
+}
+
+.w11-sec-tile svg {
+  color: #0f7b3e;
+}
+
+.w11-sec-tile.warn svg {
+  color: #b7791f;
+}
+
+.w11-sec-tile.bad svg {
+  color: #b4262e;
+}
+
+.w11-sec-row {
+  display: flex;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.w11-sec-row div {
+  display: grid;
+}
+
+.w11-sec-section {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.w11-sec-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px;
+  font-size: 14px;
+}
+
+.w11-sec-section p {
+  margin: 0 0 4px;
+}
+
+.w11-sec-foot {
+  margin: 0;
+  color: #b7791f;
+  font-weight: 600;
+}
+
+/* ---------- Media Creation Tool ---------- */
+.w11-mct {
+  position: relative;
+  display: grid;
+  min-height: 100%;
+  background: #fff;
+  font-family: var(--font-os);
+}
+
+.w11-mct-page {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 100%;
+  padding: 18px 22px 64px;
+}
+
+.w11-mct-page h2,
+.w11-setup-title {
+  margin: 0;
+  color: #1a4fa0;
+  font-size: 21px;
+  font-weight: 400;
+}
+
+.w11-mct-foot,
+.w11-setup-foot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 18px;
+  font-size: 12px;
+}
+
+.w11-mct-brand,
+.w11-setup-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #5f6b77;
+}
+
+.w11-mct-btns,
+.w11-setup-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.w11-mct-terms {
+  max-height: 150px;
+  overflow: auto;
+  padding: 8px 10px;
+  border: 1px solid #dde3ea;
+  font-size: 12px;
+}
+
+.w11-mct-decline {
+  position: absolute;
+  right: 104px;
+  bottom: 10px;
+}
+
+.w11-mct-field,
+.w11-setup-field {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 260px);
+  align-items: center;
+  gap: 10px;
+}
+
+.w11-mct-field select,
+.w11-setup-field select,
+.w11-setup-field input {
+  padding: 4px 6px;
+  border: 1px solid #b8c2cc;
+  border-radius: 4px;
+  background: #fff;
+  font: inherit;
+}
+
+.w11-mct-sub {
+  margin: 4px 0 0;
+  font-weight: 600;
+}
+
+.w11-mct-drives {
+  display: grid;
+  justify-items: start;
+  gap: 2px;
+}
+
+.w11-mct-drives button {
+  padding: 3px 8px;
+  border: 1px solid transparent;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.w11-mct-drives button:hover {
+  background: #eef4fc;
+}
+
+.w11-mct-drives button.on {
+  border-color: #c7302d;
+  background: #e5effb;
+}
+
+.w11-mct-percent {
+  margin: 6px 0 0;
+}
+
+.w11-mct-drive-done {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+/* ---------- Settings pages ---------- */
+.w11-page {
+  display: grid;
+  gap: 10px;
+}
+
+.w11-page h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.w11-crumb {
+  margin: 0;
+  color: #5f6b77;
+  font-size: 12px;
+}
+
+.w11-specs {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+
+.w11-specs div {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  gap: 10px;
+}
+
+.w11-specs dt {
+  color: #5f6b77;
+}
+
+.w11-specs dd {
+  margin: 0;
+}
+
+.w11-card h3,
+.w11-sub {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.w11-sub {
+  margin-top: 6px;
+}
+
+.w11-expander {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+.w11-update-head {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+
+.w11-update-head > div {
+  display: grid;
+}
+
+.w11-update-head small {
+  color: #5f6b77;
+}
+
+.w11-update-list {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.w11-update-list li {
+  display: grid;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: #fff;
+}
+
+.w11-update-list small {
+  color: #5f6b77;
+}
+
+/* ---------- Windows Backup ---------- */
+.w11-backup h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.w11-backup-device {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.w11-backup-device > div {
+  display: grid;
+}
+
+.w11-backup-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* ---------- Windows 11 Setup ---------- */
+.w11-setup {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 3%;
+  background: radial-gradient(ellipse at 50% 40%, #3b4f9c, #1b2350 70%);
+  font-family: var(--font-os);
+  font-size: 13px;
+}
+
+.w11-setup-window {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(720px, 100%);
+  height: min(470px, 100%);
+  overflow: hidden;
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: 0 18px 50px rgb(0 0 0 / 45%);
+}
+
+.w11-setup-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-bottom: 1px solid #e6e8eb;
+  color: #333;
+  font-size: 12px;
+}
+
+.w11-setup-page {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 0;
+  overflow: auto;
+  padding: 22px 26px 66px;
+}
+
+.w11-setup-sub {
+  margin: 0;
+  color: #444;
+  font-size: 12.5px;
+}
+
+.w11-setup-options {
+  display: grid;
+  grid-template-columns: 110px auto;
+  align-items: center;
+  gap: 4px 12px;
+}
+
+.w11-setup-options > span {
+  grid-row: span 2;
+}
+
+.w11-prev {
+  margin-left: 12px;
+}
+
+.w11-setup-req {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.w11-setup-req li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #b4262e;
+}
+
+.w11-setup-links {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  margin-top: 30px;
+}
+
+.w11-setup-images {
+  display: grid;
+  gap: 2px;
+}
+
+.w11-setup-images .w11-radio {
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.w11-setup-images .w11-radio.on {
+  background: #e5effb;
+}
+
+.w11-setup-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 12px;
+}
+
+.w11-setup-tools .w11-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.w11-parts {
+  display: grid;
+  border: 1px solid #c9d1da;
+}
+
+.w11-parts-head,
+.w11-part {
+  display: grid;
+  grid-template-columns: minmax(0, 2.4fr) 1fr 1fr 1.3fr;
+  gap: 8px;
+  padding: 4px 8px;
+  font-size: 12px;
+  text-align: left;
+}
+
+.w11-parts-head {
+  background: #f5f6f7;
+  font-weight: 600;
+}
+
+.w11-part {
+  border: 0;
+  border-top: 1px solid #f0f2f4;
+  background: #fff;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.w11-part span:first-child {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.w11-part:hover {
+  background: #eef4fc;
+}
+
+.w11-part.on {
+  outline: 2px solid #c7302d;
+  outline-offset: -2px;
+  background: #e5effb;
+}
+
+.w11-setup-recap {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.w11-setup-recap li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.w11-setup-installing {
+  align-content: center;
+  justify-items: stretch;
+}
+
+.w11-setup-big {
+  margin: 0;
+  font-size: 22px;
+}
+
+/* ---------- Windows 11 OOBE ---------- */
+.w11-oobe {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 3%;
+  background: radial-gradient(ellipse at 50% 30%, #f4f7fb, #d9e6f5 75%);
+  font-family: var(--font-os);
+  font-size: 13px;
+}
+
+.w11-oobe-full {
+  align-content: center;
+  justify-items: center;
+  gap: 18px;
+  background: #1c2b4a;
+  color: #fff;
+}
+
+.w11-oobe-full h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 400;
+}
+
+.w11-oobe-card {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  width: min(760px, 100%);
+  height: min(470px, 100%);
+  overflow: hidden;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 16px 40px rgb(30 50 90 / 22%);
+}
+
+.w11-oobe-art {
+  display: grid;
+  place-items: center;
+  background: linear-gradient(160deg, #eef4fb, #dbe8f7);
+}
+
+.w11-oobe-art span {
+  display: grid;
+  place-items: center;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #6bb2ff, #2c6fd6);
+  color: #fff;
+  box-shadow: 0 10px 24px rgb(44 111 214 / 30%);
+}
+
+.w11-oobe-body {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-height: 0;
+  overflow: auto;
+  padding: 26px 26px 64px;
+}
+
+.w11-oobe-body h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.w11-oobe-body h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.w11-oobe-foot {
+  position: absolute;
+  right: 22px;
+  bottom: 16px;
+  display: flex;
+  gap: 8px;
+}
+
+.w11-oobe-list {
+  display: grid;
+  max-height: 210px;
+  overflow: auto;
+  border: 1px solid #e3e6ea;
+  border-radius: 6px;
+}
+
+.w11-oobe-list button {
+  padding: 6px 10px;
+  border: 0;
+  background: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.w11-oobe-list button:hover {
+  background: #eef4fc;
+}
+
+.w11-oobe-list button.on {
+  background: #1667d9;
+  color: #fff;
+}
+
+.w11-oobe-wifi {
+  display: grid;
+  gap: 4px;
+}
+
+.w11-oobe-net {
+  border-radius: 6px;
+}
+
+.w11-oobe-net > button {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 2px 10px;
+  width: 100%;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.w11-oobe-net > button small {
+  grid-column: 2;
+  color: #5f6b77;
+}
+
+.w11-oobe-net.on {
+  background: #eef4fc;
+}
+
+.w11-oobe-net-pw {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 10px 8px 38px;
+}
+
+.w11-oobe-net-pw input {
+  flex: 1 1 160px;
+  padding: 5px 8px;
+  border: 1px solid #b8c2cc;
+  border-radius: 4px;
+  font: inherit;
+}
+
+.w11-oobe-nonet {
+  justify-self: start;
+  font-size: 12px;
+}
+
+.w11-oobe-wait {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+
+.w11-oobe-input {
+  padding: 7px 10px;
+  border: 0;
+  border-bottom: 2px solid #1667d9;
+  background: #f6f8fb;
+  color: #1b1b1b;
+  font: inherit;
+}
+
+.w11-oobe-masked {
+  min-height: 34px;
+  letter-spacing: 2px;
+}
+
+.w11-oobe-choice {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #e3e6ea;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.w11-oobe-choice.on {
+  border-color: #1667d9;
+  background: #f2f7fe;
+}
+
+.w11-oobe-choice span {
+  display: grid;
+}
+
+.w11-oobe-choice small {
+  color: #5f6b77;
+}
+
+.w11-oobe-ms {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: #5f6b77;
+}
+
+.w11-oobe-links {
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.w11-oobe-privacy {
+  display: grid;
+  gap: 2px;
+}
+
+.w11-oobe-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 6px 4px;
+  border-bottom: 1px solid #f0f2f4;
+}
+
+.w11-toggle-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.w11-toggle-wrap input {
+  width: 34px;
+  height: 18px;
+  accent-color: #1667d9;
+}
+
+.w11-oobe-tiles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.w11-oobe-tiles span {
+  padding: 10px;
+  border: 1px solid #e3e6ea;
+  border-radius: 8px;
+  text-align: center;
+}
+
+@container screen (max-width: 640px) {
+  .w11-oobe-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .w11-oobe-art {
+    display: none;
+  }
+
+  .w11-sec {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .w11-sec-nav {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .w11-mct-field,
+  .w11-setup-field {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .w11-msinfo-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .w11-msinfo-tree {
+    display: none;
+  }
+}

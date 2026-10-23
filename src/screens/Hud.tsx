@@ -44,7 +44,7 @@ export function Hud({ screen, onNavigate }: { screen: Screen; onNavigate: (s: Sc
           <Logo />
           <span>
             <strong>Boot &amp; Bloom</strong>
-            <small>ร้านซ่อมคอมจำลอง · ติดตั้ง Windows 10</small>
+            <small>ร้านซ่อมคอมจำลอง · ติดตั้ง Windows 10 / 11</small>
           </span>
         </div>
       ) : (
@@ -52,7 +52,7 @@ export function Hud({ screen, onNavigate }: { screen: Screen; onNavigate: (s: Sc
           <Logo />
           <span>
             <strong>Boot &amp; Bloom</strong>
-            <small>ร้านซ่อมคอมจำลอง · ติดตั้ง Windows 10</small>
+            <small>ร้านซ่อมคอมจำลอง · ติดตั้ง Windows 10 / 11</small>
           </span>
         </button>
       )}

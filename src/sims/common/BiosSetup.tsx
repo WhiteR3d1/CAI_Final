@@ -10,6 +10,14 @@ export interface BiosInfoRow {
 
 export type BiosView = 'tab' | 'hdd' | 'priority'
 
+/** UEFI options the Windows 11 content sheet asks to check (p.4): Secure Boot, TPM 2.0, UEFI (CSM off) */
+export interface FirmwareSecurity {
+  secureBoot: boolean
+  tpm: boolean
+  /** Compatibility Support Module = legacy boot alongside UEFI */
+  csm: boolean
+}
+
 interface Props {
   /** "info" = look only, "boot" = boot order can be changed */
   mode: 'info' | 'boot'
@@ -25,6 +33,16 @@ interface Props {
   onView?: (view: BiosView) => void
   /** called when the player tries to disable a drive */
   onDisable?: () => void
+  /** when given (UEFI only), Boot Mode, Secure Boot and the TPM can be changed */
+  security?: FirmwareSecurity
+  onSecurityChange?: (next: FirmwareSecurity) => void
+}
+
+interface Choice {
+  title: string
+  options: string[]
+  index: number
+  apply: (index: number) => void
 }
 
 const TABS = {
@@ -41,13 +59,17 @@ interface Row {
   action?: () => void
 }
 
-export function BiosSetup({ mode, variant = 'uefi', info, drives, onDrivesChange, onSaveExit, onDiscardExit, onNote, onView, onDisable }: Props) {
+export function BiosSetup({ mode, variant = 'uefi', info, drives, onDrivesChange, onSaveExit, onDiscardExit, onNote, onView, onDisable, security, onSecurityChange }: Props) {
   const ref = useRef<HTMLDivElement>(null)
   const tabs: readonly string[] = TABS[variant]
   const [tab, setTab] = useState(0)
   const [cursor, setCursor] = useState(0)
   const [view, setView] = useState<BiosView>('tab')
   const [popup, setPopup] = useState<{ slot: number; index: number } | null>(null)
+  const [choice, setChoice] = useState<Choice | null>(null)
+  const setSec = (patch: Partial<FirmwareSecurity>) => security && onSecurityChange?.({ ...security, ...patch })
+  const toggle = (title: string, on: boolean, apply: (on: boolean) => void) =>
+    setChoice({ title, options: ['Enabled', 'Disabled'], index: on ? 0 : 1, apply: i => apply(i === 0) })
   const [dialog, setDialog] = useState<{ kind: 'save' | 'exit'; ok: boolean } | null>(null)
   const [mouseTip, setMouseTip] = useState(false)
 
@@ -95,13 +117,49 @@ export function BiosSetup({ mode, variant = 'uefi', info, drives, onDrivesChange
       case 'Boot':
         return [
           ...(variant === 'uefi'
-            ? [{ label: 'Boot Mode Select', value: 'UEFI', help: 'รูปแบบการบูตของเมนบอร์ด', action: () => onNote('ไม่ต้องเปลี่ยน Boot Mode ในงานนี้') }]
+            ? [
+                security
+                  ? {
+                      label: 'Boot Mode Select',
+                      value: security.csm ? 'Legacy + UEFI (CSM)' : 'UEFI',
+                      help: 'UEFI = บูตแบบ UEFI อย่างเดียว ส่วน CSM เปิดการบูตแบบ Legacy ด้วย',
+                      action: () =>
+                        setChoice({
+                          title: 'Boot Mode Select',
+                          options: ['UEFI', 'Legacy + UEFI (CSM)'],
+                          index: security.csm ? 1 : 0,
+                          // most firmware turns Secure Boot off when CSM is on
+                          apply: i => setSec(i === 1 ? { csm: true, secureBoot: false } : { csm: false }),
+                        }),
+                    }
+                  : { label: 'Boot Mode Select', value: 'UEFI', help: 'รูปแบบการบูตของเมนบอร์ด', action: () => onNote('ไม่ต้องเปลี่ยน Boot Mode ในงานนี้') },
+              ]
             : []),
           { label: '▶ Boot Device Priority', help: 'ดูลำดับอุปกรณ์ที่ใช้บูต', action: () => openSub('priority') },
           { label: '▶ Hard Disk Drives', help: 'จัดลำดับฮาร์ดดิสก์และแฟลชไดรฟ์ที่ใช้บูต', action: () => openSub('hdd') },
           { label: '▶ CD/DVD Drives', help: 'เครื่องนี้ไม่มีไดรฟ์ CD/DVD', action: () => onNote('เครื่องนี้ไม่มีไดรฟ์ CD/DVD') },
         ]
       case 'Security':
+        if (variant === 'uefi' && security) {
+          return [
+            { label: 'Administrator Password', value: 'Not Installed', help: 'รหัสผ่านเข้าเฟิร์มแวร์', action: () => onNote('ไม่ต้องตั้งรหัสผ่านในงานนี้') },
+            {
+              label: 'Secure Boot',
+              value: security.secureBoot ? 'Enabled' : 'Disabled',
+              help: 'ป้องกันการบูตจากโปรแกรมที่ไม่ได้รับรอง (ใช้ได้เมื่อบูตแบบ UEFI)',
+              action: () =>
+                security.csm && !security.secureBoot
+                  ? onNote('Secure Boot เปิดได้เมื่อ Boot Mode เป็น UEFI เท่านั้น ปิด CSM ในแท็บ Boot ก่อน')
+                  : toggle('Secure Boot', security.secureBoot, on => setSec({ secureBoot: on })),
+            },
+            {
+              label: 'TPM Device (Firmware TPM 2.0)',
+              value: security.tpm ? 'Enabled' : 'Disabled',
+              help: 'ชิปความปลอดภัย TPM 2.0 ที่ Windows 11 ต้องใช้ บางยี่ห้อเรียก Intel PTT หรือ AMD fTPM',
+              action: () => toggle('TPM Device', security.tpm, on => setSec({ tpm: on })),
+            },
+          ]
+        }
         return variant === 'uefi'
           ? [
               { label: 'Administrator Password', value: 'Not Installed', help: 'รหัสผ่านเข้า BIOS', action: () => onNote('ไม่ต้องตั้งรหัสผ่านในงานนี้') },
@@ -153,6 +211,15 @@ export function BiosSetup({ mode, variant = 'uefi', info, drives, onDrivesChange
       setDialog({ kind: 'save', ok: true })
       return
     }
+    if (choice) {
+      if (key === 'ArrowUp') setChoice({ ...choice, index: Math.max(0, choice.index - 1) })
+      else if (key === 'ArrowDown') setChoice({ ...choice, index: Math.min(choice.options.length - 1, choice.index + 1) })
+      else if (key === 'Enter') {
+        choice.apply(choice.index)
+        setChoice(null)
+      } else if (key === 'Escape') setChoice(null)
+      return
+    }
     if (popup) {
       if (key === 'ArrowUp') setPopup({ ...popup, index: Math.max(0, popup.index - 1) })
       else if (key === 'ArrowDown') setPopup({ ...popup, index: Math.min(popupOptions.length - 1, popup.index + 1) })
@@ -199,7 +266,7 @@ export function BiosSetup({ mode, variant = 'uefi', info, drives, onDrivesChange
   return (
     <div className="bios-wrap">
       <div ref={ref} className="bios" tabIndex={0} role="application" aria-label="BIOS Setup Utility ใช้ลูกศร Enter Esc และ F10" onKeyDown={onKeyDown} onMouseDown={onMouseDown}>
-        <div className="bios-title">BIOS SETUP UTILITY</div>
+        <div className="bios-title">{security ? 'UEFI FIRMWARE SETUP UTILITY' : 'BIOS SETUP UTILITY'}</div>
         <div className="bios-tabs" role="tablist">
           {tabs.map((t, i) => (
             <span key={t} role="tab" aria-selected={tab === i} className={tab === i ? 'on' : undefined}>
@@ -245,6 +312,16 @@ export function BiosSetup({ mode, variant = 'uefi', info, drives, onDrivesChange
             <div className="bios-popup-title">Options</div>
             {popupOptions.map((o, i) => (
               <div key={o} role="option" aria-selected={popup.index === i} className={popup.index === i ? 'on' : undefined}>
+                {o}
+              </div>
+            ))}
+          </div>
+        )}
+        {choice && (
+          <div className="bios-popup" role="listbox" aria-label={choice.title}>
+            <div className="bios-popup-title">{choice.title}</div>
+            {choice.options.map((o, i) => (
+              <div key={o} role="option" aria-selected={choice.index === i} className={choice.index === i ? 'on' : undefined}>
                 {o}
               </div>
             ))}

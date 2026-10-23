@@ -48,6 +48,33 @@
 
 ## บันทึกงาน
 
+### 2026-10-23 — Claude: 🔒 เฟส 2–3 สาย Windows 11 (กำลังทำ บน branch `win11-track` ยังไม่เปิด PR)
+- **จองไฟล์:** `src/sims/win11/*`, `src/sims/w11*/*`, `src/data/jobs/w11*.ts`, `src/data/manual.ts`, `src/screens/{Shop,Manual,Results}.tsx`, `src/sims/common/BiosSetup.tsx`, `src/sims/desktop/{Desktop,DeviceManager}.tsx`, `tests/content.test.ts`
+- **เสร็จแล้ว (เฟส 2):**
+  - กระดานงาน 2 สาย
+  - `JobDef.track`
+  - อ้างอิง "ใบเนื้อหา Win10/Win11 หน้า X"
+  - คู่มือ 10 ตอน (ตอน 6–10 สรุปใบ Win11)
+  - Results แยกสาย
+  - งานถัดไปเลือกจากสายที่เล่นล่าสุด
+- **เสร็จแล้ว (เฟส 3 บางส่วน):**
+  - คอมโพเนนต์ Win11:
+    - SystemTools (msinfo32, tpm.msc, PC Health Check, BitLocker, UAC, CopyProgress)
+    - WindowsSecurity, MediaCreationTool, Win11Settings (About/Activation/Update/Optional updates), WindowsBackup, Win11Setup, Win11Oobe
+    - `win11.css`
+  - Desktop `variant: 'win11'`
+  - BiosSetup prop `security` (Secure Boot/TPM/CSM)
+  - DeviceManager ดึงกลับจาก archive
+  - **งาน W11-01 ตรวจความพร้อม** (data + sim) ทดสอบในเบราว์เซอร์แล้วผ่านขั้นตรวจสเปก, สรุปความพร้อม, สำรอง (รวมกับดักสำรองลง C:) และคีย์ BitLocker (ยังไม่ได้กดส่งงานจนจบ)
+- **ยังเหลือ:**
+  - งาน W11-02 (MCT), W11-03 (UEFI), W11-04 (Setup+OOBE), W11-05 (ตรวจหลังติดตั้ง)
+    - คอมโพเนนต์พร้อมแล้ว แผนรายละเอียดอยู่ใน plan ของ Claude
+    - ต้องเพิ่ม JobId, ไฟล์ใน `data/jobs`, sim, `SIMS`, `SIM_DIRS` และลิงก์คู่มือตอน 7–10
+  - GOALS Win11 ใน Results
+  - เทสต์ nextJob/lastTrack
+  - เอกสาร COURSE_REFERENCE.md
+  - เปิด PR
+
 ### 2026-10-23 — Claude: ✅ เฟส 1 ระบบตกแต่งร้านแบบใหม่ เสร็จแล้ว (branch `decor-v2`)
 - **แผนที่ผู้ใช้อนุมัติ (3 เฟส):**
   1. ระบบตกแต่งร้าน ← เฟสนี้

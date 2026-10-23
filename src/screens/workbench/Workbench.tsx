@@ -12,6 +12,7 @@ import { FirstSetupSim } from '../../sims/firstSetup/FirstSetupSim'
 import { InstallNewSim } from '../../sims/installNew/InstallNewSim'
 import { MakeUsbSim } from '../../sims/makeUsb/MakeUsbSim'
 import { ReinstallSim } from '../../sims/reinstall/ReinstallSim'
+import { W11CheckSim } from '../../sims/w11Check/W11CheckSim'
 import { Manual } from '../Manual'
 import { CasePanel } from './CasePanel'
 import { Drawer } from './Drawer'
@@ -28,6 +29,7 @@ const SIMS: Record<JobId, ComponentType> = {
   'install-new': InstallNewSim,
   'first-setup': FirstSetupSim,
   reinstall: ReinstallSim,
+  'w11-check': W11CheckSim,
 }
 
 interface Props {

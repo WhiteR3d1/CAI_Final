@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { Avatar } from '../components/Avatar'
 import { CoinAmount, Speech, Stars } from '../components/Bits'
 import { Icon } from '../components/Icon'
-import { JOBS, JOB_BY_ID } from '../data/jobs'
+import { JOBS, JOB_BY_ID, jobsOf, TRACKS } from '../data/jobs'
 import { MENTOR } from '../data/people'
 import { useGame } from '../game/gameContext'
-import { isUnlocked, jobProgress, LEVELS, reputation, shopLevel } from '../game/progress'
+import { isUnlocked, jobProgress, lastTrack, LEVELS, nextJob, reputation, shopLevel } from '../game/progress'
 import type { JobDef, JobId } from '../game/types'
 import { DecorEditor } from './decor/DecorEditor'
 import { Showcase } from './decor/Showcase'
@@ -79,7 +79,10 @@ export function Shop({ onOpenJob, onNavigate, view = 'shop' }: { onOpenJob: (id:
   const { save } = game
   const rep = reputation(save)
   const level = shopLevel(rep)
-  const next = JOBS.find(j => isUnlocked(save, j) && jobProgress(save, j.id).completions === 0)
+  // suggest the next job in the track played last; the other track's next job is offered too
+  const prefer = lastTrack(save, JOBS) ?? 'win10'
+  const next = nextJob(save, JOBS, prefer)
+  const other = next ? nextJob(save, JOBS.filter(j => j.track !== next.track)) : undefined
   const doneCount = JOBS.filter(j => jobProgress(save, j.id).completions > 0).length
   const maxRep = JOBS.length * 3
 
@@ -121,6 +124,11 @@ export function Shop({ onOpenJob, onNavigate, view = 'shop' }: { onOpenJob: (id:
                 รับงานจาก{next.customer.name}
                 <Icon name="arrowRight" size={18} />
               </button>
+              {other && (
+                <button type="button" className="btn btn-ghost btn-sm btn-block shop-other" onClick={() => onOpenJob(other.id)}>
+                  หรือสาย {TRACKS.find(t => t.id === other.track)?.title}: {other.title}
+                </button>
+              )}
             </div>
           )}
           <div className="shop-level">
@@ -157,11 +165,28 @@ export function Shop({ onOpenJob, onNavigate, view = 'shop' }: { onOpenJob: (id:
             ทำเสร็จแล้ว {doneCount}/{JOBS.length} งาน · คะแนนวิชาแยกจากเหรียญในเกม
           </p>
         </div>
-        <div className="job-grid">
-          {JOBS.map(job => (
-            <JobCard key={job.id} job={job} onOpen={onOpenJob} />
-          ))}
-        </div>
+        {TRACKS.map(track => {
+          const jobs = jobsOf(track.id)
+          return (
+            <div key={track.id} className={`board-track board-track-${track.id}`}>
+              <div className="board-track-head">
+                <h3>{track.title}</h3>
+                <p className="muted">
+                  {track.subtitle} · {track.sheet}
+                </p>
+              </div>
+              {jobs.length ? (
+                <div className="job-grid">
+                  {jobs.map(job => (
+                    <JobCard key={job.id} job={job} onOpen={onOpenJob} />
+                  ))}
+                </div>
+              ) : (
+                <p className="muted board-track-soon">งานสายนี้กำลังเพิ่ม</p>
+              )}
+            </div>
+          )
+        })}
       </section>}
 
       {view === 'decor' && <DecorEditor onShowcase={() => setShowcase(true)} />}

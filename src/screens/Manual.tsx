@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { Icon } from '../components/Icon'
 import { KnowledgeView } from '../components/KnowledgeView'
-import { JOB_BY_ID } from '../data/jobs'
-import { EXTRA_NOTES, MANUAL, SOURCE } from '../data/manual'
+import { JOB_BY_ID, TRACKS } from '../data/jobs'
+import { EXTRA_NOTES, MANUAL, SOURCES } from '../data/manual'
 import './manual.css'
 
 interface Props {
@@ -20,9 +20,10 @@ export function Manual({ initialUnit = 1, compact = false }: Props) {
         <header className="manual-head">
           <div>
             <span className="eyebrow">คู่มือช่าง</span>
-            <h1>สรุปใบเนื้อหา: การติดตั้ง Windows 10</h1>
+            <h1>สรุปใบเนื้อหา: การติดตั้ง Windows 10 และ Windows 11</h1>
             <p className="muted">
-              สรุปจาก{SOURCE.title} ({SOURCE.subject} {SOURCE.pages} หน้า) เลขหน้าอ้างอิงตามใบเนื้อหา ส่วนที่ติดป้าย "เสริมนอกใบเนื้อหา" เป็นความรู้ที่เกมเพิ่มให้
+              ตอน 1–5 สรุปจาก{SOURCES.win10.title} ({SOURCES.win10.pages} หน้า) ตอน 6–10 สรุปจาก{SOURCES.win11.title} ({SOURCES.win11.subject} {SOURCES.win11.pages} หน้า)
+              เลขหน้าอ้างอิงตามใบเนื้อหาแต่ละใบ ส่วนที่ติดป้าย "เสริมนอกใบเนื้อหา" เป็นความรู้ที่เกมเพิ่มให้
             </p>
           </div>
         </header>
@@ -30,11 +31,16 @@ export function Manual({ initialUnit = 1, compact = false }: Props) {
 
       <div className="manual-body">
         <nav className="manual-nav" aria-label="หัวข้อในใบเนื้อหา">
-          {MANUAL.map(u => (
-            <button key={u.no} type="button" aria-current={selected === u.no ? 'true' : undefined} onClick={() => setSelected(u.no)}>
-              <span className="manual-no">{u.no}</span>
-              <span>{u.title}</span>
-            </button>
+          {TRACKS.map(t => (
+            <div key={t.id} className="manual-nav-group">
+              <span className="manual-nav-track">{t.title}</span>
+              {MANUAL.filter(u => u.track === t.id).map(u => (
+                <button key={u.no} type="button" aria-current={selected === u.no ? 'true' : undefined} onClick={() => setSelected(u.no)}>
+                  <span className={`manual-no manual-no-${u.track}`}>{u.no}</span>
+                  <span>{u.title}</span>
+                </button>
+              ))}
+            </div>
           ))}
           <button type="button" aria-current={selected === 'extra' ? 'true' : undefined} onClick={() => setSelected('extra')}>
             <span className="manual-no manual-no-extra">
@@ -49,6 +55,7 @@ export function Manual({ initialUnit = 1, compact = false }: Props) {
             <>
               <div className="manual-article-head">
                 <span className="chip">ตอนที่ {unit.no}</span>
+                <span className="chip">{TRACKS.find(t => t.id === unit.track)?.title}</span>
                 <span className="chip">{unit.pages}</span>
               </div>
               <h2>{unit.title}</h2>

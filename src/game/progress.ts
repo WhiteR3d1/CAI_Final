@@ -1,5 +1,5 @@
 import { defaultDecor, migrateOwned, normalizeShop } from './decor.ts'
-import type { JobDef, JobId, JobProgress, JobResult, SaveData, Settings } from './types.ts'
+import type { JobDef, JobId, JobProgress, JobResult, SaveData, Settings, Track } from './types.ts'
 
 export function defaultSave(): SaveData {
   return {
@@ -88,6 +88,23 @@ export function applyResult(save: SaveData, job: JobDef, result: JobResult): { s
 export function isUnlocked(save: SaveData, job: JobDef): boolean {
   if (save.settings.unlockAll || !job.requires) return true
   return jobProgress(save, job.requires).completions > 0
+}
+
+/** the track of the most recently finished job (null before any job is finished) */
+export function lastTrack(save: SaveData, jobs: JobDef[]): Track | null {
+  let latest: { at: string; track: Track } | null = null
+  for (const j of jobs) {
+    const at = save.jobs[j.id]?.last?.finishedAt
+    if (at && (!latest || at > latest.at)) latest = { at, track: j.track }
+  }
+  return latest?.track ?? null
+}
+
+/** the first unlocked job not yet finished, looking in the preferred track first */
+export function nextJob(save: SaveData, jobs: JobDef[], prefer: Track = 'win10'): JobDef | undefined {
+  const open = (j: JobDef) => isUnlocked(save, j) && jobProgress(save, j.id).completions === 0
+  const sorted = [...jobs].sort((a, b) => a.order - b.order)
+  return sorted.find(j => j.track === prefer && open(j)) ?? sorted.find(open)
 }
 
 export function reputation(save: SaveData): number {
