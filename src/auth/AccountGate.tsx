@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import { defaultSave, normalizeSave } from '../game/progress'
 import type { SaveData } from '../game/types'
+import { TeacherConsole } from '../teacher/TeacherConsole'
 import { api, errorMessage, type Health, type Session, type Snapshot } from './api'
 import { SaveQueue, type Draft, type SyncStatus } from './sync'
 import './accounts.css'
@@ -27,6 +28,7 @@ export function AccountGate({ children }: { children: (account?: AccountGame) =>
   const [register, setRegister] = useState(false)
   const [generation, setGeneration] = useState(0)
   const [gameKey, setGameKey] = useState(0)
+  const [playing, setPlaying] = useState(false)
 
   async function enter(session: Session) {
     const data = await api<{ snapshot: Snapshot }>('load', { token: session.token })
@@ -66,9 +68,11 @@ export function AccountGate({ children }: { children: (account?: AccountGame) =>
     finally { setBusy(false) }
   }
   function signedOut() {
-    sessionStorage.removeItem(SESSION_KEY); setLoaded(undefined); setMessage('')
+    sessionStorage.removeItem(SESSION_KEY); setLoaded(undefined); setMessage(''); setPlaying(false)
   }
-  if (loaded) return <OnlineGame key={`${loaded.session.user.uid}:${gameKey}`} loaded={loaded} onSignOut={signedOut} onReload={async () => {
+  // A teacher account opens the class console instead of the game, but may still play to try a job out.
+  if (loaded?.session.user.teacher && !playing) return <TeacherShell session={loaded.session} onSignOut={signedOut} onPlay={() => setPlaying(true)} />
+  if (loaded) return <OnlineGame key={`${loaded.session.user.uid}:${gameKey}`} loaded={loaded} onSignOut={signedOut} onTeacher={loaded.session.user.teacher ? () => setPlaying(false) : undefined} onReload={async () => {
     const data = await api<{ snapshot: Snapshot }>('load', { token: loaded.session.token })
     localStorage.removeItem(draftKey(loaded.session.user.uid))
     setLoaded({ session: loaded.session, snapshot: data.snapshot }); setGameKey(k => k + 1)
@@ -95,8 +99,8 @@ export function AccountGate({ children }: { children: (account?: AccountGame) =>
   </section></main>
 }
 
-function OnlineGame({ loaded, onSignOut, onReload, children }: {
-  loaded: Loaded; onSignOut: () => void; onReload: () => Promise<void>; children: (account?: AccountGame) => ReactNode
+function OnlineGame({ loaded, onSignOut, onReload, onTeacher, children }: {
+  loaded: Loaded; onSignOut: () => void; onReload: () => Promise<void>; onTeacher?: () => void; children: (account?: AccountGame) => ReactNode
 }) {
   const { session, snapshot, draft } = loaded
   const [syncState, setSyncState] = useState<{ status: SyncStatus; error?: unknown }>({ status: draft ? 'pending' : 'saved' })
@@ -130,6 +134,7 @@ function OnlineGame({ loaded, onSignOut, onReload, children }: {
   const save = normalizeSave(draft?.save ?? snapshot.save ?? { ...defaultSave(), settings: { ...defaultSave().settings, playerName: session.user.name } })
   return <>
     <div className="account-bar"><strong>{session.user.name}</strong><span role="status">{labels[status]}</span>
+      {onTeacher && <button disabled={working || status === 'saving'} onClick={onTeacher}>กลับหน้าอาจารย์</button>}
       {(status === 'error' || status === 'pending') && <button disabled={working} onClick={() => { void queueRef.current?.flush() }}>ลองบันทึกอีกครั้ง</button>}
       <button disabled={working || status === 'saving'} onClick={() => { void logout() }}>บันทึกและออกจากระบบ</button>
     </div>
@@ -151,4 +156,23 @@ function OnlineGame({ loaded, onSignOut, onReload, children }: {
 
 function RenderGame({ render, account }: { render: (account?: AccountGame) => ReactNode; account: AccountGame }) {
   return render(account)
+}
+
+/** Shell around the teacher console: the account bar, sign-out and the way into the game itself. */
+function TeacherShell({ session, onSignOut, onPlay }: { session: Session; onSignOut: () => void; onPlay: () => void }) {
+  const [working, setWorking] = useState(false)
+  const [message, setMessage] = useState('')
+  async function logout() {
+    setWorking(true); setMessage('')
+    try { await api('logout', { token: session.token }); onSignOut() }
+    catch (e) { setMessage(errorMessage(e)) } finally { setWorking(false) }
+  }
+  return <>
+    <div className="account-bar"><strong>{session.user.name} · อาจารย์</strong><span role="status">โหมดอาจารย์ — อ่านข้อมูลนักเรียนอย่างเดียว</span>
+      <button disabled={working} onClick={onPlay}>เปิดเกมของฉัน</button>
+      <button disabled={working} onClick={() => { void logout() }}>ออกจากระบบ</button>
+    </div>
+    {message && <div className="account-notice" role="alert"><p>{message}</p></div>}
+    <TeacherConsole session={session} />
+  </>
 }

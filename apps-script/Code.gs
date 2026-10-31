@@ -5,8 +5,17 @@
 // Edit these settings here, then deploy a new version. Never put secrets in source.
 var BB_CONFIG = {
   SHEET_ID: '1Jr1oHNkKg3kCP171JEqd6BRlDig6KRDoPDRAI3rgXrA',
-  ALLOW_REGISTRATION: true
+  ALLOW_REGISTRATION: true,
+  // Admins may open the teacher console AND change other accounts' roles. Accounts listed here are
+  // always admin and cannot be demoted from the web, so at least one name keeps the console reachable.
+  ADMINS: [],
+  // Default role for accounts that have no role in the sheet yet. An admin can override it from the web.
+  TEACHERS: []
 };
+// 'role' is an optional 11th column of BB_Accounts added by setupBootBloom. The header check below
+// only reads the first ten columns, so an older sheet without it keeps working (everyone is a student).
+var BB_ROLE_COL = 11;
+var BB_ROLES = ['student', 'teacher', 'admin'];
 var BB_SCHEMA = {
   BB_Accounts: ['uid', 'username', 'passwordHash', 'googleSub', 'name', 'email', 'createdAt', 'disabled', 'failures', 'lockedUntil'],
   BB_Sessions: ['tokenHash', 'uid', 'expiresAt'],
@@ -37,15 +46,27 @@ function bbSetupTables_() {
     if (!sheet) { sheet = book.insertSheet(name); sheet.appendRow(BB_SCHEMA[name]); sheet.setFrozenRows(1); }
     bbTable_(name);
   });
+  // Adds the optional role column. Existing rows stay empty, which reads as 'student'.
+  if (!bbHasRoles_()) bbTable_('BB_Accounts').getRange(1, BB_ROLE_COL).setValue('role');
 }
 function bbTable_(name) {
   var sheet = bbBook_().getSheetByName(name);
   if (!sheet || JSON.stringify(sheet.getRange(1, 1, 1, BB_SCHEMA[name].length).getValues()[0]) !== JSON.stringify(BB_SCHEMA[name])) bbFail_('SETUP');
   return sheet;
 }
-function bbRows_(name) {
+function bbRows_(name, width) {
   var s = bbTable_(name);
-  return s.getLastRow() < 2 ? [] : s.getRange(2, 1, s.getLastRow() - 1, BB_SCHEMA[name].length).getValues();
+  width = width || BB_SCHEMA[name].length;
+  return s.getLastRow() < 2 ? [] : s.getRange(2, 1, s.getLastRow() - 1, width).getValues();
+}
+/** true once setupBootBloom has added the optional 'role' column */
+function bbHasRoles_() {
+  var s = bbTable_('BB_Accounts');
+  return s.getLastColumn() >= BB_ROLE_COL && String(s.getRange(1, BB_ROLE_COL).getValue()).trim() === 'role';
+}
+/** account rows including the role column when the sheet has one */
+function bbAccounts_() {
+  return bbRows_('BB_Accounts', bbHasRoles_() ? BB_ROLE_COL : BB_SCHEMA.BB_Accounts.length);
 }
 function bbFail_(code) { var e = new Error(code); e.bbCode = code; throw e; }
 function bbJSON_(value) { return ContentService.createTextOutput(JSON.stringify(value)).setMimeType(ContentService.MimeType.JSON); }
@@ -101,7 +122,30 @@ function bbLimit_(key, max, seconds) {
   if (n >= max) bbFail_('RATE');
   cache.put(k, String(n + 1), seconds);
 }
-function bbPublic_(a) { return { uid: a[0], name: a[4], username: a[1] }; }
+function bbList_(value) {
+  return (Array.isArray(value) ? value : [])
+    .filter(function (u) { return typeof u === 'string' && u.trim(); })
+    .map(function (u) { return u.trim().toLowerCase(); });
+}
+/** admins named in Code.gs are fixed: the web may not demote them, so nobody can lock the console out */
+function bbFixedAdmin_(a) { return bbList_(BB_CONFIG.ADMINS).indexOf(String(a[1]).toLowerCase()) >= 0; }
+/**
+ * Code.gs admins win over everything; otherwise the sheet's role column decides; TEACHERS in Code.gs
+ * is only the default for accounts an admin has not set a role for yet.
+ */
+function bbRoleOf_(a) {
+  if (bbFixedAdmin_(a)) return 'admin';
+  var stored = String(a[BB_ROLE_COL - 1] || '').trim().toLowerCase();
+  if (BB_ROLES.indexOf(stored) >= 0) return stored;
+  return bbList_(BB_CONFIG.TEACHERS).indexOf(String(a[1]).toLowerCase()) >= 0 ? 'teacher' : 'student';
+}
+function bbCanTeach_(a) { var r = bbRoleOf_(a); return r === 'teacher' || r === 'admin'; }
+function bbPublic_(a) {
+  var role = bbRoleOf_(a);
+  return { uid: a[0], name: a[4], username: a[1], role: role, teacher: role !== 'student', admin: role === 'admin' };
+}
+/** Dates written as ISO text may come back as Date objects when the sheet formats them. */
+function bbWhen_(v) { return v instanceof Date ? v.toISOString() : String(v == null ? '' : v); }
 function bbIssue_(a) {
   if (a[7] === true || a[7] === 'true') bbFail_('AUTH');
   var token = bbToken_(), expires = Date.now() + 8 * 3600000;
@@ -111,13 +155,28 @@ function bbIssue_(a) {
 function bbAuth_(token) {
   if (typeof token !== 'string' || token.length > 200 || token.length < 32) bbFail_('AUTH');
   var hash = bbDigest_(token), s = bbRows_('BB_Sessions').find(function (r) { return r[0] === hash && Number(r[2]) > Date.now(); });
-  var a = s && bbRows_('BB_Accounts').find(function (r) { return r[0] === s[1]; });
+  var a = s && bbAccounts_().find(function (r) { return r[0] === s[1]; });
   if (!a || a[7] === true || a[7] === 'true') bbFail_('AUTH');
   return a;
 }
+function bbSaveRow_(uid) {
+  return bbRows_('BB_Saves').find(function (r) { return r[0] === uid; });
+}
+function bbSaveOf_(row) {
+  return JSON.parse(row.slice(8, 12).map(function (v) { return String(v).slice(2); }).join(''));
+}
 function bbSnapshot_(uid) {
-  var row = bbRows_('BB_Saves').find(function (r) { return r[0] === uid; });
-  return row ? { revision: Number(row[1]), save: JSON.parse(row.slice(8, 12).map(function (v) { return String(v).slice(2); }).join('')) } : { revision: 0, save: null };
+  var row = bbSaveRow_(uid);
+  return row ? { revision: Number(row[1]), save: bbSaveOf_(row) } : { revision: 0, save: null };
+}
+/** One line of the teacher's class list. Never includes the password hash or session data. */
+function bbSummary_(a, row) {
+  return {
+    uid: a[0], username: String(a[1]), name: String(a[4]), createdAt: bbWhen_(a[6]), role: bbRoleOf_(a),
+    disabled: a[7] === true || a[7] === 'true',
+    revision: row ? Number(row[1]) : 0, updatedAt: row ? bbWhen_(row[2]) : '',
+    coins: row ? Number(row[3]) : 0, completedJobs: row ? Number(row[4]) : 0, stars: row ? Number(row[5]) : 0
+  };
 }
 function bbValidateSave_(s) {
   if (!s || s.version !== 4 || !Number.isSafeInteger(s.coins) || s.coins < 0 || s.coins > 10000000) bbFail_('INVALID');
@@ -160,7 +219,7 @@ function bbDispatch_(q) {
   if (q.action === 'login') {
     var username = bbUsername_(q.username);
     bbLimit_('login-' + username, 8, 900);
-    var rows = bbRows_('BB_Accounts'), index = rows.findIndex(function (r) { return r[1] === username; }), a = rows[index];
+    var rows = bbAccounts_(), index = rows.findIndex(function (r) { return r[1] === username; }), a = rows[index];
     if (typeof q.password !== 'string' || q.password.length > 72 || bcrypt.truncates(q.password)) bbFail_('AUTH');
     if (!a || Number(a[9]) > Date.now()) bbFail_('AUTH');
     if (!bcrypt.compareSync(q.password, a[2])) {
@@ -173,6 +232,76 @@ function bbDispatch_(q) {
   }
   var user = bbAuth_(q.token);
   if (q.action === 'load') return { user: bbPublic_(user), snapshot: bbSnapshot_(user[0]) };
+  // ---- teacher console (read-only). Students can never reach these: the username must be in BB_CONFIG.TEACHERS.
+  if (['roster', 'shops', 'student'].indexOf(q.action) >= 0) {
+    if (!bbCanTeach_(user)) bbFail_('AUTH');
+    bbLimit_('teacher-' + user[0], 300, 3600);
+  }
+  if (q.action === 'roster') {
+    var saveRows = {};
+    bbRows_('BB_Saves').forEach(function (r) { saveRows[r[0]] = r; });
+    return { students: bbAccounts_()
+      .filter(function (r) { return bbRoleOf_(r) === 'student'; })
+      .map(function (r) { return bbSummary_(r, saveRows[r[0]]); }) };
+  }
+  if (q.action === 'shops') {
+    // Decorations only, read in small batches so one class list never times out.
+    if (!Array.isArray(q.uids) || !q.uids.length || q.uids.length > 12) bbFail_('INVALID');
+    var want = {};
+    q.uids.forEach(function (u) { if (typeof u !== 'string' || !u || u.length > 60) bbFail_('INVALID'); want[u] = true; });
+    var shops = [];
+    bbRows_('BB_Saves').forEach(function (r) {
+      if (!want[r[0]]) return;
+      var save = bbSaveOf_(r);
+      shops.push({
+        uid: r[0], inventory: save.inventory || {}, decor: save.decor || null,
+        playerName: save.settings && typeof save.settings.playerName === 'string' ? save.settings.playerName : ''
+      });
+    });
+    return { shops: shops };
+  }
+  // ---- admin only: who may do what, and which accounts are switched off
+  if (['accounts', 'setRole', 'setDisabled'].indexOf(q.action) >= 0) {
+    if (bbRoleOf_(user) !== 'admin') bbFail_('AUTH');
+    bbLimit_('admin-' + user[0], 300, 3600);
+  }
+  if (q.action === 'accounts') {
+    return { roles: BB_ROLES, editable: bbHasRoles_(), accounts: bbAccounts_().map(function (r) {
+      return {
+        uid: r[0], username: String(r[1]), name: String(r[4]), createdAt: bbWhen_(r[6]), role: bbRoleOf_(r),
+        disabled: r[7] === true || r[7] === 'true', locked: Number(r[9]) > Date.now(),
+        fixed: bbFixedAdmin_(r), self: r[0] === user[0]
+      };
+    }) };
+  }
+  if (q.action === 'setRole' || q.action === 'setDisabled') {
+    if (!bbHasRoles_() && q.action === 'setRole') bbFail_('ROLES');
+    var target = bbText_(q.uid, 60);
+    var all = bbAccounts_(), at = all.findIndex(function (r) { return r[0] === target; });
+    if (at < 0) bbFail_('INVALID');
+    // An admin may not change their own account, and Code.gs admins are fixed: both rules keep a way back in.
+    if (all[at][0] === user[0]) bbFail_('SELF');
+    if (bbFixedAdmin_(all[at])) bbFail_('FIXED');
+    if (q.action === 'setRole') {
+      var role = typeof q.role === 'string' ? q.role.trim().toLowerCase() : '';
+      if (BB_ROLES.indexOf(role) < 0) bbFail_('INVALID');
+      bbTable_('BB_Accounts').getRange(at + 2, BB_ROLE_COL).setValue(role);
+      all[at][BB_ROLE_COL - 1] = role;
+    } else {
+      if (typeof q.disabled !== 'boolean') bbFail_('INVALID');
+      bbTable_('BB_Accounts').getRange(at + 2, 8).setValue(q.disabled);
+      all[at][7] = q.disabled;
+      // A disabled account is refused by bbAuth_ at once; its sessions stop working without being deleted.
+    }
+    return { uid: target, role: bbRoleOf_(all[at]), disabled: all[at][7] === true || all[at][7] === 'true' };
+  }
+  if (q.action === 'student') {
+    var uid = bbText_(q.uid, 60);
+    var account = bbAccounts_().find(function (r) { return r[0] === uid; });
+    if (!account) bbFail_('INVALID');
+    var row = bbSaveRow_(uid);
+    return { student: bbSummary_(account, row), save: row ? bbSaveOf_(row) : null };
+  }
   if (q.action === 'logout') {
     var i = bbRows_('BB_Sessions').findIndex(function (r) { return r[0] === bbDigest_(q.token); });
     bbTable_('BB_Sessions').deleteRow(i + 2); return {};

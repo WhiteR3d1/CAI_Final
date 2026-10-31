@@ -6,7 +6,8 @@ import { JOBS, JOB_BY_ID, jobsOf, TRACKS } from '../data/jobs'
 import { useGame } from '../game/gameContext'
 import { isUnlocked, jobProgress, reputation } from '../game/progress'
 import { CRITERION_LABEL } from '../game/scoring'
-import type { JobId, SaveData, Track } from '../game/types'
+import type { JobId, Track } from '../game/types'
+import { copyText, summaryText } from './report'
 import './results.css'
 
 // Win10: goals summarised from the Windows 10 content sheet (it has no objective list; see GAME_PLAN.md).
@@ -24,46 +25,6 @@ const GOALS: { track: Track; title: string; jobs: JobId[] }[] = [
   { track: 'win11', title: 'ติดตั้ง Windows 11 และตั้งค่าเริ่มต้น (OOBE) ได้ถูกต้อง (หน้า 5–8)', jobs: ['w11-install', 'ch-setup11-design', 'ch-setup11-hotel', 'ch-oobe11-design', 'ch-oobe11-student'] },
   { track: 'win11', title: 'ตรวจสอบหลังติดตั้ง: Activation, Windows Update, ไดรเวอร์, Windows Security และการสำรองข้อมูลได้ (หน้า 8–10)', jobs: ['w11-verify', 'ch-post-design', 'ch-post-hotel'] },
 ]
-
-function summaryText(save: SaveData, date: string) {
-  const lines = [
-    'สรุปผลการฝึก Boot & Bloom — การติดตั้งระบบปฏิบัติการ Windows 10 / 11',
-    `ผู้เรียน: ${save.settings.playerName.trim() || '-'}`,
-    `วันที่: ${date}`,
-  ]
-  for (const job of TRACKS.flatMap(t => jobsOf(t.id))) {
-    if (job.order === 1) lines.push('', `[สาย ${TRACKS.find(t => t.id === job.track)?.title}]`)
-    const p = jobProgress(save, job.id)
-    if (!p.best) {
-      lines.push(`${job.code} ${job.title}: ยังไม่ได้ทำ`)
-      continue
-    }
-    const crit = job.criteria.map(c => `${CRITERION_LABEL[c]} ${Math.round((p.best?.criteria[c] ?? 0) * 100)}%`).join(' · ')
-    lines.push(`${job.code} ${job.title}: คะแนนดีที่สุด ${p.best.score}/100 (${p.best.stars} ดาว) · ทำ ${p.completions} ครั้ง`)
-    lines.push(`  ${crit}`)
-    const passed = p.best.objectives.filter(o => o.passed).length
-    lines.push(`  เป้าหมายที่ผ่าน ${passed}/${job.objectives.length} · คำใบ้รอบที่ดีที่สุด ${p.best.hintsUsed} ครั้ง`)
-    if (p.best.mistakes.length) lines.push(`  ควรฝึกเพิ่ม: ${p.best.mistakes.map(m => job.mistakes[m]?.label ?? m).join('; ')}`)
-  }
-  return lines.join('\n')
-}
-
-async function copyText(text: string) {
-  try {
-    await navigator.clipboard.writeText(text)
-    return true
-  } catch {
-    const area = document.createElement('textarea')
-    area.value = text
-    area.style.position = 'fixed'
-    area.style.opacity = '0'
-    document.body.appendChild(area)
-    area.select()
-    const ok = document.execCommand('copy')
-    area.remove()
-    return ok
-  }
-}
 
 export function Results({ onOpenJob }: { onOpenJob: (id: JobId) => void }) {
   const game = useGame()
