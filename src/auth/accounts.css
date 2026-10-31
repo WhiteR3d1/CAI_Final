@@ -1,23 +1,27 @@
-.account-page { min-height:100dvh; display:grid; place-items:center; padding:32px 18px; background:radial-gradient(ellipse at top,#d6eadb,transparent 65%),#f5f1e8; }
-.account-card { width:min(100%,480px); padding:32px; background:#fffef9; border:1px solid #cfd8c8; border-radius:24px; box-shadow:0 18px 60px #233b2812; display:grid; gap:14px; }
-.account-card h1 { font-size:1.8rem; margin:0; color:#284b39; }
+.account-page { min-height:100dvh; display:grid; place-items:center; padding:32px 18px; background:radial-gradient(ellipse at top,var(--sage-100),transparent 65%),var(--cream); }
+.account-card { position:relative; width:min(100%,480px); padding:32px; background:var(--paper); border:1px solid var(--line-2); border-radius:24px; box-shadow:var(--shadow); display:grid; gap:14px; }
+.account-card h1 { font-size:1.8rem; margin:0; color:var(--accent); }
 .account-card p { margin:0; line-height:1.7; }
-.account-eyebrow { color:#55705c; font-size:.75rem; letter-spacing:.1em; font-weight:700; }
+.account-eyebrow { color:var(--accent-soft); font-size:.75rem; letter-spacing:.1em; font-weight:700; }
 .account-card form { display:grid; gap:12px; }
 .account-card label { display:grid; gap:6px; font-weight:600; }
-.account-card input { padding:11px 12px; border:1px solid #aebfac; border-radius:9px; width:100%; background:white; color:#24372b; }
-.account-card small { color:#59685d; line-height:1.6; }
-.account-card button,.account-bar button,.account-notice button { border:1px solid #b8c5b5; border-radius:10px; padding:10px 15px; background:#fff; color:#284b39; cursor:pointer; }
+.account-card input { padding:11px 12px; border:1px solid var(--line-2); border-radius:9px; width:100%; background:var(--field); color:var(--ink); }
+.account-card small { color:var(--ink-3); line-height:1.6; }
+.account-card button,.account-bar button,.account-notice button { border:1px solid var(--line-2); border-radius:10px; padding:10px 15px; background:var(--field); color:var(--on-surface); cursor:pointer; }
 .account-card button:disabled,.account-bar button:disabled { opacity:.55; cursor:default; }
-.account-card .account-primary { background:#315f45; color:#fff; border-color:#315f45; font-weight:700; margin-top:5px; }
+.account-card .account-primary { background:var(--green-600); color:#fffdf3; border-color:var(--green-600); font-weight:700; margin-top:5px; }
 .account-tabs { display:flex; gap:8px; }
 .account-tabs button { flex:1; }
-.account-tabs button[aria-pressed=true] { background:#e0eddd; border-color:#668063; }
-.account-divider { text-align:center; color:#697567; font-size:.85rem; }
-.account-error { background:#fff0e8; padding:12px; border-radius:8px; color:#8b3329; }
+.account-tabs button[aria-pressed=true] { background:var(--sage-100); border-color:var(--green-500); }
+.account-divider { text-align:center; color:var(--ink-3); font-size:.85rem; }
+.account-error { background:var(--bad-bg); padding:12px; border-radius:8px; color:var(--bad); }
 .account-card .account-preview { border:0; text-decoration:underline; background:transparent; }
-.account-bar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:9px 24px; background:#e9f1e5; color:#284b39; font-size:.85rem; }
+.account-bar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:9px 24px; background:var(--sage-100); color:var(--on-surface); font-size:.85rem; }
 .account-bar span { margin-right:auto; }
-.account-notice { padding:12px 24px; background:#fff0dc; color:#633c1e; }
+.account-notice { padding:12px 24px; background:var(--warn-bg); color:var(--warn); }
 .account-notice p { margin:4px 0 10px; }
+/* The theme switch sits in the corner of the sign-in card, where there is no HUD to hold it.
+   It needs to out-rank `.account-card button` above, which would otherwise pad the icon away. */
+.account-card .theme-toggle { position:absolute; top:16px; right:16px; width:36px; height:36px; padding:0; display:grid; place-items:center; border-radius:50%; }
+.account-bar .theme-toggle { padding:0; width:34px; height:34px; display:grid; place-items:center; border-radius:50%; }
 @media(max-width:520px) { .account-card { padding:24px 20px; } .account-bar { padding:8px 12px; } }

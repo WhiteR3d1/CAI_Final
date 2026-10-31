@@ -1,6 +1,6 @@
-import { useState } from 'react'
 import { CoinAmount } from '../components/Bits'
 import { Icon, type IconName } from '../components/Icon'
+import { ThemeToggle } from '../components/ThemeToggle'
 import { useGame } from '../game/gameContext'
 import { reputation, shopLevel } from '../game/progress'
 import type { JobId } from '../game/types'
@@ -28,7 +28,6 @@ export function Logo() {
 
 export function Hud({ screen, onNavigate }: { screen: Screen; onNavigate: (s: Screen) => void }) {
   const { save, updateSettings, storageOk } = useGame()
-  const [menuOpen, setMenuOpen] = useState(false)
   const rep = reputation(save)
   const level = shopLevel(rep)
   const inJob = screen.name === 'job'
@@ -82,29 +81,23 @@ export function Hud({ screen, onNavigate }: { screen: Screen; onNavigate: (s: Sc
           {rep}
         </span>
         <span className="hud-level">{level.title}</span>
-        <div className="hud-menu">
-          <button
-            type="button"
-            className="hud-icon-btn"
-            aria-expanded={menuOpen}
-            aria-label="ตั้งค่า"
-            onClick={() => setMenuOpen(o => !o)}
-          >
-            <Icon name="gear" size={20} />
-          </button>
-          {menuOpen && (
-            <div className="hud-popover" role="group" aria-label="ตั้งค่า">
-              <label className="switch">
-                <input type="checkbox" checked={save.settings.sfx} onChange={e => updateSettings({ sfx: e.target.checked })} />
-                <span>เสียงเอฟเฟกต์</span>
-              </label>
-              {!storageOk && <p className="hud-warn">บันทึกลงเบราว์เซอร์ไม่ได้ ความคืบหน้าจะหายเมื่อปิดหน้า</p>}
-              <button type="button" className="btn btn-ghost btn-sm" onClick={() => setMenuOpen(false)}>
-                ปิด
-              </button>
-            </div>
-          )}
-        </div>
+        {!storageOk && (
+          <span className="hud-pill hud-warn" title="บันทึกลงเบราว์เซอร์ไม่ได้ ความคืบหน้าจะหายเมื่อปิดหน้า">
+            <Icon name="alert" size={16} />
+            บันทึกไม่ได้
+          </span>
+        )}
+        <button
+          type="button"
+          className="hud-icon-btn"
+          aria-pressed={save.settings.sfx}
+          aria-label={save.settings.sfx ? 'ปิดเสียงเอฟเฟกต์' : 'เปิดเสียงเอฟเฟกต์'}
+          title={save.settings.sfx ? 'ปิดเสียงเอฟเฟกต์' : 'เปิดเสียงเอฟเฟกต์'}
+          onClick={() => updateSettings({ sfx: !save.settings.sfx })}
+        >
+          <Icon name={save.settings.sfx ? 'speaker' : 'speakerX'} size={20} />
+        </button>
+        <ThemeToggle className="hud-icon-btn" />
       </div>
     </header>
   )

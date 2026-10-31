@@ -126,7 +126,7 @@
   padding: 7px 14px;
   border: 1px solid var(--line-2);
   border-radius: 999px;
-  background: #fff;
+  background: var(--field);
   color: var(--ink-2);
   font-size: 15px;
 }
@@ -160,7 +160,7 @@
   padding: 10px 12px;
   border: 1px solid var(--line-2);
   border-radius: 10px;
-  background: #fff;
+  background: var(--field);
   font-size: 17px;
 }
 
@@ -194,7 +194,7 @@
 }
 
 .decor-item-meta {
-  color: var(--green-600);
+  color: var(--accent);
 }
 
 .decor-item-actions {

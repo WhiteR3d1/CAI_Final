@@ -65,6 +65,8 @@ const PATHS = {
   volume: 'M4 9h4l5-4v14l-5-4H4zM16 9.5a3.5 3.5 0 0 1 0 5',
   flag: 'M5 21V4h11l-2 4 2 4H5',
   target: `${circ(12, 12, 9)}${circ(12, 12, 5)}${circ(12, 12, 1)}`,
+  sun: `${circ(12, 12, 4.2)}M12 2v2.6M12 19.4V22M4.2 4.2l1.9 1.9M17.9 17.9l1.9 1.9M2 12h2.6M19.4 12H22M4.2 19.8l1.9-1.9M17.9 6.1l1.9-1.9`,
+  moon: 'M20.8 13.2A8.6 8.6 0 1 1 10.8 3.2 7.6 7.6 0 0 0 20.8 13.2z',
 } as const
 
 export type IconName = keyof typeof PATHS

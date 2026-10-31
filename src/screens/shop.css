@@ -22,7 +22,7 @@
   position: relative;
   aspect-ratio: 1000 / 460;
   width: 100%;
-  background: #dfe8d5;
+  background: var(--scene-bg);
 }
 
 .scene-layer {
@@ -231,7 +231,7 @@
 }
 
 .job-code {
-  color: var(--green-500);
+  color: var(--accent-soft);
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -347,8 +347,8 @@
 }
 
 .board-track-win11 .board-track-head {
-  border-left-color: #2d6cb5;
-  background: #e3eefb;
+  border-left-color: var(--track-blue);
+  background: var(--track-blue-bg);
 }
 
 .board-track-head h3 {

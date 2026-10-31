@@ -129,40 +129,61 @@
   font-weight: 600;
 }
 
-.hud-menu {
-  position: relative;
-}
-
 .hud-icon-btn {
   display: grid;
   place-items: center;
   width: 36px;
   height: 36px;
+  padding: 0;
   border: 0;
   border-radius: 50%;
   background: rgb(255 255 255 / 10%);
   color: inherit;
+  transition: background 0.15s;
 }
 
-.hud-popover {
-  position: absolute;
-  right: 0;
-  top: calc(100% + 8px);
+.hud-icon-btn:hover {
+  background: rgb(255 255 255 / 20%);
+}
+
+/* a muted speaker or an unsaved-progress warning should read as "something is off" */
+.hud-icon-btn[aria-pressed='false'] {
+  color: var(--gold);
+}
+
+.hud-stats .hud-warn {
+  background: rgb(240 161 143 / 22%);
+  color: #f6cfc6;
+  font-size: 0.82rem;
+}
+
+/* light/dark switch: in the HUD it borrows the round icon-button look, elsewhere it stands alone */
+.theme-toggle {
   display: grid;
-  gap: 10px;
-  width: 240px;
-  padding: 14px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: var(--paper);
-  color: var(--ink);
-  box-shadow: var(--shadow);
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--line-2);
+  border-radius: 50%;
+  background: var(--field);
+  color: var(--ink-2);
+  transition: background 0.15s, color 0.15s;
 }
 
-.hud-warn {
-  margin: 0;
-  color: var(--bad);
-  font-size: 0.85rem;
+.theme-toggle:hover {
+  background: var(--sage-100);
+  color: var(--ink);
+}
+
+.hud-icon-btn.theme-toggle {
+  border: 0;
+  background: rgb(255 255 255 / 10%);
+  color: inherit;
+}
+
+.hud-icon-btn.theme-toggle:hover {
+  background: rgb(255 255 255 / 20%);
 }
 
 .hud-compact {
@@ -465,7 +486,7 @@
 
 .stepper li.current .stepper-dot {
   background: #fff;
-  color: var(--green-700);
+  color: var(--green-900);
 }
 
 /* speech */
@@ -492,7 +513,7 @@
   padding: 10px 14px;
   border: 1px solid var(--line);
   border-radius: 16px 16px 16px 4px;
-  background: #fff;
+  background: var(--paper);
   box-shadow: var(--shadow-sm);
 }
 
@@ -502,7 +523,7 @@
 
 .speech-name {
   display: block;
-  color: var(--green-600);
+  color: var(--accent);
   font-size: 0.82rem;
 }
 
@@ -518,7 +539,7 @@
 
 .kb h4 {
   margin-bottom: 8px;
-  color: var(--green-700);
+  color: var(--accent);
 }
 
 .kb-text {
@@ -533,7 +554,7 @@
 }
 
 .kb-points li::marker {
-  color: var(--green-500);
+  color: var(--accent-soft);
 }
 
 .kb-table-scroll {
@@ -545,7 +566,7 @@
 .kb-table table {
   width: 100%;
   border-collapse: collapse;
-  background: #fff;
+  background: var(--paper);
   font-size: 0.93rem;
 }
 
@@ -559,7 +580,7 @@
 
 .kb-table thead th {
   background: var(--sage-50);
-  color: var(--green-700);
+  color: var(--on-surface);
   font-weight: 600;
 }
 
@@ -599,7 +620,7 @@
   right: -11px;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--green-500);
+  color: var(--accent-soft);
   font-weight: 700;
   z-index: 1;
 }
