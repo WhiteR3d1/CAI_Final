@@ -1,0 +1,442 @@
+/* Teacher console: class shop gallery and score reports. */
+.teacher {
+  display: grid;
+  gap: 24px;
+  max-width: 1320px;
+  margin-inline: auto;
+  padding: 24px 20px 56px;
+}
+
+.teacher-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px 20px;
+}
+
+.teacher-head h1 {
+  margin: 0 0 6px;
+  font-size: clamp(26px, 3vw, 36px);
+}
+
+.teacher-head p {
+  margin: 0;
+  max-width: 62ch;
+  font-size: 17px;
+}
+
+.teacher-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.teacher-stat {
+  display: grid;
+  gap: 4px;
+  padding: 18px;
+}
+
+.teacher-stat strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-size: 28px;
+}
+
+.teacher-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 12px 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--sage-50);
+}
+
+.teacher-tabs {
+  display: flex;
+  gap: 8px;
+}
+
+.teacher-tabs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--paper);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.teacher-tabs button[aria-pressed='true'] {
+  border-color: var(--green-600);
+  background: var(--green-600);
+  color: #fffdf3;
+}
+
+.teacher-search,
+.teacher-sort {
+  display: grid;
+  gap: 5px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.teacher-search input,
+.teacher-sort select {
+  min-width: 220px;
+  padding: 10px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 400;
+}
+
+.teacher-sort select {
+  min-width: 200px;
+}
+
+.teacher-controls .btn {
+  margin-inline-start: auto;
+}
+
+.teacher-progress {
+  margin: 0;
+}
+
+/* ---------- gallery board ---------- */
+.teacher-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.teacher-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.teacher-card-scene {
+  position: relative;
+  border-bottom: 1px solid var(--line);
+  background: var(--sage-100);
+}
+
+/* the gallery shows the shop as a picture: nothing inside it is clickable */
+.teacher-card-scene .scene {
+  pointer-events: none;
+}
+
+.teacher-card-empty {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1000 / 460;
+  color: var(--ink-3);
+}
+
+.teacher-card-body {
+  display: grid;
+  gap: 8px;
+  padding: 16px 18px;
+}
+
+.teacher-card-body h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.teacher-card-body p {
+  margin: 0;
+  font-size: 15px;
+}
+
+.teacher-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.teacher-card-foot {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding: 0 18px 18px;
+}
+
+/* ---------- table ---------- */
+.teacher-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.teacher-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.teacher-table th,
+.teacher-table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  vertical-align: top;
+  white-space: nowrap;
+}
+
+.teacher-table thead th {
+  background: var(--sage-100);
+  color: var(--green-700);
+  font-size: 0.85rem;
+}
+
+.teacher-table tbody th {
+  font-weight: 600;
+  white-space: normal;
+}
+
+.teacher-table tbody tr:last-child th,
+.teacher-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.teacher-table tr.is-empty {
+  color: var(--ink-3);
+}
+
+.teacher-table .stars {
+  display: inline-flex;
+}
+
+/* ---------- one student ---------- */
+.teacher-detail {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  overflow-y: auto;
+  padding: 20px;
+  background: rgb(19 47 40 / 55%);
+}
+
+.teacher-detail-frame {
+  display: grid;
+  gap: 20px;
+  max-width: 1180px;
+  margin-inline: auto;
+  padding: 22px;
+  box-shadow: var(--shadow-lg);
+}
+
+.teacher-detail-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px 20px;
+}
+
+.teacher-detail-head h2 {
+  margin: 0 0 4px;
+}
+
+.teacher-detail-head p {
+  margin: 0;
+}
+
+.teacher-detail-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.teacher-detail-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(250px, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.teacher-detail-scene {
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  border-radius: 18px;
+}
+
+.teacher-detail-scene .scene {
+  pointer-events: none;
+}
+
+.teacher-detail-side {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+}
+
+.teacher-facts {
+  display: grid;
+  gap: 6px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.teacher-facts li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px dashed var(--line-2);
+  font-size: 15px;
+}
+
+.teacher-facts li:last-child {
+  border-bottom: 0;
+}
+
+.teacher-facts span {
+  color: var(--ink-3);
+}
+
+.teacher-facts strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-align: right;
+}
+
+.teacher-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+
+.teacher-decor-list h3,
+.teacher-scores h3 {
+  margin: 0 0 8px;
+  font-size: 21px;
+}
+
+.teacher-scores h4 {
+  margin: 18px 0 8px;
+  font-size: 17px;
+}
+
+.teacher-scores p {
+  margin: 0 0 10px;
+}
+
+.teacher-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+@media (max-width: 900px) {
+  .teacher-detail-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .teacher-controls .btn {
+    margin-inline-start: 0;
+  }
+}
+
+@media (max-width: 620px) {
+  .teacher {
+    padding: 16px 12px 40px;
+  }
+
+  .teacher-search input,
+  .teacher-sort select {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .teacher-search,
+  .teacher-sort {
+    flex: 1 1 100%;
+  }
+
+  .teacher-detail {
+    padding: 8px;
+  }
+
+  .teacher-detail-frame {
+    padding: 16px;
+  }
+}
+
+/* ---------- admin: roles and account switches ---------- */
+.admin {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-intro {
+  padding: 18px 20px;
+}
+
+.admin-intro h2 {
+  margin: 0 0 8px;
+  font-size: 21px;
+}
+
+.admin-intro ul {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 10px;
+  padding-left: 1.2em;
+}
+
+.admin-intro p {
+  margin: 0;
+  font-size: 15px;
+}
+
+.admin-intro code,
+.admin code {
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--sage-100);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.admin-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px 16px;
+}
+
+.admin-controls .btn {
+  margin-bottom: 1px;
+}
+
+.admin .teacher-table select {
+  padding: 7px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+}
+
+.admin .teacher-table td .chip + .chip {
+  margin-left: 5px;
+}
