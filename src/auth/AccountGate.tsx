@@ -31,8 +31,10 @@ export function AccountGate({ children }: { children: (account?: AccountGame) =>
   const [gameKey, setGameKey] = useState(0)
   const [playing, setPlaying] = useState(false)
 
-  async function enter(session: Session) {
-    const data = await api<{ snapshot: Snapshot }>('load', { token: session.token })
+  async function enter(signedIn: Session) {
+    const data = await api<{ user: Session['user']; snapshot: Snapshot }>('load', { token: signedIn.token })
+    // 'load' returns the account's current role, which may differ from the one given at sign-in
+    const session = { ...signedIn, user: data.user ?? signedIn.user }
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(session))
     setLoaded({ session, snapshot: data.snapshot, draft: readDraft(session.user.uid) })
     setMessage(''); setGameKey(k => k + 1)
@@ -44,9 +46,12 @@ export function AccountGate({ children }: { children: (account?: AccountGame) =>
         const h = await api<Health>()
         if (cancelled) return
         setHealth(h)
-        const session = readSession()
-        if (session && session.expiresAt > Date.now()) {
-          const data = await api<{ snapshot: Snapshot }>('load', { token: session.token })
+        const stored = readSession()
+        if (stored && stored.expiresAt > Date.now()) {
+          const data = await api<{ user: Session['user']; snapshot: Snapshot }>('load', { token: stored.token })
+          // refresh the remembered role: an admin may have changed it since this tab signed in
+          const session = { ...stored, user: data.user ?? stored.user }
+          sessionStorage.setItem(SESSION_KEY, JSON.stringify(session))
           if (!cancelled) setLoaded({ session, snapshot: data.snapshot, draft: readDraft(session.user.uid) })
         }
       } catch (e) { if (!cancelled) setMessage(errorMessage(e)) }
