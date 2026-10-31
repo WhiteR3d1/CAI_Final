@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
+import { ThemeToggle } from '../components/ThemeToggle'
 import { defaultSave, normalizeSave } from '../game/progress'
 import type { SaveData } from '../game/types'
 import { TeacherConsole } from '../teacher/TeacherConsole'
@@ -77,8 +78,9 @@ export function AccountGate({ children }: { children: (account?: AccountGame) =>
     localStorage.removeItem(draftKey(loaded.session.user.uid))
     setLoaded({ session: loaded.session, snapshot: data.snapshot }); setGameKey(k => k + 1)
   }}>{children}</OnlineGame>
-  if (preview) return <><div className="account-bar"><span>โหมดเล่นในเครื่อง — ไม่บันทึกลงชีต</span><button onClick={() => setPreview(false)}>กลับหน้าเข้าสู่ระบบ</button></div>{children()}</>
+  if (preview) return <><div className="account-bar"><span>โหมดเล่นในเครื่อง — ไม่บันทึกลงชีต</span><button onClick={() => setPreview(false)}>กลับหน้าเข้าสู่ระบบ</button><ThemeToggle /></div>{children()}</>
   return <main className="account-page"><section className="account-card">
+    <ThemeToggle />
     <span className="account-eyebrow">BOOT & BLOOM · ห้องเรียนช่างคอม</span>
     <h1>ร้านของคุณ พร้อมเรียนรู้ต่อ</h1>
     <p>เข้าสู่ระบบเพื่อเก็บงานที่ทำ คะแนน เหรียญ และร้านที่ตกแต่งไว้ใน Google Sheets ของห้องเรียน</p>
@@ -171,6 +173,7 @@ function TeacherShell({ session, onSignOut, onPlay }: { session: Session; onSign
     <div className="account-bar"><strong>{session.user.name} · อาจารย์</strong><span role="status">โหมดอาจารย์ — อ่านข้อมูลนักเรียนอย่างเดียว</span>
       <button disabled={working} onClick={onPlay}>เปิดเกมของฉัน</button>
       <button disabled={working} onClick={() => { void logout() }}>ออกจากระบบ</button>
+      <ThemeToggle />
     </div>
     {message && <div className="account-notice" role="alert"><p>{message}</p></div>}
     <TeacherConsole session={session} />

@@ -61,7 +61,7 @@
   height: 28px;
   border-radius: 9px;
   background: var(--sage-100);
-  color: var(--green-700);
+  color: var(--on-surface);
   font-family: var(--font-display);
 }
 
@@ -153,15 +153,15 @@
 
 .manual-nav-track {
   padding: 4px 12px 2px;
-  color: var(--green-600);
+  color: var(--accent);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.02em;
 }
 
 .manual-no-win11 {
-  background: #e3eefb;
-  color: #2d5f9e;
+  background: var(--track-blue-bg);
+  color: var(--track-blue);
 }
 
 .manual-compact .manual-nav-group {

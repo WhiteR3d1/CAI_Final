@@ -30,6 +30,24 @@
   --info-bg: #e1eef4;
   --extra: #6b4f9b;
   --extra-bg: #eee9f8;
+  /* Semantic tokens so the dark theme only has to restate this block.
+     --accent/--accent-soft are accent TEXT; the --green-* tokens stay brand surfaces in both themes. */
+  --accent: #2f5e4b;
+  --accent-soft: #3f7a5e;
+  --on-surface: #22493e;
+  --field: #fff;
+  --note: #fdf5e0;
+  --note-2: #fdf1cf;
+  --note-ink: #b07b22;
+  --track-blue: #2d5f9e;
+  --track-blue-bg: #e3eefb;
+  --scene-bg: #dfe8d5;
+  /* the repair bench behind the simulated monitor */
+  --bench-edge: #c8d7bc;
+  --bench-top: #e6d6b4;
+  --bench-light: #eef6ef;
+  --bench-wall: #dfe8d5;
+  color-scheme: light;
   --radius: 16px;
   --radius-sm: 10px;
   --shadow-sm: 0 1px 2px rgb(25 61 53 / 8%);
@@ -98,7 +116,7 @@ small {
 }
 
 a {
-  color: var(--green-600);
+  color: var(--accent);
 }
 
 button,
@@ -139,7 +157,7 @@ svg {
   border: 1px solid transparent;
   border-radius: 999px;
   background: var(--sage-100);
-  color: var(--green-700);
+  color: var(--on-surface);
   font-weight: 500;
   line-height: 1.2;
   text-decoration: none;
@@ -217,7 +235,7 @@ svg {
   padding: 0;
   border: 0;
   background: none;
-  color: var(--green-600);
+  color: var(--accent);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -233,7 +251,7 @@ svg {
 .eyebrow {
   display: block;
   margin-bottom: 0.35em;
-  color: var(--green-500);
+  color: var(--accent-soft);
   font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -251,7 +269,7 @@ svg {
   padding: 0.15em 0.65em;
   border-radius: 999px;
   background: var(--sage-100);
-  color: var(--green-700);
+  color: var(--on-surface);
   font-size: 0.8rem;
   font-weight: 500;
   white-space: nowrap;
@@ -296,11 +314,63 @@ kbd {
   border: 1px solid var(--line-2);
   border-bottom-width: 2px;
   border-radius: 6px;
-  background: #fff;
+  background: var(--field);
   font-family: var(--font-mono);
   font-size: 0.85em;
   line-height: 1.5;
   text-align: center;
+}
+
+/* ---------- dark theme ----------
+   Only the palette changes: every surface, border and text colour in the game's own screens comes
+   from these tokens. The simulated Windows/BIOS screens keep their own real colours on purpose. */
+:root[data-theme='dark'] {
+  --ink: #e7efe8;
+  --ink-2: #b7c6bb;
+  --ink-3: #8c9d92;
+  --line: #2b3a34;
+  --line-2: #3b4d45;
+  --paper: #1b2521;
+  --cream: #121a17;
+  --sage-50: #1f2a26;
+  --sage-100: #27342e;
+  --sage-200: #334339;
+  --sage-400: #5d7567;
+  --green-900: #0d211c;
+  --green-800: #16302a;
+  --green-700: #3b8265;
+  --green-600: #2f6a52;
+  --green-500: #47916e;
+  --gold: #e8bd6a;
+  --gold-600: #c9923a;
+  --good: #7ed59d;
+  --good-bg: #16331f;
+  --warn: #ecc47c;
+  --warn-bg: #352a14;
+  --bad: #f2a08f;
+  --bad-bg: #3b2019;
+  --info: #93c9e6;
+  --info-bg: #152e3a;
+  --extra: #c6b0dc;
+  --extra-bg: #2a2340;
+  --accent: #8ed6ae;
+  --accent-soft: #79c49a;
+  --on-surface: #d8eee0;
+  --field: #121b18;
+  --note: #2f2b1b;
+  --note-2: #3a3422;
+  --note-ink: #e2c184;
+  --track-blue: #9cc5ef;
+  --track-blue-bg: #1a2a3b;
+  --scene-bg: #243029;
+  --bench-edge: #2b3930;
+  --bench-top: #3a3426;
+  --bench-light: #22302a;
+  --bench-wall: #17201c;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 35%);
+  --shadow: 0 1px 2px rgb(0 0 0 / 30%), 0 10px 28px rgb(0 0 0 / 45%);
+  --shadow-lg: 0 24px 60px rgb(0 0 0 / 60%);
+  color-scheme: dark;
 }
 
 @media (prefers-reduced-motion: reduce) {
