@@ -66,6 +66,11 @@
 
 ## บันทึกงาน
 
+### 2026-11-01 — Claude: บทบาทบัญชีอัปเดตทุกครั้งที่โหลด (แก้ admin เข้าแล้วเห็นหน้านักเรียน)
+- **ปัญหาที่ผู้ใช้เจอ:** สมัคร `admin` ก่อน deploy เวอร์ชันที่ใส่ชื่อใน `ADMINS` แล้วเข้าเกมยังเห็นหน้านักเรียน เพราะ `AccountGate` ใช้ `session.user` จากตอน login/register ที่เก็บใน sessionStorage ไม่ใช้ `user` ที่ action `load` ส่งกลับมา
+- **แก้:** `src/auth/AccountGate.tsx` ทั้ง `enter()` และตอนกู้ session ใช้ `data.user` จาก `load` แทน แล้วเขียน session ใหม่ลง sessionStorage บทบาทที่ผู้ดูแลเปลี่ยนจะมีผลเมื่อรีโหลดหน้า ไม่ต้องออกจากระบบ
+- **ตรวจ:** tsc, eslint, `npm test` 297/297 ผ่าน ยังไม่ได้ commit
+
 ### 2026-11-01 — Claude: ✅ ธีมสว่าง/มืด และปุ่ม HUD เป็นไอคอน (branch `win11-track`)
 - **ข้อสรุปจากผู้ใช้:** ดู "1 พ.ย. 2026 รอบ 3" ด้านบน
 - **ไฟล์ใหม่ 2 ไฟล์:** `src/components/theme.ts` (อ่าน/เขียน/ใส่ธีม) และ `src/components/ThemeToggle.tsx` (ปุ่ม) — แยกกันเพราะ eslint `react-refresh` ห้าม export ฟังก์ชันจากไฟล์คอมโพเนนต์
