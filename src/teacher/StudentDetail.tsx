@@ -270,7 +270,7 @@ export function StudentDetail({ token, student, onClose }: { token: string; stud
                               </td>
                               <td>{best ? best.hintsUsed : '—'}</td>
                               <td>{best ? `${best.objectives.filter(o => o.passed).length}/${job.objectives.length}` : '—'}</td>
-                              <td>
+                              <td className="teacher-mistakes">
                                 {best
                                   ? best.mistakes.length
                                     ? best.mistakes.map(m => job.mistakes[m]?.label ?? m).join(', ')

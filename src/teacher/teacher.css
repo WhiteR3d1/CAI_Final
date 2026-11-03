@@ -203,7 +203,15 @@
 }
 
 .teacher-table tbody th {
+  min-width: 15em;
   font-weight: 600;
+  white-space: normal;
+}
+
+/* long lists of mistakes wrap instead of widening the table */
+.teacher-table td.teacher-mistakes {
+  min-width: 16em;
+  max-width: 28em;
   white-space: normal;
 }
 
@@ -232,7 +240,10 @@
 
 .teacher-detail-frame {
   display: grid;
+  /* one column that may not grow past the frame: a wide score table scrolls inside its own box */
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
+  min-width: 0;
   max-width: 1180px;
   margin-inline: auto;
   padding: 22px;
