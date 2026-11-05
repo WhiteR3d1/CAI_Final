@@ -217,10 +217,12 @@ export function Results({ onOpenJob }: { onOpenJob: (id: JobId) => void }) {
           <span role="status" className="muted">
             {copied === 'ok' ? 'คัดลอกแล้ว' : copied === 'fail' ? 'เบราว์เซอร์ไม่อนุญาตให้คัดลอกอัตโนมัติ เลือกข้อความด้านล่างแล้วคัดลอกเองได้' : ''}
           </span>
-          <label className="switch">
-            <input type="checkbox" checked={save.settings.unlockAll} onChange={e => game.updateSettings({ unlockAll: e.target.checked })} />
-            <span>เปิดทุกงาน (ให้ครูเลือกงานตามบทเรียน)</span>
-          </label>
+          {!game.unlockFixed && (
+            <label className="switch">
+              <input type="checkbox" checked={save.settings.unlockAll} onChange={e => game.updateSettings({ unlockAll: e.target.checked })} />
+              <span>เปิดทุกงาน (ให้ครูเลือกงานตามบทเรียน)</span>
+            </label>
+          )}
           <button type="button" className="btn btn-ghost" onClick={() => setConfirmReset(true)}>
             <Icon name="trash" size={18} /> ล้างความคืบหน้า
           </button>
