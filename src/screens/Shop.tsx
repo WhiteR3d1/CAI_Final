@@ -14,6 +14,9 @@ import type { Screen } from './Hud'
 import { ShopScene } from './ShopScene'
 import './shop.css'
 
+/** pre-test / post-test site of the course (Camp Quest), opened in a new tab */
+const PRETEST_URL = 'https://pretest-postest-win11.vercel.app/'
+
 function JobCard({ job, onOpen }: { job: JobDef; onOpen: (id: JobId) => void }) {
   const { save } = useGame()
   const unlocked = isUnlocked(save, job)
@@ -156,7 +159,7 @@ export function Shop({ onOpenJob, onNavigate, view = 'shop' }: { onOpenJob: (id:
         </aside>
       </section>}
 
-      {view === 'shop' && <section className="shop-shortcuts" aria-label="ไปยังพื้นที่อื่น"><button className="card shortcut" onClick={openBoard}><Icon name="arrowRight" size={28}/><span><strong>กระดานงาน</strong><small>เลือกภารกิจและดูความก้าวหน้าทั้ง {JOBS.length} งาน</small></span></button><button className="card shortcut" onClick={openDecor}><Icon name="star" size={28}/><span><strong>ตกแต่งร้าน</strong><small>ซื้อของแล้วลากวางได้อิสระ ตั้งชื่อร้านเอง</small></span></button><button className="card shortcut" onClick={() => setShowcase(true)}><Icon name="monitor" size={28}/><span><strong>โชว์ร้าน</strong><small>เปิดร้านเต็มจอไว้แข่ง และบันทึกเป็นรูป</small></span></button></section>}
+      {view === 'shop' && <section className="shop-shortcuts" aria-label="ไปยังพื้นที่อื่น"><button className="card shortcut" onClick={openBoard}><Icon name="arrowRight" size={28}/><span><strong>กระดานงาน</strong><small>เลือกภารกิจและดูความก้าวหน้าทั้ง {JOBS.length} งาน</small></span></button><button className="card shortcut" onClick={openDecor}><Icon name="star" size={28}/><span><strong>ตกแต่งร้าน</strong><small>ซื้อของแล้วลากวางได้อิสระ ตั้งชื่อร้านเอง</small></span></button><button className="card shortcut" onClick={() => setShowcase(true)}><Icon name="monitor" size={28}/><span><strong>โชว์ร้าน</strong><small>เปิดร้านเต็มจอไว้แข่ง และบันทึกเป็นรูป</small></span></button><a className="card shortcut" href={PRETEST_URL} target="_blank" rel="noopener noreferrer"><Icon name="clipboard" size={28}/><span><strong>แบบทดสอบก่อน/หลังเรียน</strong><small>Camp Quest · Windows 11 ทำก่อนเริ่มเล่นและหลังเล่นจบ (เปิดแท็บใหม่)</small></span></a></section>}
       {view === 'board' && <section id="board" className="board" aria-labelledby="board-title">
         <div className="section-head">
           <div>

@@ -5,6 +5,8 @@ import type { DecorState, JobDef, JobId, JobResult, SaveData, Settings } from '.
 export interface GameApi {
   save: SaveData
   storageOk: boolean
+  /** signed-in accounts: the role decides whether every job is open, so the switch is hidden */
+  unlockFixed: boolean
   startJob(id: JobId): void
   /** records the run and returns the coins actually paid */
   finishJob(job: JobDef, result: JobResult): number

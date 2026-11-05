@@ -6,7 +6,7 @@ import { applyResult, defaultSave, reputation, shopLevel, startAttempt } from '.
 import { loadSave, writeSave } from './storage'
 import type { SaveData } from './types'
 
-export function GameProvider({ children, initialSave, saveScope, onSave }: { children: ReactNode; initialSave?: SaveData; saveScope?: string; onSave?: (save: SaveData) => void }) {
+export function GameProvider({ children, initialSave, saveScope, onSave, unlockFixed = false }: { children: ReactNode; initialSave?: SaveData; saveScope?: string; onSave?: (save: SaveData) => void; unlockFixed?: boolean }) {
   const [save, setSave] = useState<SaveData>(() => initialSave ?? loadSave())
   const [storageOk, setStorageOk] = useState(true)
 
@@ -32,6 +32,7 @@ export function GameProvider({ children, initialSave, saveScope, onSave }: { chi
     return {
       save,
       storageOk,
+      unlockFixed,
       play,
       startJob: id => commit(startAttempt(save, id)),
       finishJob: (job, result) => {
@@ -46,7 +47,7 @@ export function GameProvider({ children, initialSave, saveScope, onSave }: { chi
       updateSettings: patch => commit({ ...save, settings: { ...save.settings, ...patch } }),
       reset: () => commit({ ...defaultSave(), settings: save.settings }),
     }
-  }, [save, storageOk, play, commit])
+  }, [save, storageOk, unlockFixed, play, commit])
 
   return <GameContext.Provider value={api}>{children}</GameContext.Provider>
 }

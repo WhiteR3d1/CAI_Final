@@ -9,7 +9,7 @@ import './accounts.css'
 
 const SESSION_KEY = 'boot-bloom:session:v1'
 const draftKey = (uid: string) => `boot-bloom:draft:${uid}`
-interface AccountGame { initialSave: SaveData; saveScope: string; onSave: (save: SaveData) => void }
+interface AccountGame { initialSave: SaveData; saveScope: string; onSave: (save: SaveData) => void; unlockFixed: boolean }
 interface Loaded { session: Session; snapshot: Snapshot; draft?: Draft }
 function readSession(): Session | null {
   try { return JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null') } catch { return null }
@@ -138,7 +138,9 @@ function OnlineGame({ loaded, onSignOut, onReload, onTeacher, children }: {
       await api('logout', { token: session.token }); onSignOut()
     } catch (e) { setMessage(errorMessage(e)) } finally { setWorking(false) }
   }
-  const save = normalizeSave(draft?.save ?? snapshot.save ?? { ...defaultSave(), settings: { ...defaultSave().settings, playerName: session.user.name } })
+  const stored = normalizeSave(draft?.save ?? snapshot.save ?? { ...defaultSave(), settings: { ...defaultSave().settings, playerName: session.user.name } })
+  // the role decides which jobs are open: teachers and admins may open every job, students unlock them in order
+  const save = { ...stored, settings: { ...stored.settings, unlockAll: !!session.user.teacher } }
   return <>
     <div className="account-bar"><strong>{session.user.name}</strong><span role="status">{labels[status]}</span>
       {onTeacher && <button disabled={working || status === 'saving'} onClick={onTeacher}>กลับหน้าอาจารย์</button>}
@@ -157,7 +159,7 @@ function OnlineGame({ loaded, onSignOut, onReload, onTeacher, children }: {
         if (confirm('เก็บร่างไว้ในเครื่องแล้วกลับไปเข้าสู่ระบบใหม่? เข้าใช้บัญชีเดิมเพื่อส่งร่างต่อ')) onSignOut()
       }}>เก็บร่างแล้วเข้าสู่ระบบใหม่</button>}
     </div>}
-    <div inert={working}><RenderGame render={children} account={{ initialSave: save, saveScope: session.user.uid, onSave }} /></div>
+    <div inert={working}><RenderGame render={children} account={{ initialSave: save, saveScope: session.user.uid, onSave, unlockFixed: true }} /></div>
   </>
 }
 

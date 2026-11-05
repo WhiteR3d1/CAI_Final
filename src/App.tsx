@@ -17,7 +17,7 @@ export default function App() {
   return <AccountGate>{account => <GameShell key={account?.saveScope ?? 'local'} account={account} />}</AccountGate>
 }
 
-function GameShell({ account }: { account?: { initialSave: SaveData; saveScope: string; onSave: (save: SaveData) => void } }) {
+function GameShell({ account }: { account?: { initialSave: SaveData; saveScope: string; onSave: (save: SaveData) => void; unlockFixed: boolean } }) {
   const [screen, setScreen] = useState<Screen>({ name: 'shop' })
   const [runKey, setRunKey] = useState(0)
 
